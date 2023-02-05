@@ -2,24 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InputManager : MonoBehaviour
+public class InputManager : Singleton<InputManager>
 {
-    private static InputManager _instance;
-    public static InputManager Instance { get { return _instance; } }
+    //private static InputManager _instance;
+    //public static InputManager Instance { get { return _instance; } }
 
     [HideInInspector]
     public PlayerControls playerControls;
 
     private void Awake()
     {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            _instance = this;
-        }
+        //if (_instance != null && _instance != this)
+        //{
+        //    Destroy(this.gameObject);
+        //}
+        //else
+        //{
+        //    _instance = this;
+        //}
+
+        base.Awake();
 
         playerControls = new PlayerControls();
     }

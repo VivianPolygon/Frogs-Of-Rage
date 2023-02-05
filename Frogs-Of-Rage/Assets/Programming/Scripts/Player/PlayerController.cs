@@ -80,4 +80,8 @@ public class PlayerController : MonoBehaviour
         //Keep player facing the same direction as the camera
         //transform.rotation = Quaternion.Euler(0, mainCamTransform.rotation.eulerAngles.y, 0);
     }
+
+
+    public delegate void OnCollectible();
+    public static event OnCollectible onCollectable;
 }

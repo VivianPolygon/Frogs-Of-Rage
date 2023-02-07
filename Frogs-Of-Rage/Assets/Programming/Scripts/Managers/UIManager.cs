@@ -11,6 +11,9 @@ public class UIManager : Singleton<UIManager>
     public Text collectedCount;
     public GameObject collectablePanel;
     public CollectableData collectedData;
+    private InputManager inputManager;
+    public Canvas pauseCanvas;
+    private bool isPaused = false;
 
     private Animator panelAnimator;
 
@@ -26,8 +29,13 @@ public class UIManager : Singleton<UIManager>
     private void Start()
     {
         panelAnimator = collectablePanel.GetComponent<Animator>();
+        inputManager = InputManager.Instance;
     }
-    
+
+    private void Update()
+    {
+        HandlePauseMenu();
+    }
     private void DisplayCollectedItem(CollectableData collectableData)
     {
         
@@ -43,5 +51,20 @@ public class UIManager : Singleton<UIManager>
     public void CollectCollectable()
     {
         DisplayCollectedItem(collectedData);
+    }
+
+    private void HandlePauseMenu()
+    {
+        //Toggle paused bool
+        if(inputManager.GetPause())
+            isPaused = !isPaused;
+        if(isPaused)
+        {
+            pauseCanvas.gameObject.SetActive(true);
+        }
+        else if(!isPaused)
+        {
+            pauseCanvas.gameObject.SetActive(false);
+        }
     }
 }

@@ -56,12 +56,20 @@
     <Analyzer Include="/Applications/Visual Studio.app/Contents/MonoBundle/Addins/MonoDevelop.Unity/Analyzers/Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets/Programming/Scripts/Managers/GameManager.cs" />
     <Compile Include="Assets/Programming/Scripts/Player/PlayerController.cs" />
-    <Compile Include="Assets/Programming/ScriptableObjects/PlayerControls.cs" />
-    <Compile Include="Assets/TutorialInfo/Scripts/Readme.cs" />
-    <Compile Include="Assets/Programming/Scripts/Player/InputManager.cs" />
-    <Compile Include="Assets/Programming/Scripts/DollyCamStart.cs" />
+    <Compile Include="Assets/Programming/Scripts/Player/PlayerData.cs" />
     <Compile Include="Assets/Programming/Scripts/DisablePlayerMovement.cs" />
+    <Compile Include="Assets/Programming/Scripts/Collectables/FlyCollectable.cs" />
+    <Compile Include="Assets/Programming/Scripts/Managers/Singleton.cs" />
+    <Compile Include="Assets/Programming/ScriptableObjects/PlayerControls.cs" />
+    <Compile Include="Assets/Programming/Scripts/DollyCamStart.cs" />
+    <Compile Include="Assets/Programming/Scripts/Player/Collector.cs" />
+    <Compile Include="Assets/TutorialInfo/Scripts/Readme.cs" />
+    <Compile Include="Assets/Programming/Scripts/Managers/InputManager.cs" />
+    <Compile Include="Assets/Programming/Scripts/Collectables/CollectableData.cs" />
+    <Compile Include="Assets/Programming/Scripts/Collectables/ICollectable.cs" />
+    <Compile Include="Assets/Programming/Scripts/Managers/UIManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

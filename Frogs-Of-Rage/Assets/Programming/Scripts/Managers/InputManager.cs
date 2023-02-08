@@ -10,7 +10,7 @@ public class InputManager : Singleton<InputManager>
     [HideInInspector]
     public PlayerControls playerControls;
 
-    private void Awake()
+    public override void Awake()
     {
         //if (_instance != null && _instance != this)
         //{

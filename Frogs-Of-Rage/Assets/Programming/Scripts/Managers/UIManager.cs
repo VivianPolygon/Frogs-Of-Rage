@@ -64,7 +64,7 @@ public class UIManager : Singleton<UIManager>
     private void HandlePauseMenu()
     {
         //Toggle paused bool
-        if(inputManager.GetPause())
+        if(InputManager.Instance.GetPause())
             isPaused = !isPaused;
         if(isPaused)
         {

@@ -46,4 +46,10 @@ public class InputManager : Singleton<InputManager>
     {
         return playerControls.Player.Look.ReadValue<Vector2>();
     }
+    
+    //Gets pause input
+    public bool GetPause()
+    {
+        return playerControls.Player.Pause.triggered;
+    }
 }

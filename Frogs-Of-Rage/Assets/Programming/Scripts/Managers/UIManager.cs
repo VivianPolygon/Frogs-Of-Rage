@@ -7,15 +7,23 @@ using UnityEngine.Events;
 
 public class UIManager : Singleton<UIManager>
 {
+    private InputManager inputManager;
+
+    private Animator panelAnimator;
+
+    [Space(10)]
+    [Header("Player Canvas")]
     public Image collectedImage;
     public Text collectedCount;
     public GameObject collectablePanel;
     public CollectableData collectedData;
-    private InputManager inputManager;
+
+    [Space(10)]
+    [Header("Pause Canvas")]
     public Canvas pauseCanvas;
     private bool isPaused = false;
-
-    private Animator panelAnimator;
+    public Image flyImage;
+    public float flyCount;
 
     private void OnEnable()
     {

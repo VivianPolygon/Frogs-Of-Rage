@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Linq;
 
-public class VacuumeNavigation : MonoBehaviour
+public class VacuumNavigation : MonoBehaviour
 {
     //internaly used instance for the vacuum navmesh agent
     private NavMeshAgent _vacuumAgent;
@@ -15,7 +15,45 @@ public class VacuumeNavigation : MonoBehaviour
     [SerializeField] [Tooltip("The Speed the Vacuum Turns")] private float _turnSpeed;
     [SerializeField] [Tooltip("The Rate the Vacuum Accelerates")] private float _acceleration;
 
+    #region "Player Detection Variables"
+    //variables coresponding to the vacuums FOV for the player
+    [Header("Vaccum FOV Variables")]
+    [SerializeField] [Tooltip("Vacuums field of view in degrees")][Range(0, 360)]  private float _fieldOfView;
+    [SerializeField] [Tooltip("Vaccums distance of view in world units")] private float _distanceOfView;
+    [SerializeField] [Tooltip("Layer Mask used to see the player through an overlap sphere")] private LayerMask _playerLayer;
+
+    //caculated angle Property between 1 and neg 1, for use in comparing angle to dot product
+    private float _caculatedAngleRange;
+
+    private List<Collider> _playerColliderList;
+    private bool _playerInSight;
+    private Transform _playerTransform;
+
+    //public properties for the editor script
+    public float FieldOfView { get { return _fieldOfView; } }
+    public float DistanceOfView { get { return _distanceOfView; } }
+    public bool PlayerInSight { get { return _playerInSight; } }
+    public Transform PlayerTransform { get { return _playerTransform; } }
+    private List<Collider> PlayerColliderList //used to automaticaly null check
+    {
+        get 
+        { 
+            if (_playerColliderList == null)
+            {
+                _playerColliderList = new List<Collider>();
+            }
+
+            return _playerColliderList;
+        }
+        set
+        {
+            _playerColliderList = new List<Collider>(value);
+        }
+    }
+    #endregion
+
     [Header("Vacuum Navigation Variables, Roaming")]
+    [Space(15)]
     [SerializeField] [Tooltip("Distance Scanned when Choosing Point While Roaming")] private float _maxRoamingPointRange;
     [SerializeField] [Tooltip("Distance from a navmesh a scan can give to allow navigation")] private float _roamingPointScanRange;
     [SerializeField] [Tooltip("Number of Times Scanned to Find a point. If scans are unsucsessful, Vacuume Stays Still Untill Next Scan")] private float _roamingScanCap;
@@ -56,6 +94,8 @@ public class VacuumeNavigation : MonoBehaviour
         _roamingPossibleTargets = new List<Vector3>();
 
         RoamingChooseRandomPoint();
+
+        _playerColliderList = new List<Collider>();
     }
 
 
@@ -83,6 +123,49 @@ public class VacuumeNavigation : MonoBehaviour
         _vacuumAgent.autoBraking = false;
         _vacuumAgent.stoppingDistance = 0;
     }
+
+    #region "Player Detection"
+
+    //public for editor script
+    public Vector3 DirectionFromAngle(float angle, bool horizontalAngle)
+    {
+        if(horizontalAngle)
+        {
+            angle += transform.eulerAngles.y;
+            return new Vector3(Mathf.Sin(angle * Mathf.Deg2Rad), 0, Mathf.Cos(angle * Mathf.Deg2Rad));
+        }    
+        else
+        {
+            angle += transform.eulerAngles.z;
+            return new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad), 0);
+        }
+    }
+
+    public Transform CheckPlayerInSight()
+    {
+        PlayerColliderList.Clear();
+        PlayerColliderList = Physics.OverlapSphere(transform.position, DistanceOfView, _playerLayer).ToList();
+        if(PlayerColliderList.Count > 0)
+        {
+            Transform playerTransform = PlayerColliderList[0].gameObject.transform;
+            if(Vector3.Angle(transform.forward, (playerTransform.position - transform.position).normalized) < FieldOfView / 2)
+            {
+                return playerTransform;
+            }
+            return null;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+
+
+
+    #endregion
+
 
     #region "Roaming Behavior"
 
@@ -112,6 +195,7 @@ public class VacuumeNavigation : MonoBehaviour
                 _roamCoroutine = StartCoroutine(Roaming(transform.position));
             }
         }
+        else
         //points were found, finds farthest point and moves to it.
         {
             _roamingPossibleTargets.Sort(SortPointsByDistance);
@@ -172,5 +256,7 @@ public class VacuumeNavigation : MonoBehaviour
     }
 
     #endregion
+
+
 
 }

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
-using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -62,6 +61,7 @@ public class PlayerController : MonoBehaviour
         HandleSprint();
         HandleAirTime();
         #endregion
+        //Debug.Log(AirTime); 
     }
 
     #region Movement
@@ -108,7 +108,7 @@ public class PlayerController : MonoBehaviour
             //Player is standing still
             else if (movement != Vector2.zero)
                 playerVelocity.y += Mathf.Sqrt(movingJumpForce * 2 * -3.0f * gravityValue);
-            Debug.Log(movement);
+            //Debug.Log(movement);
         }
 
 
@@ -160,12 +160,6 @@ public class PlayerController : MonoBehaviour
         get { return airTime; }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "Exit")
-            Debug.Log("You Win!");
-            //SceneManager.LoadScene("You Win");
-    }
     public delegate void OnCollectible();
     public static event OnCollectible onCollectable;
 }

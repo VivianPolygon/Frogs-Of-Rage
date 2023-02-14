@@ -37,6 +37,9 @@ public class VacuumEditor : Editor
             Handles.DrawSolidDisc(PlayerPos.position, PlayerPos.up, (PlayerPos.localScale.x + PlayerPos.localScale.y + PlayerPos.localScale.z) / 3);
         }
 
+        //for circle offset
+        Handles.color = Color.cyan;
+        Handles.DrawLine(vNav.transform.position + vNav.transform.up * vNav.CircleHeightOffset, vNav.transform.position - vNav.transform.up * vNav.CircleHeightOffset);
 
     }
 }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18386835, g: 0.22901556, b: 0.3031127, a: 1}
+  m_IndirectSpecularColor: {r: 0.18386836, g: 0.2290156, b: 0.3031127, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -132,7 +132,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 44ad1c2c20c84ff4fb0c4a630c8e9107, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 44ad1c2c20c84ff4fb0c4a630c8e9107, type: 3}
       propertyPath: m_LocalPosition.x
@@ -683,7 +683,7 @@ Transform:
   m_Children:
   - {fileID: 280541337}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
 --- !u!114 &602890352
 MonoBehaviour:
@@ -892,7 +892,7 @@ Transform:
   - {fileID: 866037901}
   - {fileID: 262165252}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &991921831
 MonoBehaviour:
@@ -907,6 +907,75 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotation: {x: 0, y: 25, z: 0}
+--- !u!1001 &1173888177
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: b618af6b790f3b54d91ebae15d7ec2e1, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b618af6b790f3b54d91ebae15d7ec2e1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.8420181
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b618af6b790f3b54d91ebae15d7ec2e1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.402
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b618af6b790f3b54d91ebae15d7ec2e1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.36870384
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b618af6b790f3b54d91ebae15d7ec2e1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9378949
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b618af6b790f3b54d91ebae15d7ec2e1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b618af6b790f3b54d91ebae15d7ec2e1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.3469198
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b618af6b790f3b54d91ebae15d7ec2e1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b618af6b790f3b54d91ebae15d7ec2e1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b618af6b790f3b54d91ebae15d7ec2e1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -40.598
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b618af6b790f3b54d91ebae15d7ec2e1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: b618af6b790f3b54d91ebae15d7ec2e1, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: df537474e22847e4cbd1efa4e696776c, type: 2}
+    - target: {fileID: -7511558181221131132, guid: b618af6b790f3b54d91ebae15d7ec2e1, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: ef75cbe46e06c104b9302703a3ea00ea, type: 2}
+    - target: {fileID: -7511558181221131132, guid: b618af6b790f3b54d91ebae15d7ec2e1, type: 3}
+      propertyPath: m_Materials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: a41e33403db80974d996088ecfc42c53, type: 2}
+    - target: {fileID: 919132149155446097, guid: b618af6b790f3b54d91ebae15d7ec2e1, type: 3}
+      propertyPath: m_Name
+      value: RoboVacTest
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b618af6b790f3b54d91ebae15d7ec2e1, type: 3}
 --- !u!1 &1684879368
 GameObject:
   m_ObjectHideFlags: 0

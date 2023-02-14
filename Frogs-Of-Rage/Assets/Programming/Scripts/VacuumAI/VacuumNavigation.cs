@@ -122,7 +122,7 @@ public class VacuumNavigation : MonoBehaviour
         //adjustments that are assumed
         _vacuumAgent.autoBraking = false;
         _vacuumAgent.stoppingDistance = 0;
-    }
+    } 
 
     #region "Player Detection"
 
@@ -136,8 +136,11 @@ public class VacuumNavigation : MonoBehaviour
         }    
         else
         {
-            angle += transform.eulerAngles.z;
-            return new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad), 0);
+            angle += transform.eulerAngles.x;
+            Vector3 direction = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad), 0);
+            direction = Quaternion.AngleAxis(transform.rotation.eulerAngles.y - 90, transform.up) * direction;
+
+            return direction;
         }
     }
 

@@ -23,18 +23,18 @@ public class VacuumEditor : Editor
         //draws vertical lines
         viewAngleA = vNav.DirectionFromAngle(-vNav.FieldOfView / 2, false);
         viewAngleB = vNav.DirectionFromAngle(vNav.FieldOfView / 2, false);
+
         Handles.DrawLine(vNav.transform.position, vNav.transform.position + viewAngleA * vNav.DistanceOfView);
         Handles.DrawLine(vNav.transform.position, vNav.transform.position + viewAngleB * vNav.DistanceOfView);
 
 
-
-        //for Player Detection Demoing
+        //for Player Detection visualization
         if (vNav.CheckPlayerInSight() != null)
         {
             Transform PlayerPos = vNav.CheckPlayerInSight();
 
             Handles.color = Color.green;
-            Handles.DrawWireArc(PlayerPos.position, PlayerPos.up, PlayerPos.forward, 360, (PlayerPos.localScale.x + PlayerPos.localScale.y + PlayerPos.localScale.z) / 3);
+            Handles.DrawSolidDisc(PlayerPos.position, PlayerPos.up, (PlayerPos.localScale.x + PlayerPos.localScale.y + PlayerPos.localScale.z) / 3);
         }
 
 

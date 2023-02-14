@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviour
         HandleSprint();
         HandleAirTime();
         #endregion
-        Debug.Log(AirTime);
+        //Debug.Log(AirTime); 
     }
 
     #region Movement
@@ -108,7 +108,7 @@ public class PlayerController : MonoBehaviour
             //Player is standing still
             else if (movement != Vector2.zero)
                 playerVelocity.y += Mathf.Sqrt(movingJumpForce * 2 * -3.0f * gravityValue);
-            Debug.Log(movement);
+            //Debug.Log(movement);
         }
 
 

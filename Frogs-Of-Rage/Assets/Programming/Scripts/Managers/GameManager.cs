@@ -7,45 +7,14 @@ using UnityEngine;
 public class GameManager : Singleton<GameManager>
 {
 
-    //public int flys;
+    public PlayerController playerController;
+    public Camera mainCam;
 
-
-    ////Save Player Data
-    //public void SaveGame()
-    //{
-    //    PlayerData playerData = CreateSaveGameObject();
-    //    //Serializing the PlayerData instance
-    //    BinaryFormatter bf = new BinaryFormatter();
-    //    FileStream file = File.Create(Application.persistentDataPath + "/playerData.dat");
-    //    bf.Serialize(file, playerData);
-
-    //    Debug.Log(playerData.flyCount);
-
-    //    file.Close();
-    //}
-
-    ////Load Player Data
-    //public void LoadGame()
-    //{
-    //    if (File.Exists(Application.persistentDataPath + "/playerData.dat"))
-    //    {
-    //        BinaryFormatter bf = new BinaryFormatter();
-    //        FileStream file = File.Open(Application.persistentDataPath + "/playerData.dat", FileMode.Open);
-    //        PlayerData playerData = (PlayerData)bf.Deserialize(file);
-
-    //        Debug.Log(playerData.flyCount);
-
-    //        file.Close();
-    //    }
-    //}
-
-    //private PlayerData CreateSaveGameObject()
-    //{
-    //    PlayerData save = new PlayerData();
-        
-    //    save.flyCount = flys;
-
-    //    return save;
-    //}
+    public override void Awake()
+    {
+        base.Awake();
+        playerController = GameObject.Find("Player").GetComponent<PlayerController>();
+        mainCam = Camera.main;
+    }
 
 }

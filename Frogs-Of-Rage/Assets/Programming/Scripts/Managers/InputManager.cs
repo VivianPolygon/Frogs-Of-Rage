@@ -52,4 +52,14 @@ public class InputManager : Singleton<InputManager>
     {
         return playerControls.Player.Pause.triggered;
     }
+
+    public bool GetSprint()
+    {
+        return (playerControls.Player.Sprint.activeControl != null) ? true : false;
+    }
+
+    public bool GetJump()
+    {
+        return playerControls.Player.Jump.triggered;
+    }
 }

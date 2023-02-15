@@ -26,6 +26,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float rotationSpeed = 4f;
 
+    [Space(5)]
+    [SerializeField]
+    private ManageSlider healthGauge;
+    [SerializeField]
+    private ManageSlider staminaGauge;
+
     #endregion
 
     #region Private Variables
@@ -49,7 +55,7 @@ public class PlayerController : MonoBehaviour
 
         curSpeed = walkSpeed;
         curStamina = staminaMax;
-
+        staminaGauge.SetMaxValue(staminaMax);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -69,11 +75,12 @@ public class PlayerController : MonoBehaviour
     private void HandleStamina(bool value)
     {
         if (!value)
-            curStamina -= Time.deltaTime;
+            curStamina -= Time.deltaTime * 5;
         else
-            curStamina += Time.deltaTime;
+            curStamina += Time.deltaTime * 5;
 
         curStamina = Mathf.Clamp(curStamina, 0, staminaMax);
+        staminaGauge.SetValue(curStamina);
     }
 
     //Controls player movement (WASD)

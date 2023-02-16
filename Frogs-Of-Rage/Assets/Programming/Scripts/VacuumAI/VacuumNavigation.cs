@@ -75,14 +75,12 @@ public class VacuumNavigation : MonoBehaviour
     [Space(15)]
     [SerializeField] [Tooltip("Distance Scanned when Choosing Point While Roaming")] private float _maxRoamingPointRange;
     [SerializeField] [Tooltip("Distance from a navmesh a scan can give to allow navigation")] private float _roamingPointScanRange;
-    [SerializeField] [Tooltip("Number of Times Scanned to Find a point. If scans are unsucsessful, Vacuume Stays Still Untill Next Scan")] private float _roamingScanCap;
+    [SerializeField] [Tooltip("Number of Times Scanned to Find a point. If scans are unsucsessful, Vacuume Stays Still Untill Next Scan")] private int _roamingScanCap;
     [SerializeField] [Tooltip("Amount of Time Before The Vacume is forced a new point if it hasent reached its target point. prevents getting stuck")] private float _forceNewRoamingPointTime;
     [SerializeField] [Tooltip("Amount of World Units away From the Target the Vacume needs to Be away from the target point before being able to find a new point")] private float _distanceForNewPoint;
     [SerializeField] [Tooltip("Forward Movespeed of the Vacuum while turning, Lower than normal")] [Range(0.25f, 3)] private float _roamingTurningForwardSpeed;
     [SerializeField] [Tooltip("Time Limit on the Rotation Phase")] [Range(0.1f, 3f)] private float _rotationPhaseTimeCap;
     [SerializeField] [Tooltip("Angle the Vacuum Turns too before it can move forward. The closer to one, the more diretly pointed towards the point the vacuum is")] [Range(-1, 0.99f)] float _roamingTurnAngleThreshold;
-    //Internal Roaming Variables
-    private List<Vector3> _roamingPossibleTargets;
 
     [Header("Vacuum Navigation Variables, Chasing")]
     [Space(20)]
@@ -103,7 +101,7 @@ public class VacuumNavigation : MonoBehaviour
     public float GroudDetectionVerticalOffset { get { return _groudDetectionVerticalOffset; } }
 
     //property for acsessing version elsewhere, used here too, to prevent null issues.
-    public NavMeshAgent VacuumeAgent
+    public NavMeshAgent VacuumAgent
     {
         get
         {
@@ -115,19 +113,61 @@ public class VacuumNavigation : MonoBehaviour
             return _vacuumAgent;
         }
     }
+    
 
+    public struct RoamingData
+    {
+        public float maxRoamingPointRange;
+        public float roamingPointScanRange;
+        public int roamingScanCap;
+
+        public float forceNewRoamingPointTime;
+        public float distanceForNewPoint;
+        public float roamingTurningForwardSpeed;
+        public float rotationPhaseTimeCap;
+        public float roamingTurnAngleThreshold;
+    }
+    public RoamingData GetRoamingData()
+    {
+        RoamingData retreivedData = new RoamingData();
+
+        retreivedData.maxRoamingPointRange = _maxRoamingPointRange;
+        retreivedData.roamingPointScanRange = _roamingPointScanRange;
+        retreivedData.roamingScanCap = _roamingScanCap;
+
+        retreivedData.forceNewRoamingPointTime = _forceNewRoamingPointTime;
+        retreivedData.distanceForNewPoint = _distanceForNewPoint;
+        retreivedData.roamingTurningForwardSpeed = _roamingTurningForwardSpeed;
+        retreivedData.rotationPhaseTimeCap = _rotationPhaseTimeCap;
+        retreivedData.roamingTurnAngleThreshold = _roamingTurnAngleThreshold;
+
+        return retreivedData;
+    }
+
+    
+
+
+    //for state pattern
+
+    //states
+    private IVacuumState _roamingState;
+    //state context, used for transitioning states
+    private VacuumStateContext _vacuumStateContext;
+
+    //coroutine used to store and execute all state's actions over time (excludes sight checks)
+    public Coroutine _vacuumStateActionCoroutine;
 
     private void Awake()
     {
+        InitilizeNavmeshAgent();
 
-
+        _vacuumStateContext = new VacuumStateContext(this);  
+        _roamingState = gameObject.AddComponent<VacuumStateRoaming>();
 
 
 
 
         /* old
-        InitilizeNavmeshAgent();
-
         _actionCoroutine = null;
 
         _sightCheckCoroutine = null;
@@ -143,6 +183,12 @@ public class VacuumNavigation : MonoBehaviour
         ChangeState(VacuumAiState.Roaming);
         */
     }
+
+    public void Roam()
+    {
+        _vacuumStateContext.TransitionStates(_roamingState);
+    }
+
 
     //initilizes the navmesh agent, creating it, or updating the current one with the vacume movment data
     private void InitilizeNavmeshAgent()
@@ -170,42 +216,6 @@ public class VacuumNavigation : MonoBehaviour
 
     #region "State Change"
 
-    private void ChangeState(VacuumAiState newstate)
-    {
-        if(newstate != _activeAIState)
-        {
-            //changes state if its diffrent
-            _activeAIState = newstate;
-            //resets the action coroutine, the coroutine that runs from the various ai states, and loops into themselves or within themselves while in the state
-            if(_actionCoroutine != null)
-            {
-                StopCoroutine(_actionCoroutine);
-                _actionCoroutine = null;
-            }
-
-            switch (_activeAIState)
-            {
-                case VacuumAiState.Roaming:
-                    Debug.Log("Vacuum is Roaming");
-                    RoamingState();
-                    break;
-                case VacuumAiState.Detecting:
-
-                    Debug.Log("Vacuum is Detecting");
-                    break;
-                case VacuumAiState.Chasing:
-                    ChasingState();
-                    Debug.Log("Vacuum is Chasing");
-                    break;
-                case VacuumAiState.Circiling:
-                    CircilingState();
-                    Debug.Log("Vacuum is Circiling");
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
 
     #endregion
 
@@ -259,113 +269,11 @@ public class VacuumNavigation : MonoBehaviour
             if (playerTransform != null)
             {
                 _playerTransform = playerTransform; // sets refrence for elsewhere
-                if (Mathf.Abs(transform.position.y - playerTransform.position.y) < CircleHeightOffset)
-                {
-                    ChangeState(VacuumAiState.Chasing);
-                }
-                else
-                {
-                    ChangeState(VacuumAiState.Circiling);
-                }
-            }
-            else
-            {
-                ChangeState(VacuumAiState.Roaming);
-            }
+                //if (Mathf.Abs(transform.position.y - playerTransform.position.y) < CircleHeightOffset) 
 
 
+            }
             yield return _sightTimeDelay;
-        }
-    }
-
-    #endregion
-
-
-    #region "Roaming Behavior"
-
-    private void RoamingState()
-    {
-        Vector3 targetRoamPosition = Vector3.zero;
-
-        _roamingPossibleTargets.Clear();
-
-        NavMeshHit navHit;
-
-        for (int i = 0; i < _roamingScanCap; i++)
-        {
-            Vector3 randomPoint = transform.position + Random.insideUnitSphere * _maxRoamingPointRange;
-            randomPoint.y = transform.position.y; //sets the Y to the vacumm Y, assumes floor is perfectly flat. will need to add raycasts to find Y if floors end up being not flat
-            if (NavMesh.SamplePosition(randomPoint, out navHit, _roamingPointScanRange, NavMesh.AllAreas))
-            {
-                _roamingPossibleTargets.Add(navHit.position);
-                break;
-            }
-        }
-        //No viable point was found, stalls
-        if(_roamingPossibleTargets.Count <= 0)
-        {
-            if (_actionCoroutine == null)
-            {
-                _actionCoroutine = StartCoroutine(Roaming(transform.position));
-            }
-        }
-        else
-        //points were found, finds farthest point and moves to it.
-        {
-            _roamingPossibleTargets.Sort(SortPointsByDistance);
-            targetRoamPosition = _roamingPossibleTargets[0];
-
-            if(_actionCoroutine == null)
-            {
-                _actionCoroutine = StartCoroutine(Roaming(targetRoamPosition));
-            }
-        }
-    }
-
-    private IEnumerator Roaming(Vector3 roamingPoint)
-    {
-        VacuumeAgent.SetDestination(roamingPoint);
-        VacuumeAgent.speed = _roamingTurningForwardSpeed;
-
-        //rotation phase
-        for (float t = 0; t < _rotationPhaseTimeCap; t += Time.deltaTime)
-        {
-            if(Vector3.Dot(Vector3.Normalize(roamingPoint - transform.position), transform.forward) > _roamingTurnAngleThreshold) //checks that the vacuum is looking in the proper cone of vision before continuing
-            {
-                break;
-            }
-
-            yield return null;
-        }
-
-        //movement phase
-        VacuumeAgent.speed = _moveSpeed;
-
-        for (float t = 0; t < _forceNewRoamingPointTime; t += Time.deltaTime)
-        {
-            if(Vector3.Distance(transform.position, roamingPoint) < _distanceForNewPoint)
-            {
-                break;
-            }
-            yield return null;
-        }
-        _actionCoroutine = null;
-        RoamingState();
-    }
-
-    private int SortPointsByDistance(Vector3 a, Vector3 b)
-    {
-        if(Vector3.Distance(a, transform.position) > Vector3.Distance(b, transform.position))
-        {
-            return 1;
-        }
-        else if(Vector3.Distance(a, transform.position) < Vector3.Distance(b, transform.position))
-        {
-            return -1;
-        }
-        else
-        {
-            return 0;
         }
     }
 
@@ -389,7 +297,6 @@ public class VacuumNavigation : MonoBehaviour
         //makes sure player transform isint null, stores its position incase it goes null mid loop. returns to roaming if null
         if(_playerTransform == null)
         {
-            ChangeState(VacuumAiState.Roaming);
             yield break;
         }
         else
@@ -398,9 +305,9 @@ public class VacuumNavigation : MonoBehaviour
         }
 
         //rapid rotation phase
-        VacuumeAgent.SetDestination(PlayerPosition);
-        VacuumeAgent.speed = _roamingTurningForwardSpeed;
-        VacuumeAgent.angularSpeed = _chasingRotationSpeed;
+        VacuumAgent.SetDestination(PlayerPosition);
+        VacuumAgent.speed = _roamingTurningForwardSpeed;
+        VacuumAgent.angularSpeed = _chasingRotationSpeed;
 
         for (float t = 0; t < _maxChaseRotationPhaseLength; t += Time.deltaTime)
         {
@@ -411,7 +318,7 @@ public class VacuumNavigation : MonoBehaviour
             yield return null;
         }
         //rushdown phase
-        VacuumeAgent.speed = _chasingMoveSpeed;
+        VacuumAgent.speed = _chasingMoveSpeed;
         for (float t = 0; t < _chasingUpdatePositionRate; t += Time.deltaTime)
         {
             yield return null;

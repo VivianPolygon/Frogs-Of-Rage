@@ -91,7 +91,16 @@ public class VacuumNavigation : MonoBehaviour
     [SerializeField] [Tooltip("Time in seconds before the vacuum updates where it is moving to to get the player.")] [Range(0.2f, 2f)] private float _chasingUpdatePositionRate;
     [SerializeField] [Tooltip("Maximum Time in second the vacuum can spend rotating in place until it begins moving towards the player in the chase phase")] [Range(0.1f, 0.5f)] private float _maxChaseRotationPhaseLength;
 
+    [Header("Vacuum Navigation Variables, Circle")]
+    [SerializeField] [Tooltip("Range the raycast looking for ground under the player shoots")] private float _groundDetectionRange;
+    [SerializeField] [Tooltip("Height offset for sloped ground raycast")] private float _groudDetectionVerticalOffset;
+    //for raycast
+    private Ray _groundDetectionRaycast;
+    private RaycastHit _groundDetectionHit;
 
+    [SerializeField] [Tooltip("Layermask used to detect low ground the player is on")] private LayerMask _terrainLayerMask;
+    public float GroundDetectionRange { get { return _groundDetectionRange; } }
+    public float GroudDetectionVerticalOffset { get { return _groudDetectionVerticalOffset; } }
 
     //property for acsessing version elsewhere, used here too, to prevent null issues.
     public NavMeshAgent VacuumeAgent
@@ -181,7 +190,7 @@ public class VacuumNavigation : MonoBehaviour
                     Debug.Log("Vacuum is Chasing");
                     break;
                 case VacuumAiState.Circiling:
-
+                    CircilingState();
                     Debug.Log("Vacuum is Circiling");
                     break;
                 default:
@@ -401,6 +410,46 @@ public class VacuumNavigation : MonoBehaviour
         }
         _actionCoroutine = null;
         ChasingState();
+    }
+
+    #endregion
+
+    #region "Circiling State"
+
+    private void CircilingState()
+    {
+        Vector3 RayOrgin = transform.position;
+        RayOrgin.y += _groudDetectionVerticalOffset;
+        _groundDetectionRaycast.origin = transform.position;
+        _groundDetectionRaycast.direction = transform.forward;
+
+        if(Physics.Raycast(_groundDetectionRaycast, _groundDetectionRange, _terrainLayerMask))
+        {
+
+        }
+        
+
+  
+    }
+
+    private IEnumerator CircleChase()
+    {
+
+    }
+
+    private IEnumerator Circle()
+    {
+
+    }
+
+    private IEnumerator Pace()
+    {
+
+    }
+
+    private IEnumerator Leave()
+    {
+
     }
 
     #endregion

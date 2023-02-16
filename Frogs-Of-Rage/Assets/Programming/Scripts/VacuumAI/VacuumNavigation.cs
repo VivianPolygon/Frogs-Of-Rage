@@ -119,6 +119,13 @@ public class VacuumNavigation : MonoBehaviour
 
     private void Awake()
     {
+
+
+
+
+
+
+        /* old
         InitilizeNavmeshAgent();
 
         _actionCoroutine = null;
@@ -134,6 +141,7 @@ public class VacuumNavigation : MonoBehaviour
 
         _activeAIState = VacuumAiState.Chasing;
         ChangeState(VacuumAiState.Roaming);
+        */
     }
 
     //initilizes the navmesh agent, creating it, or updating the current one with the vacume movment data
@@ -434,23 +442,24 @@ public class VacuumNavigation : MonoBehaviour
 
     private IEnumerator CircleChase()
     {
-
+        return null;
     }
 
     private IEnumerator Circle()
     {
-
+        return null;
     }
 
     private IEnumerator Pace()
     {
-
+        return null;
     }
 
     private IEnumerator Leave()
     {
-
+        return null;
     }
+
 
     #endregion
 }

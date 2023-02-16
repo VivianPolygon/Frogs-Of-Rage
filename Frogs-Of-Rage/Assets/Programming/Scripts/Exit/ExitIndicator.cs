@@ -32,4 +32,5 @@ public class ExitIndicator : MonoBehaviour
     {
         transform.forward = gameManager.mainCam.transform.forward;
     }
+    
 }

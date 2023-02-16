@@ -2369,10 +2369,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f443511571f133458b7877789d73bb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  staminaMax: 100
   walkSpeed: 10
-  jumpHeight: 1
+  sprintSpeed: 7
+  jumpForce: 2
+  movingJumpForce: 1
   gravityValue: -9.81
   rotationSpeed: 4
+  healthGauge: {fileID: 0}
+  staminaGauge: {fileID: 0}
 --- !u!114 &866406850
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3199,7 +3204,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1226666372}
-  m_LocalRotation: {x: 0.0023617952, y: 0.2998176, z: -0.00074225635, w: 0.9539934}
+  m_LocalRotation: {x: 0.0023618024, y: 0.2998176, z: -0.0007422587, w: 0.9539934}
   m_LocalPosition: {x: 12.674486, y: 8.872139, z: 12.674487}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -4690,6 +4695,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 679115cf571fffa4cac6d5a732ed5e0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerController: {fileID: 0}
+  mainCam: {fileID: 0}
 --- !u!1 &2141141823
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ public class VacuumEditor : Editor
 {
     private void OnSceneGUI()
     {
+        /*
         VacuumNavigation vNav = (VacuumNavigation)target;
 
         //draws the circle showing view range
@@ -48,6 +49,6 @@ public class VacuumEditor : Editor
         Vector3 EndingPos = vNav.transform.position + vNav.transform.forward * vNav.GroundDetectionRange;
         EndingPos.y += vNav.GroudDetectionVerticalOffset;
         Handles.DrawLine(StartingPos, EndingPos);
-
+        */
     }
 }

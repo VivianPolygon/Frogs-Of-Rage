@@ -15,17 +15,19 @@ public class VacuumNavigation : MonoBehaviour
         Circiling
     }
     private VacuumAiState _activeAIState;
-    private delegate void _vacuumAction();
-    private Coroutine _actionCoroutine;
+
+
 
     //internaly used instance for the vacuum navmesh agent
     private NavMeshAgent _vacuumAgent;
 
     //varriables used to set up the nav mesh agent
-    [Header("Vacuum Speed Variables")]
-    [SerializeField] [Tooltip("The Speed the Vacuum Moves Forward")] private float _moveSpeed;
-    [SerializeField] [Tooltip("The Speed the Vacuum Turns")] private float _turnSpeed;
-    [SerializeField] [Tooltip("The Rate the Vacuum Accelerates")] private float _acceleration;
+    [Header("General Vacuum Variables")]
+    [SerializeField] [Tooltip("The Speed the Vacuum Moves Forward")] private float _baseSpeed;
+    [SerializeField] [Tooltip("The Speed the Vacuum Turns")] private float _baseTurnSpeed;
+    [SerializeField] [Tooltip("The Rate the Vacuum Accelerates")] private float _baseAcceleration;
+    [SerializeField] [Tooltip("Small value for forward speed while the vacuum is rotating")] [Range(0.25f, 1f)] private float _baseRotationPhaseForwardSpeed;
+    [SerializeField] [Tooltip("Angle threshold expresed as a dot product needed before entering movment phase")] [Range(-1f, 0.95f)] private float _turnAngleThreshold;
 
     #region "Player Detection Variables"
     //variables coresponding to the vacuums FOV for the player
@@ -71,16 +73,15 @@ public class VacuumNavigation : MonoBehaviour
     private Coroutine _sightCheckCoroutine;
     #endregion
 
-    [Header("Vacuum Navigation Variables, Roaming")]
+    [Header("Roaming Variables")]
     [Space(15)]
+    [SerializeField] [Tooltip("Multiplier that modifies the base speed, acceleration, turning speed, and turning forward speed from the general data while in this state")] private float _roamingSpeedFactor;
     [SerializeField] [Tooltip("Distance Scanned when Choosing Point While Roaming")] private float _maxRoamingPointRange;
     [SerializeField] [Tooltip("Distance from a navmesh a scan can give to allow navigation")] private float _roamingPointScanRange;
     [SerializeField] [Tooltip("Number of Times Scanned to Find a point. If scans are unsucsessful, Vacuume Stays Still Untill Next Scan")] private int _roamingScanCap;
     [SerializeField] [Tooltip("Amount of Time Before The Vacume is forced a new point if it hasent reached its target point. prevents getting stuck")] private float _forceNewRoamingPointTime;
     [SerializeField] [Tooltip("Amount of World Units away From the Target the Vacume needs to Be away from the target point before being able to find a new point")] private float _distanceForNewPoint;
-    [SerializeField] [Tooltip("Forward Movespeed of the Vacuum while turning, Lower than normal")] [Range(0.25f, 3)] private float _roamingTurningForwardSpeed;
     [SerializeField] [Tooltip("Time Limit on the Rotation Phase")] [Range(0.1f, 3f)] private float _rotationPhaseTimeCap;
-    [SerializeField] [Tooltip("Angle the Vacuum Turns too before it can move forward. The closer to one, the more diretly pointed towards the point the vacuum is")] [Range(-1, 0.99f)] float _roamingTurnAngleThreshold;
 
     [Header("Vacuum Navigation Variables, Chasing")]
     [Space(20)]
@@ -113,23 +114,50 @@ public class VacuumNavigation : MonoBehaviour
             return _vacuumAgent;
         }
     }
-    
+    #region "Data Structs"
 
+    //general data pulled in by all states
+    public struct GeneralData
+    {
+        public float baseSpeed;
+        public float baseTurnSpeed;
+        public float baseAcceleration;
+
+        public float baseRotationPhaseForwardSpeed;
+        public float turnAngleThreshold;
+    }
+    public GeneralData GetGeneralData()
+    {
+        GeneralData retreivedData = new GeneralData();
+
+        retreivedData.baseSpeed = _baseSpeed;
+        retreivedData.baseTurnSpeed = _baseTurnSpeed;
+        retreivedData.baseAcceleration = _baseAcceleration;
+
+        retreivedData.baseRotationPhaseForwardSpeed = _baseRotationPhaseForwardSpeed;
+        retreivedData.turnAngleThreshold = _turnAngleThreshold;
+
+        return retreivedData;
+    }
+
+    //data pulled in by the roaming state
     public struct RoamingData
     {
+        public float roamingSpeedFactor;
+
         public float maxRoamingPointRange;
         public float roamingPointScanRange;
         public int roamingScanCap;
 
         public float forceNewRoamingPointTime;
         public float distanceForNewPoint;
-        public float roamingTurningForwardSpeed;
         public float rotationPhaseTimeCap;
-        public float roamingTurnAngleThreshold;
     }
     public RoamingData GetRoamingData()
     {
         RoamingData retreivedData = new RoamingData();
+
+        retreivedData.roamingSpeedFactor = _roamingSpeedFactor;
 
         retreivedData.maxRoamingPointRange = _maxRoamingPointRange;
         retreivedData.roamingPointScanRange = _roamingPointScanRange;
@@ -137,15 +165,12 @@ public class VacuumNavigation : MonoBehaviour
 
         retreivedData.forceNewRoamingPointTime = _forceNewRoamingPointTime;
         retreivedData.distanceForNewPoint = _distanceForNewPoint;
-        retreivedData.roamingTurningForwardSpeed = _roamingTurningForwardSpeed;
         retreivedData.rotationPhaseTimeCap = _rotationPhaseTimeCap;
-        retreivedData.roamingTurnAngleThreshold = _roamingTurnAngleThreshold;
 
         return retreivedData;
     }
 
-    
-
+    #endregion
 
     //for state pattern
 
@@ -155,7 +180,7 @@ public class VacuumNavigation : MonoBehaviour
     private VacuumStateContext _vacuumStateContext;
 
     //coroutine used to store and execute all state's actions over time (excludes sight checks)
-    public Coroutine _vacuumStateActionCoroutine;
+    public Coroutine vacuumStateActionCoroutine;
 
     private void Awake()
     {
@@ -164,28 +189,21 @@ public class VacuumNavigation : MonoBehaviour
         _vacuumStateContext = new VacuumStateContext(this);  
         _roamingState = gameObject.AddComponent<VacuumStateRoaming>();
 
+    }
 
-
-
-        /* old
-        _actionCoroutine = null;
-
-        _sightCheckCoroutine = null;
-        _sightCheckCoroutine = StartCoroutine(LookForPlayer());
-
-        _roamingPossibleTargets = new List<Vector3>();
-
-        _playerColliderList = new List<Collider>();
-
-        _sightTimeDelay = new WaitForSeconds(1f / _sightChecksPerSecond);
-
-        _activeAIState = VacuumAiState.Chasing;
-        ChangeState(VacuumAiState.Roaming);
-        */
+    private void ResetActionCoroutine() // stops and empties the action coroutine in preperation for a state change
+    {
+        if(vacuumStateActionCoroutine != null)
+        {
+            StopCoroutine(vacuumStateActionCoroutine);
+        }
+        vacuumStateActionCoroutine = null;
     }
 
     public void Roam()
     {
+        ResetActionCoroutine();
+
         _vacuumStateContext.TransitionStates(_roamingState);
     }
 
@@ -205,9 +223,9 @@ public class VacuumNavigation : MonoBehaviour
             _vacuumAgent = gameObject.AddComponent<NavMeshAgent>();
         }
 
-        _vacuumAgent.speed = _moveSpeed;
-        _vacuumAgent.angularSpeed = _turnSpeed;
-        _vacuumAgent.acceleration = _acceleration;
+        _vacuumAgent.speed = _baseSpeed;
+        _vacuumAgent.angularSpeed = _baseTurnSpeed;
+        _vacuumAgent.acceleration = _baseAcceleration;
 
         //adjustments that are assumed
         _vacuumAgent.autoBraking = false;
@@ -219,6 +237,8 @@ public class VacuumNavigation : MonoBehaviour
 
     #endregion
 
+
+    /*
 
     #region "Player Detection"
 
@@ -369,4 +389,5 @@ public class VacuumNavigation : MonoBehaviour
 
 
     #endregion
+    */
 }

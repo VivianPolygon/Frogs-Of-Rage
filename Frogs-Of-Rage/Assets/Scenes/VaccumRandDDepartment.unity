@@ -2842,15 +2842,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7816627353179443202, guid: 1c52ff02ebe0bba448c4cdda70f6e1bc, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.002361766
+      value: 0.0023617852
       objectReference: {fileID: 0}
     - target: {fileID: 7816627353179443202, guid: 1c52ff02ebe0bba448c4cdda70f6e1bc, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.2998175
+      value: 0.29981753
       objectReference: {fileID: 0}
     - target: {fileID: 7816627353179443202, guid: 1c52ff02ebe0bba448c4cdda70f6e1bc, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0007422472
+      value: -0.00074225315
       objectReference: {fileID: 0}
     - target: {fileID: 7816627353314714337, guid: 1c52ff02ebe0bba448c4cdda70f6e1bc, type: 3}
       propertyPath: m_ChildCameras.Array.size
@@ -4438,7 +4438,7 @@ GameObject:
   - component: {fileID: 8698392284685646372}
   - component: {fileID: 8698392284685646371}
   m_Layer: 0
-  m_Name: NewVacuum
+  m_Name: Vacuum
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4484,9 +4484,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f17c0ee4fc6759d4abe963107f11590d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 15
-  _turnSpeed: 80
-  _acceleration: 30
+  _baseSpeed: 20
+  _baseTurnSpeed: 60
+  _baseAcceleration: 15
+  _baseRotationPhaseForwardSpeed: 1
+  _turnAngleThreshold: 0.9
   _fieldOfView: 120
   _distanceOfView: 50
   _playerLayer:
@@ -4494,14 +4496,13 @@ MonoBehaviour:
     m_Bits: 64
   _sightChecksPerSecond: 4
   _circleHeightOffset: 3
+  _roamingSpeedFactor: 1
   _maxRoamingPointRange: 60
   _roamingPointScanRange: 4
   _roamingScanCap: 3
   _forceNewRoamingPointTime: 8
   _distanceForNewPoint: 6
-  _roamingTurningForwardSpeed: 0.5
   _rotationPhaseTimeCap: 3
-  _roamingTurnAngleThreshold: 0.99
   _chasingMoveSpeed: 20
   _chasingRotationSpeed: 160
   _chasingUpdatePositionRate: 0.25

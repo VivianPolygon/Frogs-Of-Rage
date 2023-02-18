@@ -58,7 +58,7 @@ public class VacuumStateRoaming : MonoBehaviour, IVacuumState //interface needed
         {
             if (_vacuumNavigation.vacuumStateActionCoroutine == null)
             {
-                _vacuumNavigation.vacuumStateActionCoroutine = StartCoroutine(Roaming(transform.position));
+                _vacuumNavigation.vacuumStateActionCoroutine = _vacuumNavigation.StartCoroutine(Roaming(transform.position));
             }
         }
         else
@@ -69,7 +69,7 @@ public class VacuumStateRoaming : MonoBehaviour, IVacuumState //interface needed
 
             if (_vacuumNavigation.vacuumStateActionCoroutine == null)
             {
-                _vacuumNavigation.vacuumStateActionCoroutine = StartCoroutine(Roaming(targetRoamPosition));
+                _vacuumNavigation.vacuumStateActionCoroutine = _vacuumNavigation.StartCoroutine(Roaming(targetRoamPosition));
             }
         }
     }

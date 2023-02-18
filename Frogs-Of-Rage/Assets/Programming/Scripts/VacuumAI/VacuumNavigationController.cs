@@ -10,10 +10,31 @@ public class VacuumNavigationController : MonoBehaviour
 
     //state change logic goes here
 
-    private void Start()
+    private void Awake()
     {
         _vacuumNavigation = GetComponent<VacuumNavigation>();
+    }
 
+    private void PlayerSeen()
+    {
+        _vacuumNavigation.Chase();
+    }
+
+    private void PlayerLost()
+    {
         _vacuumNavigation.Roam();
     }
+
+    private void OnEnable()
+    {
+        _vacuumNavigation.onPlayerSeen += PlayerSeen;
+        _vacuumNavigation.onPlayerLost += PlayerLost;
+    }
+    private void OnDisable()
+    {
+        _vacuumNavigation.onPlayerSeen -= PlayerSeen;
+        _vacuumNavigation.onPlayerLost -= PlayerLost;
+    }
+
+
 }

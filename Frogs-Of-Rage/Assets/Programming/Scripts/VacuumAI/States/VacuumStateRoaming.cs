@@ -5,7 +5,8 @@ using UnityEngine.AI;
 
 public class VacuumStateRoaming : MonoBehaviour, IVacuumState //interface needed for each state
 {
-    private VacuumNavigation _vacuumNavigation; //instance of vacuumNavigation
+    private VacuumNavigation _vacuumNavigation; //refrence of vacuumNavigation
+    private VacuumAnimation _vacuumAnimation; //refrence of vacuumAnimation
 
     private VacuumNavigation.GeneralData _generalData;
     private VacuumNavigation.RoamingData _roamingData;
@@ -17,6 +18,7 @@ public class VacuumStateRoaming : MonoBehaviour, IVacuumState //interface needed
     public void HandleAiState(VacuumNavigation vacuumNavigation)
     {
         if (!_vacuumNavigation) _vacuumNavigation = vacuumNavigation; //null checks incoming vacuum navigation to make sure it exsists, sets is properly
+        _vacuumAnimation = _vacuumNavigation.VacuumAnimation;
 
         //preform Ai Actions here
 
@@ -40,6 +42,7 @@ public class VacuumStateRoaming : MonoBehaviour, IVacuumState //interface needed
     private void RoamingState()
     {
         Vector3 targetRoamPosition = Vector3.zero;
+        _vacuumAnimation.AnimateHeadDrop(1);
 
         _roamingPossibleTargets.Clear();
 

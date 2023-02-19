@@ -5,22 +5,21 @@ using UnityEngine.AI;
 using System.Linq;
 using System;
 
+[RequireComponent(typeof(VacuumAnimation))]
 public class VacuumNavigation : MonoBehaviour
 {
-    //enum used for the state machine
-    private enum VacuumAiState : short
+    static event Action onPlayerHit;
+    public static void InvokeOnPlayerHit() { onPlayerHit?.Invoke(); }
+
+    public VacuumAnimation VacuumAnimation // animation Script responsible for animating the model
     {
-        Roaming,
-        Detecting,
-        Chasing,
-        Circiling
+        get;
+        private set;
     }
-    private VacuumAiState _activeAIState;
-
-
 
     //internaly used instance for the vacuum navmesh agent
     private NavMeshAgent _vacuumAgent;
+    [SerializeField] [Tooltip("Box Collider on the neck that is used for detecting if the vacuum hit the player")] private BoxCollider _damageCollider;
 
     #region "Player Detection Variables"
     //variables coresponding to the vacuums FOV for the player
@@ -69,12 +68,20 @@ public class VacuumNavigation : MonoBehaviour
     private Coroutine _sightCheckCoroutine;
     #endregion
 
+    //Navmesh variables
+    #region "Navmesh Agent Variables
+    [SerializeField] [Tooltip("Radius of the Nav mesh agent. Should Encompass the whole mesh")] private float _navMeshAgentRadius;
+    //for editor
+    public float NavMeshAgentRadius { get { return _navMeshAgentRadius; } }
+
+    #endregion
+
     //general movement variables for the vacuum
     #region "General Variables"
     [Header("General Vacuum Variables")]
     [SerializeField] [Tooltip("The Speed the Vacuum Moves Forward")] private float _baseSpeed;
-    [SerializeField] [Tooltip("The Speed the Vacuum Turns")] [Range(60, 180)] private float _baseTurnSpeed;
-    [SerializeField] [Tooltip("The Rate the Vacuum Accelerates")] private float _baseAcceleration;
+    [SerializeField] [Tooltip("The Speed the Vacuum Turns")] [Range(40, 120)] private float _baseTurnSpeed;
+    [SerializeField] [Tooltip("The Rate the Vacuum Accelerates")] [Range(60, 120)] private float _baseAcceleration;
     [SerializeField] [Tooltip("Small value for forward speed while the vacuum is rotating")] [Range(0.25f, 1f)] private float _baseRotationPhaseForwardSpeed;
     [SerializeField] [Tooltip("Angle threshold expresed as a dot product needed before entering movment phase")] [Range(-1f, 0.95f)] private float _turnAngleThreshold;
     #endregion
@@ -97,6 +104,15 @@ public class VacuumNavigation : MonoBehaviour
     [SerializeField] [Tooltip("Multiplier applied to the base speeds at which the vacuum moves during the chase speed.")] [Range(1, 2)] private float _chasingSpeedFactor;
     [SerializeField] [Tooltip("Time in seconds before the vacuum updates where it is moving to to get the player.")] [Range(0.1f, 1f)] private float _chasingUpdatePositionRate;
     [SerializeField] [Tooltip("Maximum Time in second the vacuum can spend rotating in place until it begins moving towards the player in the chase phase")] [Range(0.1f, 0.5f)] private float _maxChaseRotationPhaseLength;
+
+    //head movment times
+    [SerializeField] [Tooltip("time for the head to raise to max angle after being seen")] private float _headRaiseTime;
+    [SerializeField] [Tooltip("time for the head to raise up again if the vacuum missed its attack")] private float _attackMissHeadRaiseTime;
+    [SerializeField] [Tooltip("time the vacuum takes to slam its head into the ground")] private float _headDropAttackTime;
+
+    [SerializeField] [Tooltip("distance from the player needs to be before attacking")] private float _attackDistance;
+    // for Editor scrit
+    public float AttackDistance { get { return _attackDistance; } }
     #endregion
 
     //events for seeing and losing sight of the player
@@ -181,6 +197,12 @@ public class VacuumNavigation : MonoBehaviour
         public float chasingSpeedFactor;
         public float chasingUpdatePositionRate;
         public float maxChaseRotationPhaseLength;
+
+        public float headRaiseTime; //time for the head to raise to max angle after being seen
+        public float attackMissHeadRaiseTime; //time for the head to raise up again if the vacuum missed its attack
+        public float headDropAttackTime; //time the vacuum takes to slam its head into the ground
+
+        public float attackDistance;
     }
     public ChasingData GetChasingData()
     {
@@ -189,6 +211,12 @@ public class VacuumNavigation : MonoBehaviour
         retreivedData.chasingSpeedFactor = _chasingSpeedFactor;
         retreivedData.chasingUpdatePositionRate = _chasingUpdatePositionRate;
         retreivedData.maxChaseRotationPhaseLength = _maxChaseRotationPhaseLength;
+
+        retreivedData.headRaiseTime = _headRaiseTime;
+        retreivedData.attackMissHeadRaiseTime = _attackMissHeadRaiseTime;
+        retreivedData.headDropAttackTime = _headDropAttackTime;
+
+        retreivedData.attackDistance = _attackDistance;
 
         return retreivedData;
     }
@@ -208,6 +236,8 @@ public class VacuumNavigation : MonoBehaviour
     {
         InitilizeNavmeshAgent();
         EnableSight();
+
+        VacuumAnimation = GetComponent<VacuumAnimation>();
 
         _vacuumStateContext = new VacuumStateContext(this);  
         _roamingState = gameObject.AddComponent<VacuumStateRoaming>();
@@ -254,6 +284,7 @@ public class VacuumNavigation : MonoBehaviour
         _vacuumAgent.speed = _baseSpeed;
         _vacuumAgent.angularSpeed = _baseTurnSpeed;
         _vacuumAgent.acceleration = _baseAcceleration;
+        _vacuumAgent.radius = _navMeshAgentRadius;
 
         //adjustments that are assumed
         _vacuumAgent.autoBraking = false;

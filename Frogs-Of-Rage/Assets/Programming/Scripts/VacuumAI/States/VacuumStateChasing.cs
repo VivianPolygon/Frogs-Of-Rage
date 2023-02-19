@@ -5,7 +5,8 @@ using UnityEngine.AI;
 
 public class VacuumStateChasing : MonoBehaviour, IVacuumState //interface needed for each state
 {
-    private VacuumNavigation _vacuumNavigation; //instance of vacuumNavigation
+    private VacuumNavigation _vacuumNavigation; //refrence of vacuumNavigation
+    private VacuumAnimation _vacuumAnimation; //refrence of vacuumAnimation
 
     private VacuumNavigation.GeneralData _generalData;
     private VacuumNavigation.ChasingData _chasingData;
@@ -15,8 +16,10 @@ public class VacuumStateChasing : MonoBehaviour, IVacuumState //interface needed
     public void HandleAiState(VacuumNavigation vacuumNavigation)
     {
         if (!_vacuumNavigation) _vacuumNavigation = vacuumNavigation; //null checks incoming vacuum navigation to make sure it exsists, sets is properly
+        _vacuumAnimation = _vacuumNavigation.VacuumAnimation;
 
         //preform Ai Actions here
+        _vacuumAnimation.AnimateHeadRaise(_chasingData.headRaiseTime);
         ChasingState();
 
     }
@@ -45,6 +48,9 @@ public class VacuumStateChasing : MonoBehaviour, IVacuumState //interface needed
     private IEnumerator ChasePlayer()
     {
         Vector3 PlayerPosition = Vector3.zero;
+        _vacuumNavigation.VacuumAgent.angularSpeed = _generalData.baseTurnSpeed * _chasingData.chasingSpeedFactor;
+        _vacuumNavigation.VacuumAgent.speed = _generalData.baseSpeed * _chasingData.chasingSpeedFactor;
+
         //makes sure player transform isint null, stores its position incase it goes null mid loop. returns to roaming if null
         if (_vacuumNavigation.PlayerTransform == null)
         {
@@ -55,11 +61,30 @@ public class VacuumStateChasing : MonoBehaviour, IVacuumState //interface needed
             PlayerPosition = _vacuumNavigation.PlayerTransform.position;
         }
 
+        if(_chasingData.attackDistance > Vector3.Distance(transform.position, PlayerPosition))
+        {
+            _vacuumAnimation.AnimateHeadDrop(_chasingData.headDropAttackTime);
+
+            for (float t = 0; t < _chasingData.headDropAttackTime; t += Time.deltaTime)
+            {
+                yield return null;
+            }
+
+            _vacuumNavigation.VacuumAgent.velocity = Vector3.zero;
+            _vacuumAnimation.AnimateHeadRaise(_chasingData.attackMissHeadRaiseTime);
+
+            for (float t = 0; t < _chasingData.attackMissHeadRaiseTime; t += Time.deltaTime)
+            {
+                yield return null;
+            }
+        }
+
         //rapid rotation phase
         _vacuumNavigation.VacuumAgent.SetDestination(PlayerPosition);
-        _vacuumNavigation.VacuumAgent.speed = _generalData.baseRotationPhaseForwardSpeed * _chasingData.chasingSpeedFactor;
-        _vacuumNavigation.VacuumAgent.angularSpeed = _generalData.baseTurnSpeed * _chasingData.chasingSpeedFactor;
+        //_vacuumNavigation.VacuumAgent.speed = _generalData.baseRotationPhaseForwardSpeed * _chasingData.chasingSpeedFactor;
 
+
+        /*
         for (float t = 0; t < _chasingData.maxChaseRotationPhaseLength; t += Time.deltaTime)
         {
             if (Vector3.Dot(Vector3.Normalize(PlayerPosition - transform.position), transform.forward) > _generalData.turnAngleThreshold) //checks that the vacuum is looking in the proper cone of vision before continuing
@@ -68,8 +93,8 @@ public class VacuumStateChasing : MonoBehaviour, IVacuumState //interface needed
             }
             yield return null;
         }
-        //rushdown phase
-        _vacuumNavigation.VacuumAgent.speed = _generalData.baseSpeed * _chasingData.chasingSpeedFactor;
+        */
+
         for (float t = 0; t < _chasingData.chasingUpdatePositionRate; t += Time.deltaTime)
         {
             yield return null;

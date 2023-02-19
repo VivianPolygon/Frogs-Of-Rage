@@ -3,31 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Linq;
+using System;
 
+[RequireComponent(typeof(VacuumAnimation))]
 public class VacuumNavigation : MonoBehaviour
 {
-    //enum used for the state machine
-    private enum VacuumAiState : short
+    static event Action onPlayerHit;
+    public static void InvokeOnPlayerHit() { onPlayerHit?.Invoke(); }
+
+    public VacuumAnimation VacuumAnimation // animation Script responsible for animating the model
     {
-        Roaming,
-        Detecting,
-        Chasing,
-        Circiling
+        get;
+        private set;
     }
-    private VacuumAiState _activeAIState;
-
-
 
     //internaly used instance for the vacuum navmesh agent
     private NavMeshAgent _vacuumAgent;
-
-    //varriables used to set up the nav mesh agent
-    [Header("General Vacuum Variables")]
-    [SerializeField] [Tooltip("The Speed the Vacuum Moves Forward")] private float _baseSpeed;
-    [SerializeField] [Tooltip("The Speed the Vacuum Turns")] private float _baseTurnSpeed;
-    [SerializeField] [Tooltip("The Rate the Vacuum Accelerates")] private float _baseAcceleration;
-    [SerializeField] [Tooltip("Small value for forward speed while the vacuum is rotating")] [Range(0.25f, 1f)] private float _baseRotationPhaseForwardSpeed;
-    [SerializeField] [Tooltip("Angle threshold expresed as a dot product needed before entering movment phase")] [Range(-1f, 0.95f)] private float _turnAngleThreshold;
+    [SerializeField] [Tooltip("Box Collider on the neck that is used for detecting if the vacuum hit the player")] private BoxCollider _damageCollider;
 
     #region "Player Detection Variables"
     //variables coresponding to the vacuums FOV for the player
@@ -39,19 +31,22 @@ public class VacuumNavigation : MonoBehaviour
     [Space(10)]
     [SerializeField] [Tooltip("Amout of sight checks preformed per second. more = more acurate, but less performant")] [Range(1, 10)] private int _sightChecksPerSecond;
     private WaitForSeconds _sightTimeDelay;
+
     [SerializeField] [Tooltip("Amount of worldspace units above or below the vacuum for the vacuum to cirle instead of chase the player")] [Min(0)] private float _circleHeightOffset;
     public float CircleHeightOffset { get { return _circleHeightOffset; } } //used in editor for visualization
 
-    //caculated angle Property between 1 and neg 1, for use in comparing angle to dot product
-    private float _caculatedAngleRange;
-
-    private List<Collider> _playerColliderList;
-    private Transform _playerTransform;
+    //transform of the player, set through vision checks, is often null. 
+    public Transform PlayerTransform
+    {
+        get;
+        private set;
+    }
 
     //public properties for the editor script
     public float FieldOfView { get { return _fieldOfView; } }
     public float DistanceOfView { get { return _distanceOfView; } }
-    public Transform PlayerTransform { get { return _playerTransform; } }
+
+    private List<Collider> _playerColliderList;
     private List<Collider> PlayerColliderList //used to automaticaly null check
     {
         get
@@ -73,33 +68,59 @@ public class VacuumNavigation : MonoBehaviour
     private Coroutine _sightCheckCoroutine;
     #endregion
 
+    //Navmesh variables
+    #region "Navmesh Agent Variables
+    [SerializeField] [Tooltip("Radius of the Nav mesh agent. Should Encompass the whole mesh")] private float _navMeshAgentRadius;
+    //for editor
+    public float NavMeshAgentRadius { get { return _navMeshAgentRadius; } }
+
+    #endregion
+
+    //general movement variables for the vacuum
+    #region "General Variables"
+    [Header("General Vacuum Variables")]
+    [SerializeField] [Tooltip("The Speed the Vacuum Moves Forward")] private float _baseSpeed;
+    [SerializeField] [Tooltip("The Speed the Vacuum Turns")] [Range(40, 120)] private float _baseTurnSpeed;
+    [SerializeField] [Tooltip("The Rate the Vacuum Accelerates")] [Range(60, 120)] private float _baseAcceleration;
+    [SerializeField] [Tooltip("Small value for forward speed while the vacuum is rotating")] [Range(0.25f, 1f)] private float _baseRotationPhaseForwardSpeed;
+    [SerializeField] [Tooltip("Angle threshold expresed as a dot product needed before entering movment phase")] [Range(-1f, 0.95f)] private float _turnAngleThreshold;
+    #endregion
+    //variables used for the roaming state and struct
+    #region "Roaming Variables"
     [Header("Roaming Variables")]
     [Space(15)]
-    [SerializeField] [Tooltip("Multiplier that modifies the base speed, acceleration, turning speed, and turning forward speed from the general data while in this state")] private float _roamingSpeedFactor;
+    [SerializeField] [Tooltip("Multiplier that modifies the base speed, acceleration, turning speed, and turning forward speed from the general data while in this state")] [Range(1, 2)] private float _roamingSpeedFactor;
     [SerializeField] [Tooltip("Distance Scanned when Choosing Point While Roaming")] private float _maxRoamingPointRange;
     [SerializeField] [Tooltip("Distance from a navmesh a scan can give to allow navigation")] private float _roamingPointScanRange;
     [SerializeField] [Tooltip("Number of Times Scanned to Find a point. If scans are unsucsessful, Vacuume Stays Still Untill Next Scan")] private int _roamingScanCap;
-    [SerializeField] [Tooltip("Amount of Time Before The Vacume is forced a new point if it hasent reached its target point. prevents getting stuck")] private float _forceNewRoamingPointTime;
-    [SerializeField] [Tooltip("Amount of World Units away From the Target the Vacume needs to Be away from the target point before being able to find a new point")] private float _distanceForNewPoint;
+    [SerializeField] [Tooltip("Amount of Time Before The Vacume is forced a new point if it hasent reached its target point. prevents getting stuck")] [Range (1f, 5f)]private float _forceNewRoamingPointTime;
+    [SerializeField] [Tooltip("Amount of World Units away From the Target the Vacume needs to Be away from the target point before being able to find a new point")] [Range (0.5f, 5f)] private float _distanceForNewPoint;
     [SerializeField] [Tooltip("Time Limit on the Rotation Phase")] [Range(0.1f, 3f)] private float _rotationPhaseTimeCap;
-
-    [Header("Vacuum Navigation Variables, Chasing")]
+    #endregion
+    //variables used for the chasing state and struct
+    #region "Chasing Variables"
+    [Header("Chasing Variables")]
     [Space(20)]
-    [SerializeField] [Tooltip("Speed at which the vacuum moves towards the player")] private float _chasingMoveSpeed;
-    [SerializeField] [Tooltip("Speed at which the vacuum rotates before moving while chasing the player")] private float _chasingRotationSpeed;
-    [SerializeField] [Tooltip("Time in seconds before the vacuum updates where it is moving to to get the player.")] [Range(0.2f, 2f)] private float _chasingUpdatePositionRate;
+    [SerializeField] [Tooltip("Multiplier applied to the base speeds at which the vacuum moves during the chase speed.")] [Range(1, 2)] private float _chasingSpeedFactor;
+    [SerializeField] [Tooltip("Time in seconds before the vacuum updates where it is moving to to get the player.")] [Range(0.1f, 1f)] private float _chasingUpdatePositionRate;
     [SerializeField] [Tooltip("Maximum Time in second the vacuum can spend rotating in place until it begins moving towards the player in the chase phase")] [Range(0.1f, 0.5f)] private float _maxChaseRotationPhaseLength;
 
-    [Header("Vacuum Navigation Variables, Circle")]
-    [SerializeField] [Tooltip("Range the raycast looking for ground under the player shoots")] private float _groundDetectionRange;
-    [SerializeField] [Tooltip("Height offset for sloped ground raycast")] private float _groudDetectionVerticalOffset;
-    //for raycast
-    private Ray _groundDetectionRaycast;
-    private RaycastHit _groundDetectionHit;
+    //head movment times
+    [SerializeField] [Tooltip("time for the head to raise to max angle after being seen")] private float _headRaiseTime;
+    [SerializeField] [Tooltip("time for the head to raise up again if the vacuum missed its attack")] private float _attackMissHeadRaiseTime;
+    [SerializeField] [Tooltip("time the vacuum takes to slam its head into the ground")] private float _headDropAttackTime;
 
-    [SerializeField] [Tooltip("Layermask used to detect low ground the player is on")] private LayerMask _terrainLayerMask;
-    public float GroundDetectionRange { get { return _groundDetectionRange; } }
-    public float GroudDetectionVerticalOffset { get { return _groudDetectionVerticalOffset; } }
+    [SerializeField] [Tooltip("distance from the player needs to be before attacking")] private float _attackDistance;
+    // for Editor scrit
+    public float AttackDistance { get { return _attackDistance; } }
+    #endregion
+
+    //events for seeing and losing sight of the player
+    public event Action onPlayerSeen;
+    public event Action onPlayerLost;
+
+    public void OnPlayerSeen() { onPlayerSeen?.Invoke(); }
+    public void OnPlayerLost() { onPlayerLost?.Invoke(); }
 
     //property for acsessing version elsewhere, used here too, to prevent null issues.
     public NavMeshAgent VacuumAgent
@@ -114,6 +135,7 @@ public class VacuumNavigation : MonoBehaviour
             return _vacuumAgent;
         }
     }
+
     #region "Data Structs"
 
     //general data pulled in by all states
@@ -170,12 +192,40 @@ public class VacuumNavigation : MonoBehaviour
         return retreivedData;
     }
 
+    public struct ChasingData
+    {
+        public float chasingSpeedFactor;
+        public float chasingUpdatePositionRate;
+        public float maxChaseRotationPhaseLength;
+
+        public float headRaiseTime; //time for the head to raise to max angle after being seen
+        public float attackMissHeadRaiseTime; //time for the head to raise up again if the vacuum missed its attack
+        public float headDropAttackTime; //time the vacuum takes to slam its head into the ground
+
+        public float attackDistance;
+    }
+    public ChasingData GetChasingData()
+    {
+        ChasingData retreivedData = new ChasingData();
+
+        retreivedData.chasingSpeedFactor = _chasingSpeedFactor;
+        retreivedData.chasingUpdatePositionRate = _chasingUpdatePositionRate;
+        retreivedData.maxChaseRotationPhaseLength = _maxChaseRotationPhaseLength;
+
+        retreivedData.headRaiseTime = _headRaiseTime;
+        retreivedData.attackMissHeadRaiseTime = _attackMissHeadRaiseTime;
+        retreivedData.headDropAttackTime = _headDropAttackTime;
+
+        retreivedData.attackDistance = _attackDistance;
+
+        return retreivedData;
+    }
+
     #endregion
 
     //for state pattern
-
     //states
-    private IVacuumState _roamingState;
+    private IVacuumState _roamingState, _chasingState;
     //state context, used for transitioning states
     private VacuumStateContext _vacuumStateContext;
 
@@ -185,10 +235,13 @@ public class VacuumNavigation : MonoBehaviour
     private void Awake()
     {
         InitilizeNavmeshAgent();
+        EnableSight();
+
+        VacuumAnimation = GetComponent<VacuumAnimation>();
 
         _vacuumStateContext = new VacuumStateContext(this);  
         _roamingState = gameObject.AddComponent<VacuumStateRoaming>();
-
+        _chasingState = gameObject.AddComponent<VacuumStateChasing>();
     }
 
     private void ResetActionCoroutine() // stops and empties the action coroutine in preperation for a state change
@@ -196,15 +249,20 @@ public class VacuumNavigation : MonoBehaviour
         if(vacuumStateActionCoroutine != null)
         {
             StopCoroutine(vacuumStateActionCoroutine);
+            vacuumStateActionCoroutine = null;
         }
-        vacuumStateActionCoroutine = null;
     }
 
     public void Roam()
     {
         ResetActionCoroutine();
-
         _vacuumStateContext.TransitionStates(_roamingState);
+    }
+
+    public void Chase()
+    {
+        ResetActionCoroutine();
+        _vacuumStateContext.TransitionStates(_chasingState);
     }
 
 
@@ -226,30 +284,23 @@ public class VacuumNavigation : MonoBehaviour
         _vacuumAgent.speed = _baseSpeed;
         _vacuumAgent.angularSpeed = _baseTurnSpeed;
         _vacuumAgent.acceleration = _baseAcceleration;
+        _vacuumAgent.radius = _navMeshAgentRadius;
 
         //adjustments that are assumed
         _vacuumAgent.autoBraking = false;
         _vacuumAgent.stoppingDistance = 0;
     }
 
-    #region "State Change"
-
-
-    #endregion
-
-
-    /*
-
-    #region "Player Detection"
+    #region "Player Vision Check"
 
     //public for editor script
     public Vector3 DirectionFromAngle(float angle, bool horizontalAngle)
     {
-        if(horizontalAngle)
+        if (horizontalAngle)
         {
             angle += transform.eulerAngles.y;
             return new Vector3(Mathf.Sin(angle * Mathf.Deg2Rad), 0, Mathf.Cos(angle * Mathf.Deg2Rad));
-        }    
+        }
         else
         {
             angle += transform.eulerAngles.x;
@@ -264,10 +315,10 @@ public class VacuumNavigation : MonoBehaviour
     {
         PlayerColliderList.Clear();
         PlayerColliderList = Physics.OverlapSphere(transform.position, DistanceOfView, _playerLayer).ToList();
-        if(PlayerColliderList.Count > 0)
+        if (PlayerColliderList.Count > 0)
         {
             Transform playerTransform = PlayerColliderList[0].gameObject.transform;
-            if(Vector3.Angle(transform.forward, (playerTransform.position - transform.position).normalized) < FieldOfView / 2)
+            if (Vector3.Angle(transform.forward, (playerTransform.position - transform.position).normalized) < FieldOfView / 2)
             {
                 return playerTransform;
             }
@@ -282,112 +333,44 @@ public class VacuumNavigation : MonoBehaviour
     private IEnumerator LookForPlayer()
     {
         Transform playerTransform;
+        bool playerInSights = false;
+
         while (true)
         {
             playerTransform = null;
             playerTransform = CheckPlayerInSight();
-            if (playerTransform != null)
+            if (playerTransform != null && !playerInSights)
             {
-                _playerTransform = playerTransform; // sets refrence for elsewhere
-                //if (Mathf.Abs(transform.position.y - playerTransform.position.y) < CircleHeightOffset) 
-
-
+                playerInSights = true;
+                PlayerTransform = playerTransform;
+                OnPlayerSeen(); // invokes event for the player being seen
+            }
+            else if (playerTransform == null && playerInSights)
+            {
+                playerInSights = false;
+                OnPlayerLost();
             }
             yield return _sightTimeDelay;
         }
     }
 
-    #endregion
-
-
-    #region "Chasing Behavior"
-
-    private void ChasingState()
+    public void EnableSight()
     {
-        if(_actionCoroutine != null)
+        if(_sightCheckCoroutine == null)
         {
-            StopCoroutine(_actionCoroutine);
+            _sightCheckCoroutine = StartCoroutine(LookForPlayer());
         }
-        _actionCoroutine = StartCoroutine(ChasePlayer());
     }
-
-    private IEnumerator ChasePlayer()
+    public void DisableSight()
     {
-        Vector3 PlayerPosition = Vector3.zero;
-        //makes sure player transform isint null, stores its position incase it goes null mid loop. returns to roaming if null
-        if(_playerTransform == null)
+        if(_sightCheckCoroutine != null)
         {
-            yield break;
+            StopCoroutine(_sightCheckCoroutine);
         }
-        else
-        {
-            PlayerPosition = _playerTransform.position;
-        }
-
-        //rapid rotation phase
-        VacuumAgent.SetDestination(PlayerPosition);
-        VacuumAgent.speed = _roamingTurningForwardSpeed;
-        VacuumAgent.angularSpeed = _chasingRotationSpeed;
-
-        for (float t = 0; t < _maxChaseRotationPhaseLength; t += Time.deltaTime)
-        {
-            if (Vector3.Dot(Vector3.Normalize(PlayerPosition - transform.position), transform.forward) > _roamingTurnAngleThreshold) //checks that the vacuum is looking in the proper cone of vision before continuing
-            {
-                break;
-            }
-            yield return null;
-        }
-        //rushdown phase
-        VacuumAgent.speed = _chasingMoveSpeed;
-        for (float t = 0; t < _chasingUpdatePositionRate; t += Time.deltaTime)
-        {
-            yield return null;
-        }
-        _actionCoroutine = null;
-        ChasingState();
-    }
-
-    #endregion
-
-    #region "Circiling State"
-
-    private void CircilingState()
-    {
-        Vector3 RayOrgin = transform.position;
-        RayOrgin.y += _groudDetectionVerticalOffset;
-        _groundDetectionRaycast.origin = transform.position;
-        _groundDetectionRaycast.direction = transform.forward;
-
-        if(Physics.Raycast(_groundDetectionRaycast, _groundDetectionRange, _terrainLayerMask))
-        {
-
-        }
-        
-
-  
-    }
-
-    private IEnumerator CircleChase()
-    {
-        return null;
-    }
-
-    private IEnumerator Circle()
-    {
-        return null;
-    }
-
-    private IEnumerator Pace()
-    {
-        return null;
-    }
-
-    private IEnumerator Leave()
-    {
-        return null;
+        _sightCheckCoroutine = null;
     }
 
 
     #endregion
-    */
+
 }

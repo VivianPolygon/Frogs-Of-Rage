@@ -6,14 +6,40 @@ using UnityEngine;
 [RequireComponent(typeof(VacuumNavigation))] // holds navigation functions
 public class VacuumNavigationController : MonoBehaviour
 {
-    private VacuumNavigation _vacuumNavigation;
+    private VacuumNavigation _vacuumNavigation; // navigation script holding AI states and sight check information
 
     //state change logic goes here
 
-    private void Start()
+    private void Awake()
     {
         _vacuumNavigation = GetComponent<VacuumNavigation>();
+    }
 
+    private void Start()
+    {
         _vacuumNavigation.Roam();
     }
+
+    private void PlayerSeen()
+    {
+        _vacuumNavigation.Chase();
+    }
+
+    private void PlayerLost()
+    {
+        _vacuumNavigation.Roam();
+    }
+
+    private void OnEnable()
+    {
+        _vacuumNavigation.onPlayerSeen += PlayerSeen;
+        _vacuumNavigation.onPlayerLost += PlayerLost;
+    }
+    private void OnDisable()
+    {
+        _vacuumNavigation.onPlayerSeen -= PlayerSeen;
+        _vacuumNavigation.onPlayerLost -= PlayerLost;
+    }
+
+
 }

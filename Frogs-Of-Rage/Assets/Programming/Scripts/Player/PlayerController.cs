@@ -58,17 +58,23 @@ public class PlayerController : MonoBehaviour
     #region OnEnable/OnDisable
     private void OnEnable()
     {
+        #region Gauges
         ManageSlider.SetStaminaMax += SetStaminaMax;
         ManageSlider.SetStaminaValue += SetStaminaValue;
         ManageSlider.SetHealthMax += SetHealthMax;
         ManageSlider.SetHealthValue += SetHealthValue;
+        #endregion
+        Hazard.OnDamage += ReduceHealth;
     }
     private void OnDisable()
     {
+        #region Gauges
         ManageSlider.SetStaminaMax -= SetStaminaMax;
         ManageSlider.SetStaminaValue -= SetStaminaValue;
         ManageSlider.SetHealthMax -= SetHealthMax;
         ManageSlider.SetHealthValue -= SetHealthValue;
+        #endregion
+        Hazard.OnDamage -= ReduceHealth;
     }
     #endregion
 
@@ -80,6 +86,7 @@ public class PlayerController : MonoBehaviour
 
         curSpeed = walkSpeed;
         curStamina = staminaMax;
+        curHealth = healthMax;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -209,6 +216,17 @@ public class PlayerController : MonoBehaviour
         if (healthGauge != null)
             healthGauge.SetValue(curHealth);
     }
+
+    #endregion
+
+    #region Health
+    //This is set up for when we impliment playerfeedback when taking damage
+    private void ReduceHealth()
+    {
+        Debug.Log("Player lost health and is now at " + curHealth);
+    }
+
+
 
     #endregion
 

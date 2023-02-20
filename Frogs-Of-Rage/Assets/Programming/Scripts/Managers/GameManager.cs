@@ -10,6 +10,8 @@ public class GameManager : Singleton<GameManager>
     public PlayerController playerController;
     public Camera mainCam;
 
+
+
     public override void Awake()
     {
         base.Awake();

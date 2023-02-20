@@ -2,10 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
+using System;
 
 public class PlayerController : MonoBehaviour
 {
     #region Variables in Inspector
+    [Space(10)]
+    [SerializeField]
+    private float healthMax = 100f;
     [Header("Movement Variables")]
     [Space(10)]
     public float staminaMax = 100f;
@@ -28,16 +32,15 @@ public class PlayerController : MonoBehaviour
 
     [Space(5)]
     [SerializeField]
-    private ManageSlider healthGauge;
-    [SerializeField]
     private ManageSlider staminaGauge;
+    [SerializeField]
+    private ManageSlider healthGauge;
 
     #endregion
 
     #region Private Variables
     private float airTime;
     private bool inAir;
-    private float curStamina;
     private float staminaTimer;
     private InputManager inputManager;
     private Transform mainCamTransform;
@@ -45,6 +48,28 @@ public class PlayerController : MonoBehaviour
     private Vector3 playerVelocity;
     private bool groundedPlayer;
     private float curSpeed;
+
+    [HideInInspector]
+    public float curHealth;
+    [HideInInspector]
+    public float curStamina;
+    #endregion
+
+    #region OnEnable/OnDisable
+    private void OnEnable()
+    {
+        ManageSlider.SetStaminaMax += SetStaminaMax;
+        ManageSlider.SetStaminaValue += SetStaminaValue;
+        ManageSlider.SetHealthMax += SetHealthMax;
+        ManageSlider.SetHealthValue += SetHealthValue;
+    }
+    private void OnDisable()
+    {
+        ManageSlider.SetStaminaMax -= SetStaminaMax;
+        ManageSlider.SetStaminaValue -= SetStaminaValue;
+        ManageSlider.SetHealthMax -= SetHealthMax;
+        ManageSlider.SetHealthValue -= SetHealthValue;
+    }
     #endregion
 
     private void Start()
@@ -55,7 +80,7 @@ public class PlayerController : MonoBehaviour
 
         curSpeed = walkSpeed;
         curStamina = staminaMax;
-        staminaGauge.SetMaxValue(staminaMax);
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -71,6 +96,7 @@ public class PlayerController : MonoBehaviour
     }
 
     #region Movement
+
     //value is true if increasing stamina and false if decreasing
     private void HandleStamina(bool value)
     {
@@ -80,7 +106,7 @@ public class PlayerController : MonoBehaviour
             curStamina += Time.deltaTime * 5;
 
         curStamina = Mathf.Clamp(curStamina, 0, staminaMax);
-        staminaGauge.SetValue(curStamina);
+        SetStaminaValue();
     }
 
     //Controls player movement (WASD)
@@ -157,6 +183,31 @@ public class PlayerController : MonoBehaviour
         }
         else
             airTime = 0;
+    }
+
+    #endregion
+
+    #region UI
+
+    private void SetStaminaMax()
+    {
+        if (staminaGauge != null)
+            staminaGauge.SetMaxValue(staminaMax);
+    }
+    private void SetStaminaValue()
+    {
+        if (staminaGauge != null)
+            staminaGauge.SetValue(curStamina);
+    }
+    private void SetHealthMax()
+    {
+        if (healthGauge != null)
+            healthGauge.SetMaxValue(healthMax);
+    }
+    private void SetHealthValue()
+    {
+        if (healthGauge != null)
+            healthGauge.SetValue(curHealth);
     }
 
     #endregion

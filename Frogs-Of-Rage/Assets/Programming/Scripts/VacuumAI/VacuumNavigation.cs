@@ -115,6 +115,20 @@ public class VacuumNavigation : MonoBehaviour
     public float AttackDistance { get { return _attackDistance; } }
     #endregion
 
+    #region "Detection Variables"
+    [SerializeField] [Tooltip("1 Second = 1 world unit Multiplied by this variable to determine if the sound made from the player landing is within detection range")] [Min(0)] private float _hearingSensitivity;
+    [SerializeField] [Tooltip("Height Diffrence between the vacuum and the player to activate the detection phase")] [Min(0)] private float _detectionHeightRange;
+    //properties of the above two for the editor script
+    public float SoundVolumeAmplifier { get { return _hearingSensitivity; } }
+    public float DetectionHeightRange { get { return _detectionHeightRange; } }
+
+
+    [SerializeField] [Tooltip("speed mult off base speed for this phase")] private float _detectionSpeedFactor; 
+    [SerializeField] [Tooltip("the vacuum spins in place scanning for the player when they get to the point where the player hasn't been seen, which corresponds to that duration")] private float _spinScanTime;
+
+
+    #endregion
+
     //events for seeing and losing sight of the player
     public event Action onPlayerSeen;
     public event Action onPlayerLost;
@@ -221,11 +235,26 @@ public class VacuumNavigation : MonoBehaviour
         return retreivedData;
     }
 
+
+    public struct DetectionData
+    {
+        public float hearingSensitivity;
+        public float spinScanTime;
+    }
+    public DetectionData GetDetectionData()
+    {
+        DetectionData retreivedData = new DetectionData();
+
+        retreivedData.hearingSensitivity = _hearingSensitivity;
+        retreivedData.spinScanTime = _spinScanTime;
+
+        return retreivedData;
+    }
     #endregion
 
     //for state pattern
     //states
-    private IVacuumState _roamingState, _chasingState;
+    private IVacuumState _roamingState, _chasingState, _detectionState;
     //state context, used for transitioning states
     private VacuumStateContext _vacuumStateContext;
 
@@ -242,6 +271,7 @@ public class VacuumNavigation : MonoBehaviour
         _vacuumStateContext = new VacuumStateContext(this);  
         _roamingState = gameObject.AddComponent<VacuumStateRoaming>();
         _chasingState = gameObject.AddComponent<VacuumStateChasing>();
+        _detectionState = gameObject.AddComponent<VacuumStateDetection>();
     }
 
     private void ResetActionCoroutine() // stops and empties the action coroutine in preperation for a state change
@@ -265,6 +295,11 @@ public class VacuumNavigation : MonoBehaviour
         _vacuumStateContext.TransitionStates(_chasingState);
     }
 
+    public void Detection()
+    {
+        ResetActionCoroutine();
+        _vacuumStateContext.TransitionStates(_detectionState);
+    }
 
     //initilizes the navmesh agent, creating it, or updating the current one with the vacume movment data
     private void InitilizeNavmeshAgent()

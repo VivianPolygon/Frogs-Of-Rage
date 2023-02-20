@@ -39,6 +39,31 @@ public class VacuumEditor : Editor
         Handles.DrawLine(vNav.transform.position, vNav.transform.position + viewAngleB * vNav.DistanceOfView);
         Handles.Label((vNav.transform.position + viewAngleB * vNav.DistanceOfView), ("Top View Bound"));
 
+        //for Player Hearing Visuilization
+        {
+            Handles.color = Color.yellow;
+
+            Handles.DrawWireArc(vNav.transform.position - (vNav.transform.up * vNav.DetectionHeightRange), vNav.transform.up, vNav.transform.right, 30, vNav.SoundVolumeAmplifier * 0.5f);
+            Handles.DrawWireArc(vNav.transform.position + (vNav.transform.up * vNav.DetectionHeightRange), vNav.transform.up, vNav.transform.right, 30, vNav.SoundVolumeAmplifier * 0.5f);
+            Handles.DrawLine(vNav.transform.position + (vNav.transform.right * (vNav.SoundVolumeAmplifier * 0.5f)) + (vNav.transform.up * vNav.DetectionHeightRange), (vNav.transform.position + (vNav.transform.right * (vNav.SoundVolumeAmplifier * 0.5f)) - (vNav.transform.up * vNav.DetectionHeightRange)));
+            Handles.Label(vNav.transform.position + vNav.transform.right * (vNav.SoundVolumeAmplifier * 0.5f), "0.5 second Fall Heard");
+
+            Handles.DrawWireArc(vNav.transform.position - (vNav.transform.up * vNav.DetectionHeightRange), vNav.transform.up, vNav.transform.right, 35, vNav.SoundVolumeAmplifier);
+            Handles.DrawWireArc(vNav.transform.position + (vNav.transform.up * vNav.DetectionHeightRange), vNav.transform.up, vNav.transform.right, 35, vNav.SoundVolumeAmplifier);
+            Handles.DrawLine(vNav.transform.position + (vNav.transform.right * (vNav.SoundVolumeAmplifier * 1)) + (vNav.transform.up * vNav.DetectionHeightRange), (vNav.transform.position + (vNav.transform.right * (vNav.SoundVolumeAmplifier * 1)) - (vNav.transform.up * vNav.DetectionHeightRange)));
+            Handles.Label(vNav.transform.position + vNav.transform.right * vNav.SoundVolumeAmplifier, "1 second Fall Heard");
+
+            Handles.DrawWireArc(vNav.transform.position - (vNav.transform.up * vNav.DetectionHeightRange), vNav.transform.up, vNav.transform.right, 40, vNav.SoundVolumeAmplifier * 1.5f);
+            Handles.DrawWireArc(vNav.transform.position + (vNav.transform.up * vNav.DetectionHeightRange), vNav.transform.up, vNav.transform.right, 40, vNav.SoundVolumeAmplifier * 1.5f);
+            Handles.DrawLine(vNav.transform.position + (vNav.transform.right * (vNav.SoundVolumeAmplifier * 1.5f)) + (vNav.transform.up * vNav.DetectionHeightRange), (vNav.transform.position + (vNav.transform.right * (vNav.SoundVolumeAmplifier * 1.5f)) - (vNav.transform.up * vNav.DetectionHeightRange)));
+            Handles.Label(vNav.transform.position + vNav.transform.right * vNav.SoundVolumeAmplifier * 1.5f, "1.5 second Fall Heard");
+
+
+            Handles.DrawWireArc(vNav.transform.position - (vNav.transform.up * vNav.DetectionHeightRange), vNav.transform.up, vNav.transform.right, 45, vNav.SoundVolumeAmplifier * 2);
+            Handles.DrawWireArc(vNav.transform.position + (vNav.transform.up * vNav.DetectionHeightRange), vNav.transform.up, vNav.transform.right, 45, vNav.SoundVolumeAmplifier * 2);
+            Handles.DrawLine(vNav.transform.position + (vNav.transform.right * (vNav.SoundVolumeAmplifier * 2)) + (vNav.transform.up * vNav.DetectionHeightRange), (vNav.transform.position + (vNav.transform.right * (vNav.SoundVolumeAmplifier * 2)) - (vNav.transform.up * vNav.DetectionHeightRange)));
+            Handles.Label(vNav.transform.position + vNav.transform.right * (vNav.SoundVolumeAmplifier * 2), "2 second Fall Heard");
+        }
 
 
         //for Player Detection visualization

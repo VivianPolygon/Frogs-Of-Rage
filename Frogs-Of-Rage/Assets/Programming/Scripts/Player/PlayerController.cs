@@ -50,6 +50,7 @@ public class PlayerController : MonoBehaviour
     private float curSpeed;
     private Vector3 fallPos;
     private float fallTime;
+    private GameManager gameManager;
 
     [HideInInspector]
     public float curHealth;
@@ -75,6 +76,7 @@ public class PlayerController : MonoBehaviour
         #endregion
         Hazard.OnDamage += ReduceHealth;
         EventManager.OnPlayerFall += TestFall;
+        EventManager.OnPlayerDeath += Respawn;
 
 
     }
@@ -88,6 +90,8 @@ public class PlayerController : MonoBehaviour
         #endregion
         Hazard.OnDamage -= ReduceHealth;
         EventManager.OnPlayerFall -= TestFall;
+        EventManager.OnPlayerDeath -= Respawn;
+
 
     }
     #endregion
@@ -97,13 +101,15 @@ public class PlayerController : MonoBehaviour
         controller = gameObject.GetComponent<CharacterController>();
         inputManager = InputManager.Instance;
         mainCamTransform = Camera.main.transform;
-
+        gameManager = GameManager.Instance;
         curSpeed = walkSpeed;
         curStamina = staminaMax;
         curHealth = healthMax;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        gameManager.lastCheckpointPos = transform.position;
     }
 
     private void Update()
@@ -113,7 +119,7 @@ public class PlayerController : MonoBehaviour
         HandleSprint();
         HandleAirTime();
         #endregion
-        //Debug.Log(AirTime); 
+        ManageRespawn();
     }
 
     #region Movement
@@ -255,11 +261,24 @@ public class PlayerController : MonoBehaviour
     //This is set up for when we impliment playerfeedback when taking damage
     private void ReduceHealth()
     {
-        Debug.Log("Player lost health and is now at " + curHealth);
+        //Debug.Log("Player lost health and is now at " + curHealth);
     }
+    #endregion
 
-
-
+    #region Respawn
+    private void ManageRespawn()
+    {
+        if (curHealth > 0)
+            return;
+        else if (curHealth <= 0)
+            Respawn();
+    }
+    private void Respawn()
+    {
+        curHealth = healthMax;
+        transform.position = gameManager.lastCheckpointPos;
+        Debug.Log(transform.position);
+    }
     #endregion
 
     //Return the time player is in the air

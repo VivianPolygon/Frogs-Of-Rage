@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
 
     #region Private Variables
     private float airTime;
-    private bool inAir;
+    private bool inAir = false;
     private float staminaTimer;
     private InputManager inputManager;
     private Transform mainCamTransform;
@@ -48,11 +48,21 @@ public class PlayerController : MonoBehaviour
     private Vector3 playerVelocity;
     private bool groundedPlayer;
     private float curSpeed;
+    private Vector3 fallPos;
+    private float fallTime;
+    private GameManager gameManager;
 
     [HideInInspector]
     public float curHealth;
     [HideInInspector]
     public float curStamina;
+    #endregion
+
+    #region Events
+    public delegate void OnCollectible();
+    public static event OnCollectible onCollectable;
+
+
     #endregion
 
     #region OnEnable/OnDisable
@@ -65,6 +75,10 @@ public class PlayerController : MonoBehaviour
         ManageSlider.SetHealthValue += SetHealthValue;
         #endregion
         Hazard.OnDamage += ReduceHealth;
+        EventManager.OnPlayerFall += TestFall;
+        EventManager.OnPlayerDeath += Respawn;
+
+
     }
     private void OnDisable()
     {
@@ -75,6 +89,10 @@ public class PlayerController : MonoBehaviour
         ManageSlider.SetHealthValue -= SetHealthValue;
         #endregion
         Hazard.OnDamage -= ReduceHealth;
+        EventManager.OnPlayerFall -= TestFall;
+        EventManager.OnPlayerDeath -= Respawn;
+
+
     }
     #endregion
 
@@ -83,13 +101,15 @@ public class PlayerController : MonoBehaviour
         controller = gameObject.GetComponent<CharacterController>();
         inputManager = InputManager.Instance;
         mainCamTransform = Camera.main.transform;
-
+        gameManager = GameManager.Instance;
         curSpeed = walkSpeed;
         curStamina = staminaMax;
         curHealth = healthMax;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        gameManager.lastCheckpointPos = transform.position;
     }
 
     private void Update()
@@ -99,7 +119,7 @@ public class PlayerController : MonoBehaviour
         HandleSprint();
         HandleAirTime();
         #endregion
-        //Debug.Log(AirTime); 
+        ManageRespawn();
     }
 
     #region Movement
@@ -186,10 +206,28 @@ public class PlayerController : MonoBehaviour
     {
         if (!groundedPlayer)
         {
-            airTime += Time.deltaTime;
+            inAir= true;
         }
         else
-            airTime = 0;
+            inAir = false;
+
+        if(inAir)
+        {
+            airTime += Time.deltaTime;
+            if(groundedPlayer)
+                inAir = false;
+        }
+        else if(!inAir && airTime != 0)
+        {
+            TestFall(transform.position, airTime);
+            airTime = 0; 
+        }
+
+    }
+
+    private void TestFall(Vector3 fallpos, float time)
+    {
+        Debug.Log(fallpos + "  " + time);
     }
 
     #endregion
@@ -223,11 +261,24 @@ public class PlayerController : MonoBehaviour
     //This is set up for when we impliment playerfeedback when taking damage
     private void ReduceHealth()
     {
-        Debug.Log("Player lost health and is now at " + curHealth);
+        //Debug.Log("Player lost health and is now at " + curHealth);
     }
+    #endregion
 
-
-
+    #region Respawn
+    private void ManageRespawn()
+    {
+        if (curHealth > 0)
+            return;
+        else if (curHealth <= 0)
+            Respawn();
+    }
+    private void Respawn()
+    {
+        curHealth = healthMax;
+        transform.position = gameManager.lastCheckpointPos;
+        Debug.Log(transform.position);
+    }
     #endregion
 
     //Return the time player is in the air
@@ -236,6 +287,13 @@ public class PlayerController : MonoBehaviour
         get { return airTime; }
     }
 
-    public delegate void OnCollectible();
-    public static event OnCollectible onCollectable;
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Exit")
+        {
+            Debug.Log("You exited");
+        }
+    }
+
 }

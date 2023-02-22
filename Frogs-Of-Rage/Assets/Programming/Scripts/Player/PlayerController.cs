@@ -36,6 +36,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private ManageSlider healthGauge;
 
+    [Space(5)]
+    public PlayerData playerData;
+    
     #endregion
 
     #region Private Variables
@@ -58,12 +61,14 @@ public class PlayerController : MonoBehaviour
 
 
     #region Events
-    public delegate void OnCollectible();
-    public static event OnCollectible onCollectable;
+    
     //public event EventHandler OnPlayerFall;
 
     public delegate void PlayerFallEvent(PlayerFallEventArgs e);
     public static PlayerFallEvent OnPlayerFall;
+
+    public delegate void PlayerWinEvent(PlayerWinEventArgs e);
+    public static PlayerWinEvent OnPlayerWin;
 
     #endregion
 
@@ -284,17 +289,12 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    //Return the time player is in the air
-    public float AirTime
-    {
-        get { return airTime; }
-    }
-
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Exit")
         {
+            //Invoke on player win event
+            OnPlayerWin?.Invoke(new PlayerWinEventArgs(gameManager.gameTimer, playerData));
             Debug.Log("You exited");
         }
     }
@@ -302,9 +302,9 @@ public class PlayerController : MonoBehaviour
 
 }
 
+#region Player Fall Event
 [System.Serializable]
 public class PlayerFallEvent : UnityEvent<PlayerFallEventArgs> { }
-
 public class PlayerFallEventArgs
 {
     public Vector2 fallPos;
@@ -317,3 +317,21 @@ public class PlayerFallEventArgs
         this.time = time;
     }
 }
+#endregion
+
+#region Player Win Event
+[System.Serializable]
+public class PlayerWinEvent : UnityEvent<PlayerWinEventArgs> { }
+public class PlayerWinEventArgs
+{
+    public GameTimer gameTimer;
+    public PlayerData playerData;
+
+    public PlayerWinEventArgs(GameTimer gameTimer, PlayerData playerData)
+    {
+        this.gameTimer = gameTimer;
+        this.playerData = playerData;
+    }
+}
+#endregion
+

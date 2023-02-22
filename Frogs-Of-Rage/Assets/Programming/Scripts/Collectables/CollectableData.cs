@@ -8,6 +8,7 @@ public class CollectableData : ScriptableObject
 {
     public int count;
     public Sprite image;
+    public Material material;
    
     public int Count
     {
@@ -17,6 +18,10 @@ public class CollectableData : ScriptableObject
     public Sprite Image
     {
         get { return image; }
+    }
+    public Material Material
+    {
+        get { return material; }
     }
     
 }

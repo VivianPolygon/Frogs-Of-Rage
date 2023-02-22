@@ -21,6 +21,7 @@ public class PlayerData : ScriptableObject
     public int FlyCount
     {
         get { return flyCount; }
+        set { flyCount = value; }
     }
     public Sprite FlyImage
     {
@@ -29,6 +30,7 @@ public class PlayerData : ScriptableObject
     public int AntCount
     {
         get { return antCount; }
+        set { antCount = value; }
     }
     public Sprite AntImage
     {
@@ -37,6 +39,10 @@ public class PlayerData : ScriptableObject
     public int GrasshopperCount
     {
         get { return grasshopperCount; }
+        set
+        {
+            grasshopperCount = value;
+        }
     }
     public Sprite GrasshopperImage
     {
@@ -45,8 +51,12 @@ public class PlayerData : ScriptableObject
     public int SpiderCount
     {
         get { return spiderCount; }
+        set
+        {
+            spiderCount = value;
+        }
     }
-    public Sprite SpiderImager
+    public Sprite SpiderImage
     {
         get { return spiderImage; }
     }

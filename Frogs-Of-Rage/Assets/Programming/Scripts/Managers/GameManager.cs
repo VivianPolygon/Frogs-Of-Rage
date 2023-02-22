@@ -11,13 +11,14 @@ public class GameManager : Singleton<GameManager>
 
     public PlayerController playerController;
     public Camera mainCam;
-
     public Vector3 lastCheckpointPos;
+    public GameTimer gameTimer;
 
     public override void Awake()
     {
         base.Awake();
         playerController = GameObject.Find("Player").GetComponent<PlayerController>();
         mainCam = Camera.main;
+        gameTimer = GetComponent<GameTimer>();
     }
 }

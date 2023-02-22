@@ -34,6 +34,7 @@ public class UIManager : Singleton<UIManager>
     [Header("You Win Canvas")]
     [Space(10)]
     public Canvas youWinCanvas;
+    public Text timer;
     private bool isWin = false;
     public Image flyImageYouWin;
     public Text flyCountYouWin;
@@ -44,15 +45,20 @@ public class UIManager : Singleton<UIManager>
     public Image spiderImageYouWin;
     public Text spiderCountYouWin;
 
+    private float finalGameTime;
+
 
 
     private void OnEnable()
     {
-        FlyCollectable.OnFlyCollected += CollectCollectable;
+        Collectable.OnCollectable += CollectCollectable;
+        PlayerController.OnPlayerWin += HandleWinScreen;
     }
     private void OnDisable()
     {
-        FlyCollectable.OnFlyCollected -= CollectCollectable;
+        Collectable.OnCollectable -= CollectCollectable;
+        PlayerController.OnPlayerWin -= HandleWinScreen;
+
     }
 
     private void Start()
@@ -77,9 +83,28 @@ public class UIManager : Singleton<UIManager>
        
     }
     
-    public void CollectCollectable()
+    public void CollectCollectable(OnCollectableEventArgs e)
     {
-        DisplayCollectedItem(collectedData);
+        DisplayCollectedItem(e.collectableData);
+
+        #region Check Type And Add To PlayerData
+        Collectable type = e.gameObject.GetComponent<Collectable>();
+        FlyCollectable fly = type as FlyCollectable;
+        AntCollectable ant = type as AntCollectable;
+        SpiderCollectable spider = type as SpiderCollectable;
+        GrasshopperCollectable grasshopper = type as GrasshopperCollectable;
+
+        if(type == fly)
+            e.playerData.FlyCount++;
+        else if(type == ant) 
+            e.playerData.AntCount++;
+        else if(type == spider)
+            e.playerData.SpiderCount++;
+        else if(type == grasshopper)
+            e.playerData.GrasshopperCount++;
+        #endregion
+
+
     }
 
     private void HandlePauseMenu()
@@ -90,10 +115,42 @@ public class UIManager : Singleton<UIManager>
         if(isPaused)
         {
             pauseCanvas.gameObject.SetActive(true);
+            Time.timeScale = 0f;
         }
         else if(!isPaused)
         {
             pauseCanvas.gameObject.SetActive(false);
+            Time.timeScale = 1f;
         }
     }
+
+    private void HandleWinScreen(PlayerWinEventArgs e)
+    {
+        isWin = !isWin;
+        if(isWin)
+        {
+            //Activate win canvas
+            youWinCanvas.gameObject.SetActive(true);
+
+            //Display UI info
+                //Count
+            flyCountYouWin.text = e.playerData.FlyCount.ToString();
+            antCountYouWin.text = e.playerData.AntCount.ToString();
+            grasshopperCountYouWin.text = e.playerData.GrasshopperCount.ToString();
+            spiderCountYouWin.text = e.playerData.SpiderCount.ToString();
+                //Images
+            flyImageYouWin.sprite = e.playerData.FlyImage;
+            antImageYouWin.sprite = e.playerData.AntImage;
+            grasshopperImageYouWin.sprite = e.playerData.GrasshopperImage;
+            spiderImageYouWin.sprite = e.playerData.SpiderImage;
+                //Displays the game timers current time
+            timer.text = string.Format("{0:00}:{1:00}", e.gameTimer.minutes, e.gameTimer.seconds);
+
+            //Stores the total time it took for use later?
+            finalGameTime = e.gameTimer.totalTime;
+
+            //Do camera stuff here for the fade out and showcase level
+        }
+    }
+
 }

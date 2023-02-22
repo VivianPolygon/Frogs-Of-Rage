@@ -1,8 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
-using System;
+using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
@@ -48,8 +48,6 @@ public class PlayerController : MonoBehaviour
     private Vector3 playerVelocity;
     private bool groundedPlayer;
     private float curSpeed;
-    private Vector3 fallPos;
-    private float fallTime;
     private GameManager gameManager;
 
     [HideInInspector]
@@ -58,10 +56,14 @@ public class PlayerController : MonoBehaviour
     public float curStamina;
     #endregion
 
+
     #region Events
     public delegate void OnCollectible();
     public static event OnCollectible onCollectable;
+    //public event EventHandler OnPlayerFall;
 
+    public delegate void PlayerFallEvent(PlayerFallEventArgs e);
+    public PlayerFallEvent OnPlayerFall;
 
     #endregion
 
@@ -75,8 +77,8 @@ public class PlayerController : MonoBehaviour
         ManageSlider.SetHealthValue += SetHealthValue;
         #endregion
         Hazard.OnDamage += ReduceHealth;
-        EventManager.OnPlayerFall += TestFall;
-        EventManager.OnPlayerDeath += Respawn;
+        //EventManager.OnPlayerFall += TestFall;
+        //EventManager.OnPlayerDeath += Respawn;
 
 
     }
@@ -89,8 +91,8 @@ public class PlayerController : MonoBehaviour
         ManageSlider.SetHealthValue -= SetHealthValue;
         #endregion
         Hazard.OnDamage -= ReduceHealth;
-        EventManager.OnPlayerFall -= TestFall;
-        EventManager.OnPlayerDeath -= Respawn;
+        //EventManager.OnPlayerFall -= TestFall;
+        //EventManager.OnPlayerDeath -= Respawn;
 
 
     }
@@ -219,15 +221,16 @@ public class PlayerController : MonoBehaviour
         }
         else if(!inAir && airTime != 0)
         {
-            TestFall(transform.position, airTime);
+            PlayerFell(transform.position, airTime);
             airTime = 0; 
         }
 
     }
 
-    private void TestFall(Vector3 fallpos, float time)
+    private void PlayerFell(Vector3 fallpos, float time)
     {
-        Debug.Log(fallpos + "  " + time);
+        //Debug.Log(fallpos + "  " + time);
+        OnPlayerFall?.Invoke(new PlayerFallEventArgs(fallpos, time));
     }
 
     #endregion
@@ -296,4 +299,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+}
+
+[System.Serializable]
+public class PlayerFallEvent : UnityEvent<PlayerFallEventArgs> { }
+
+public class PlayerFallEventArgs
+{
+    public Vector2 fallPos;
+    public float time;
+
+   
+    public PlayerFallEventArgs(Vector2 fallPos, float time)
+    {
+        this.fallPos = fallPos;
+        this.time = time;
+    }
 }

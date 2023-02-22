@@ -307,11 +307,11 @@ public class PlayerController : MonoBehaviour
 public class PlayerFallEvent : UnityEvent<PlayerFallEventArgs> { }
 public class PlayerFallEventArgs
 {
-    public Vector2 fallPos;
+    public Vector3 fallPos;
     public float time;
 
    
-    public PlayerFallEventArgs(Vector2 fallPos, float time)
+    public PlayerFallEventArgs(Vector3 fallPos, float time)
     {
         this.fallPos = fallPos;
         this.time = time;

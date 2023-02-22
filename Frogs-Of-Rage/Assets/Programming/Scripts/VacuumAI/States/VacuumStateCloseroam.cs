@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class VacuumStateRoaming : MonoBehaviour, IVacuumState //interface needed for each state
+public class VacuumStateCloseroam : MonoBehaviour, IVacuumState //interface needed for each state
 {
     private VacuumNavigation _vacuumNavigation; //refrence of vacuumNavigation
     private VacuumAnimation _vacuumAnimation; //refrence of vacuumAnimation
 
     private VacuumNavigation.GeneralData _generalData;
     private VacuumNavigation.RoamingData _roamingData;
+    private VacuumNavigation.DetectionData _detectionData;
     
-    private List<Vector3> _roamingPossibleTargets;
-    private NavMeshHit _navHit;
 
 
     public void HandleAiState(VacuumNavigation vacuumNavigation)
@@ -21,10 +20,7 @@ public class VacuumStateRoaming : MonoBehaviour, IVacuumState //interface needed
         _vacuumAnimation = _vacuumNavigation.VacuumAnimation;
 
         //preform Ai Actions here
-
-        _roamingPossibleTargets = new List<Vector3>();
-        RoamingState();
-
+        CloseroamState();
     }
     #region "Roaming Behavior"
 
@@ -37,47 +33,20 @@ public class VacuumStateRoaming : MonoBehaviour, IVacuumState //interface needed
 
         _roamingData = new VacuumNavigation.RoamingData();
         _roamingData = _vacuumNavigation.GetRoamingData();
+
+        _detectionData = new VacuumNavigation.DetectionData();
+        _detectionData = _vacuumNavigation.GetDetectionData();
     }
 
-    private void RoamingState()
+    private void CloseroamState()
     {
-        Vector3 targetRoamPosition = Vector3.zero;
-        _vacuumAnimation.AnimateHeadDrop(1);
-
-        _roamingPossibleTargets.Clear();
-
-        for (int i = 0; i < _roamingData.roamingScanCap; i++)
+        if (_vacuumNavigation.vacuumStateActionCoroutine == null)
         {
-            Vector3 randomPoint = transform.position + Random.insideUnitSphere * _roamingData.maxRoamingPointRange;
-            randomPoint.y = transform.position.y; //sets the Y to the vacumm Y, assumes floor is perfectly flat. will need to add raycasts to find Y if floors end up being not flat
-            if (NavMesh.SamplePosition(randomPoint, out _navHit, _roamingData.roamingPointScanRange, NavMesh.AllAreas))
-            {
-                _roamingPossibleTargets.Add(_navHit.position);
-                break;
-            }
-        }
-        //No viable point was found, stalls
-        if (_roamingPossibleTargets.Count <= 0)
-        {
-            if (_vacuumNavigation.vacuumStateActionCoroutine == null)
-            {
-                _vacuumNavigation.vacuumStateActionCoroutine = _vacuumNavigation.StartCoroutine(Roaming(transform.position));
-            }
-        }
-        else
-        //points were found, finds farthest point and moves to it.
-        {
-            _roamingPossibleTargets.Sort(SortPointsByDistance);
-            targetRoamPosition = _roamingPossibleTargets[0];
-
-            if (_vacuumNavigation.vacuumStateActionCoroutine == null)
-            {
-                _vacuumNavigation.vacuumStateActionCoroutine = _vacuumNavigation.StartCoroutine(Roaming(targetRoamPosition));
-            }
+            _vacuumNavigation.vacuumStateActionCoroutine = _vacuumNavigation.StartCoroutine(Closeroam(_detectionData.detectionPoint));
         }
     }
 
-    private IEnumerator Roaming(Vector3 roamingPoint)
+    private IEnumerator Closeroam(Vector3 roamingPoint)
     {
         _vacuumNavigation.VacuumAgent.SetDestination(roamingPoint);
         _vacuumNavigation.VacuumAgent.speed = _generalData.baseRotationPhaseForwardSpeed * _roamingData.roamingSpeedFactor;
@@ -91,7 +60,7 @@ public class VacuumStateRoaming : MonoBehaviour, IVacuumState //interface needed
         for (float t = 0; t < _roamingData.rotationPhaseTimeCap; t += Time.deltaTime)
         {
             //wheel animation
-            if(Mathf.Sign(Vector3.SignedAngle(caculatedAngle, transform.forward, transform.up)) > 0)
+            if (Mathf.Sign(Vector3.SignedAngle(caculatedAngle, transform.forward, transform.up)) > 0)
             {
                 //Left
                 _vacuumAnimation.UpdateWheelAnimationDirection(VacuumAnimation.WheelRotationDirection.Left);
@@ -111,10 +80,10 @@ public class VacuumStateRoaming : MonoBehaviour, IVacuumState //interface needed
             yield return null;
         }
 
+        _vacuumAnimation.UpdateWheelAnimationDirection(VacuumAnimation.WheelRotationDirection.Straight);
+
         //movement phase
         _vacuumNavigation.VacuumAgent.speed = _generalData.baseSpeed *  _roamingData.roamingSpeedFactor;
-
-        _vacuumAnimation.UpdateWheelAnimationDirection(VacuumAnimation.WheelRotationDirection.Straight);
 
         for (float t = 0; t < _roamingData.forceNewRoamingPointTime; t += Time.deltaTime)
         {
@@ -125,24 +94,9 @@ public class VacuumStateRoaming : MonoBehaviour, IVacuumState //interface needed
             yield return null;
         }
         _vacuumNavigation.vacuumStateActionCoroutine = null;
-        RoamingState();
+        _vacuumNavigation.Roam();
     }
 
-    private int SortPointsByDistance(Vector3 a, Vector3 b)
-    {
-        if (Vector3.Distance(a, transform.position) > Vector3.Distance(b, transform.position))
-        {
-            return 1;
-        }
-        else if (Vector3.Distance(a, transform.position) < Vector3.Distance(b, transform.position))
-        {
-            return -1;
-        }
-        else
-        {
-            return 0;
-        }
-    }
 
     #endregion
 

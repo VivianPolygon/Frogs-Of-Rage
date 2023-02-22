@@ -51,6 +51,10 @@ public class VacuumStateChasing : MonoBehaviour, IVacuumState //interface needed
         _vacuumNavigation.VacuumAgent.angularSpeed = _generalData.baseTurnSpeed * _chasingData.chasingSpeedFactor;
         _vacuumNavigation.VacuumAgent.speed = _generalData.baseSpeed * _chasingData.chasingSpeedFactor;
 
+        _vacuumAnimation.UpdateWheelAnimationSpeed(_chasingData.chasingSpeedFactor); // updates the animation speeds for the wheels
+        _vacuumAnimation.UpdateWheelAnimationDirection(VacuumAnimation.WheelRotationDirection.Straight);
+        _vacuumAnimation.UpdateEyeAnimation(VacuumAnimation.EyeAnimationState.Swirl);
+
         //makes sure player transform isint null, stores its position incase it goes null mid loop. returns to roaming if null
         if (_vacuumNavigation.PlayerTransform == null)
         {
@@ -79,22 +83,7 @@ public class VacuumStateChasing : MonoBehaviour, IVacuumState //interface needed
             }
         }
 
-        //rapid rotation phase
         _vacuumNavigation.VacuumAgent.SetDestination(PlayerPosition);
-        //_vacuumNavigation.VacuumAgent.speed = _generalData.baseRotationPhaseForwardSpeed * _chasingData.chasingSpeedFactor;
-
-
-        /*
-        for (float t = 0; t < _chasingData.maxChaseRotationPhaseLength; t += Time.deltaTime)
-        {
-            if (Vector3.Dot(Vector3.Normalize(PlayerPosition - transform.position), transform.forward) > _generalData.turnAngleThreshold) //checks that the vacuum is looking in the proper cone of vision before continuing
-            {
-                break;
-            }
-            yield return null;
-        }
-        */
-
         for (float t = 0; t < _chasingData.chasingUpdatePositionRate; t += Time.deltaTime)
         {
             yield return null;

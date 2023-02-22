@@ -4,6 +4,19 @@ using UnityEngine;
 
 public class VacuumAnimation : MonoBehaviour
 {
+    public enum WheelRotationDirection
+    {
+        Left,
+        Right,
+        Straight
+    }
+
+    public enum EyeAnimationState
+    {
+        Swirl,
+        Stop
+    }
+
     [Header("Components To Animate")]
     [SerializeField] private Transform _vacuumNeckJoint;
     [SerializeField] private Transform _vacuumLeftEyeJoint;
@@ -28,6 +41,12 @@ public class VacuumAnimation : MonoBehaviour
     [SerializeField] private float spinnerSpeed;
     private Vector3 spinnerRotation;
 
+    private WheelRotationDirection _wheelAnimationDirection;
+    private float _wheelRotationSpeed = 30;
+    [SerializeField] [Tooltip("Base spin speed of the wheels in degrees per second")] private float _wheelRotationBaseSpeed;
+
+    private EyeAnimationState _eyeState;
+    [SerializeField] [Tooltip("Base spin speed of the Eye Twirls in degrees per second")]  private float _eyeAnimSpeed = 20;
 
     private bool NullCheckFaceComponents()
     {
@@ -71,11 +90,15 @@ public class VacuumAnimation : MonoBehaviour
 
     private void Update()
     {
-        ChangeSpinnerSpeed(spinnerSpeed);
-        RotateSpinner();
+        ChangeSpinnerSpeed(spinnerSpeed); // updates spinner speed
+        RotateSpinner(); // spins spinner
+
+        AnimateWheels(); // spins wheels
+        AnimateEyes(); // spins eyes
     }
 
-    public void AnimateWheels(float leftWheelRotation, float rightWheelRotation, float backWheelRotation)
+    #region "Wheel Animation"
+    private void AnimateWheels(float leftWheelRotation, float rightWheelRotation, float backWheelRotation)
     {
         _wheelRotation.z = leftWheelRotation;
         _vacuumLeftWheelJoint.Rotate(_wheelRotation);
@@ -84,6 +107,46 @@ public class VacuumAnimation : MonoBehaviour
         _wheelRotation.z = backWheelRotation;
         _vacuumBackWheelJoint.Rotate(_wheelRotation);
     }
+    private void SpinWheelsLeft(float speed)
+    {
+        AnimateWheels(-speed, speed, 0);
+    }
+    private void SpinWheelsRight(float speed)
+    {
+        AnimateWheels(speed, -speed, 0);
+    }
+    private void SpinWheelsStraight(float speed)
+    {
+        AnimateWheels(speed, speed, speed);
+    }
+
+    public void UpdateWheelAnimationDirection(WheelRotationDirection newDirection)
+    {
+        _wheelAnimationDirection = newDirection;
+    }
+    public void UpdateWheelAnimationSpeed(float newSpeed)
+    {
+        _wheelRotationSpeed = newSpeed * _wheelRotationBaseSpeed * Time.deltaTime;
+    }
+
+    private void AnimateWheels()
+    {
+        switch (_wheelAnimationDirection)
+        {
+            case WheelRotationDirection.Left:
+                SpinWheelsLeft(_wheelRotationSpeed);
+                break;
+            case WheelRotationDirection.Right:
+                SpinWheelsRight(_wheelRotationSpeed);
+                break;
+            case WheelRotationDirection.Straight:
+                SpinWheelsStraight(_wheelRotationSpeed);
+                break;
+            default:
+                break;
+        }
+    }
+    #endregion
 
     public void AnimateHead(float lerpT, Quaternion startingRotation, Quaternion endingRotation)
     {
@@ -149,5 +212,28 @@ public class VacuumAnimation : MonoBehaviour
     private void RotateSpinner()
     {
         _spinnerJoint.Rotate(spinnerRotation * Time.deltaTime, Space.Self);
+    }
+
+    private void AnimateEyes()
+    {
+        switch (_eyeState)
+        {
+            case EyeAnimationState.Swirl:
+                TwirlEyes(_eyeAnimSpeed);
+                break;
+            case EyeAnimationState.Stop:
+                break;
+            default:
+                break;
+        }
+    }
+    private void TwirlEyes(float speed)
+    {
+        _vacuumLeftEyeJoint.transform.Rotate(0, speed * Time.deltaTime, 0);
+        _vacuumRightEyeJoint.transform.Rotate(0, -speed * Time.deltaTime, 0);
+    }
+    public void UpdateEyeAnimation(EyeAnimationState newEyeAnimState)
+    {
+        _eyeState = newEyeAnimState;
     }
 }

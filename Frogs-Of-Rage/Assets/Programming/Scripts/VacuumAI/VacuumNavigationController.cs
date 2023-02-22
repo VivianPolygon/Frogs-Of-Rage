@@ -8,8 +8,6 @@ public class VacuumNavigationController : MonoBehaviour
 {
     private VacuumNavigation _vacuumNavigation; // navigation script holding AI states and sight check information
 
-    //state change logic goes here
-
     private void Awake()
     {
         _vacuumNavigation = GetComponent<VacuumNavigation>();
@@ -35,18 +33,32 @@ public class VacuumNavigationController : MonoBehaviour
         _vacuumNavigation.onPlayerSeen += PlayerSeen;
         _vacuumNavigation.onPlayerLost += PlayerLost;
 
-        PlayerController.OnPlayerFall += TestPrint;
+        PlayerController.OnPlayerFall += ListenForPlayerFall;
     }
     private void OnDisable()
     {
         _vacuumNavigation.onPlayerSeen -= PlayerSeen;
         _vacuumNavigation.onPlayerLost -= PlayerLost;
 
-        PlayerController.OnPlayerFall -= TestPrint;
+        PlayerController.OnPlayerFall -= ListenForPlayerFall;
     }
 
-    private void TestPrint(PlayerFallEventArgs eventArguments)
+    public void ListenForPlayerFall(PlayerFallEventArgs eventArguments)
     {
-        Debug.Log("Position: " + eventArguments.fallPos + "Fall Time: " + eventArguments.time);
+        VacuumHearingResult hearingResult = _vacuumNavigation.CheckSoundInRange(eventArguments.fallPos, eventArguments.time);
+
+        if (hearingResult == VacuumHearingResult.PlayerNotHeard)
+        {
+            return;
+        }
+
+        if(hearingResult == VacuumHearingResult.PlayerHeardTooHigh)
+        {
+            _vacuumNavigation.Closeroam(eventArguments.fallPos);
+        }
+        else
+        {
+            _vacuumNavigation.Detection(eventArguments.fallPos);
+        }
     }
 }

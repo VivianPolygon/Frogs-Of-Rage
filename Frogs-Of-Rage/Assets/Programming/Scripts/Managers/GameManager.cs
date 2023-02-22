@@ -20,14 +20,4 @@ public class GameManager : Singleton<GameManager>
         playerController = GameObject.Find("Player").GetComponent<PlayerController>();
         mainCam = Camera.main;
     }
-
-    private void OnEnable()
-    {
-        playerController.OnPlayerFall += EventDebugTest;
-    }
-
-    public void EventDebugTest(PlayerFallEventArgs e)
-    {
-        Debug.Log("Players position on fall: " + e.fallPos + "\nPlayers air time: " + e.time);
-    }
 }

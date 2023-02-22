@@ -34,12 +34,19 @@ public class VacuumNavigationController : MonoBehaviour
     {
         _vacuumNavigation.onPlayerSeen += PlayerSeen;
         _vacuumNavigation.onPlayerLost += PlayerLost;
+
+        PlayerController.OnPlayerFall += TestPrint;
     }
     private void OnDisable()
     {
         _vacuumNavigation.onPlayerSeen -= PlayerSeen;
         _vacuumNavigation.onPlayerLost -= PlayerLost;
+
+        PlayerController.OnPlayerFall -= TestPrint;
     }
 
-
+    private void TestPrint(PlayerFallEventArgs eventArguments)
+    {
+        Debug.Log("Position: " + eventArguments.fallPos + "Fall Time: " + eventArguments.time);
+    }
 }

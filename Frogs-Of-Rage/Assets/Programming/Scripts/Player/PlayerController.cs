@@ -63,7 +63,7 @@ public class PlayerController : MonoBehaviour
     //public event EventHandler OnPlayerFall;
 
     public delegate void PlayerFallEvent(PlayerFallEventArgs e);
-    public PlayerFallEvent OnPlayerFall;
+    public static PlayerFallEvent OnPlayerFall;
 
     #endregion
 

@@ -59,18 +59,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
 
-    #region Events
-    
-    //public event EventHandler OnPlayerFall;
-
-    public delegate void PlayerFallEvent(PlayerFallEventArgs e);
-    public static PlayerFallEvent OnPlayerFall;
-
-    public delegate void PlayerWinEvent(PlayerWinEventArgs e);
-    public static PlayerWinEvent OnPlayerWin;
-
-    #endregion
-
+   
     #region OnEnable/OnDisable
     private void OnEnable()
     {
@@ -123,6 +112,7 @@ public class PlayerController : MonoBehaviour
         HandleSprint();
         HandleAirTime();
         #endregion
+        HandlePauseMenu();
     }
 
     #region Movement
@@ -259,6 +249,24 @@ public class PlayerController : MonoBehaviour
             healthGauge.SetValue(curHealth);
     }
 
+    private void HandlePauseMenu()
+    {
+        //Toggle paused bool
+        if (InputManager.Instance.GetPause())
+        {
+            UIManager.Instance.isPaused = !UIManager.Instance.isPaused;
+            OnPlayerPause?.Invoke(new PlayerPauseEventArgs(playerData));
+        }
+        if(!UIManager.Instance.isPaused) 
+        {
+            UIManager.Instance.pauseCanvas.gameObject.SetActive(false);
+            Time.timeScale = 1.0f;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
+
+
     #endregion
 
     #region Health
@@ -295,6 +303,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    #region Events
+
+    //public event EventHandler OnPlayerFall;
+
+    public delegate void PlayerFallEvent(PlayerFallEventArgs e);
+    public static PlayerFallEvent OnPlayerFall;
+
+    public delegate void PlayerWinEvent(PlayerWinEventArgs e);
+    public static PlayerWinEvent OnPlayerWin;
+
+    public delegate void PlayerPauseEvent(PlayerPauseEventArgs e);
+    public static PlayerPauseEvent OnPlayerPause;
+
+    #endregion
+
 
 }
 
@@ -330,4 +353,21 @@ public class PlayerWinEventArgs
     }
 }
 #endregion
+
+#region Player Pause Event
+[System.Serializable]
+public class PlayerPauseEvent : UnityEvent<PlayerPauseEventArgs> { }
+public class PlayerPauseEventArgs
+{
+    public PlayerData playerData;
+
+    public PlayerPauseEventArgs(PlayerData playerData)
+    {
+        this.playerData = playerData;
+    }
+}
+
+
+#endregion
+
 

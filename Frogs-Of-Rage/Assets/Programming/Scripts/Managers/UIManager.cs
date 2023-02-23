@@ -22,7 +22,8 @@ public class UIManager : Singleton<UIManager>
     [Header("Pause Canvas")]
     [Space(10)]
     public Canvas pauseCanvas;
-    private bool isPaused = false;
+    [HideInInspector]
+    public bool isPaused = false;
     public Image flyImage;
     public Text flyCount;
     public Image antImage;
@@ -54,12 +55,13 @@ public class UIManager : Singleton<UIManager>
     {
         Collectable.OnCollectable += CollectCollectable;
         PlayerController.OnPlayerWin += HandleWinScreen;
+        PlayerController.OnPlayerPause += DisplayPauseScreen;
     }
     private void OnDisable()
     {
         Collectable.OnCollectable -= CollectCollectable;
         PlayerController.OnPlayerWin -= HandleWinScreen;
-
+        PlayerController.OnPlayerPause -= DisplayPauseScreen;
     }
 
     private void Start()
@@ -67,11 +69,7 @@ public class UIManager : Singleton<UIManager>
         panelAnimator = collectablePanel.GetComponent<Animator>();
         inputManager = InputManager.Instance;
     }
-
-    private void Update()
-    {
-        HandlePauseMenu();
-    }
+    
     private void DisplayCollectedItem(CollectableData collectableData)
     {
         
@@ -108,21 +106,27 @@ public class UIManager : Singleton<UIManager>
 
     }
 
-    private void HandlePauseMenu()
+    
+    private void DisplayPauseScreen(PlayerPauseEventArgs e)
     {
-        //Toggle paused bool
-        if(InputManager.Instance.GetPause())
-            isPaused = !isPaused;
-        if(isPaused)
-        {
-            pauseCanvas.gameObject.SetActive(true);
-            Time.timeScale = 0f;
-        }
-        else if(!isPaused)
-        {
-            pauseCanvas.gameObject.SetActive(false);
-            Time.timeScale = 1f;
-        }
+        //Activate win canvas
+        pauseCanvas.gameObject.SetActive(true);
+        Time.timeScale = 0f;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        //Display UI info
+        //Count
+        flyCount.text = e.playerData.FlyCount.ToString();
+        antCount.text = e.playerData.AntCount.ToString();
+        grasshopperCount.text = e.playerData.GrasshopperCount.ToString();
+        spiderCount.text = e.playerData.SpiderCount.ToString();
+        //Images
+        flyImage.sprite = e.playerData.FlyImage;
+        antImage.sprite = e.playerData.AntImage;
+        grasshopperImage.sprite = e.playerData.GrasshopperImage;
+        spiderImage.sprite = e.playerData.SpiderImage;
     }
 
     private void HandleWinScreen(PlayerWinEventArgs e)
@@ -132,9 +136,13 @@ public class UIManager : Singleton<UIManager>
         {
             //Activate win canvas
             youWinCanvas.gameObject.SetActive(true);
+            inputManager.playerControls.Disable();
+            isPaused = true;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
 
             //Display UI info
-                //Count
+            //Count
             flyCountYouWin.text = e.playerData.FlyCount.ToString();
             antCountYouWin.text = e.playerData.AntCount.ToString();
             grasshopperCountYouWin.text = e.playerData.GrasshopperCount.ToString();

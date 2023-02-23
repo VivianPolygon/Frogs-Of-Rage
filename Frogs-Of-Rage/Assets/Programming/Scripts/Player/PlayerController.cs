@@ -113,7 +113,7 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        //gameManager.lastCheckpointPos = transform.position;
+        gameManager.lastCheckpointPos = transform.position;
     }
 
     private void Update()

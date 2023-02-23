@@ -114,6 +114,7 @@ public class PlayerController : MonoBehaviour
         HandleAirTime();
         #endregion
         HandlePauseMenu();
+        OnPlayerCanvas?.Invoke(new PlayerCanvasEventArgs(GameManager.Instance.gameTimer, GameManager.Instance));
     }
 
     #region Movement
@@ -317,6 +318,9 @@ public class PlayerController : MonoBehaviour
     public delegate void PlayerPauseEvent(PlayerPauseEventArgs e);
     public static PlayerPauseEvent OnPlayerPause;
 
+    public delegate void PlayerCanvasEvent(PlayerCanvasEventArgs e);
+    public static PlayerCanvasEvent OnPlayerCanvas;
+
     #endregion
 
 
@@ -351,6 +355,22 @@ public class PlayerWinEventArgs
     {
         this.gameTimer = gameTimer;
         this.playerData = playerData;
+    }
+}
+#endregion
+
+#region Player Canvas Event
+[System.Serializable]
+public class PlayerCanvasEvent : UnityEvent<PlayerCanvasEventArgs> { }
+public class PlayerCanvasEventArgs
+{
+    public GameTimer gameTimer;
+    public GameManager gameManager;
+
+    public PlayerCanvasEventArgs(GameTimer gameTimer, GameManager gameManager)
+    {
+        this.gameTimer = gameTimer;
+        this.gameManager = gameManager;
     }
 }
 #endregion

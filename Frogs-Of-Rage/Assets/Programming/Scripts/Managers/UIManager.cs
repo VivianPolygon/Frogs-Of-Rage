@@ -19,6 +19,7 @@ public class UIManager : Singleton<UIManager>
     [HideInInspector]
     public CollectableData collectedData;
     public GameObject checkpointIcon;
+    public Text inGameTimer;
 
     [Header("Pause Canvas")]
     [Space(10)]
@@ -57,12 +58,14 @@ public class UIManager : Singleton<UIManager>
         Collectable.OnCollectable += CollectCollectable;
         PlayerController.OnPlayerWin += HandleWinScreen;
         PlayerController.OnPlayerPause += DisplayPauseScreen;
+        PlayerController.OnPlayerCanvas += DisplayTimer;
     }
     private void OnDisable()
     {
         Collectable.OnCollectable -= CollectCollectable;
         PlayerController.OnPlayerWin -= HandleWinScreen;
         PlayerController.OnPlayerPause -= DisplayPauseScreen;
+        PlayerController.OnPlayerCanvas -= DisplayTimer;
     }
 
     private void Start()
@@ -70,8 +73,9 @@ public class UIManager : Singleton<UIManager>
         panelAnimator = collectablePanel.GetComponent<Animator>();
         inputManager = InputManager.Instance;
     }
-    
 
+
+    #region Buttons
     public void Continue()
     {
         isPaused = false;
@@ -96,7 +100,7 @@ public class UIManager : Singleton<UIManager>
         //For now this will just reload scene 
         //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
-
+    #endregion
 
     private void DisplayCollectedItem(CollectableData collectableData)
     {
@@ -181,13 +185,18 @@ public class UIManager : Singleton<UIManager>
             grasshopperImageYouWin.sprite = e.playerData.GrasshopperImage;
             spiderImageYouWin.sprite = e.playerData.SpiderImage;
                 //Displays the game timers current time
-            timer.text = "Your Time: " + string.Format("{0:00}:{1:00}:{2:000}", e.gameTimer.minutes, e.gameTimer.seconds, e.gameTimer.milliseconds);
+            timer.text = "Your Time: " + string.Format("{0:00}:{0:00}:{1:00}:{2:000}",e.gameTimer.hours, e.gameTimer.minutes, e.gameTimer.seconds, e.gameTimer.milliseconds);
 
             //Stores the total time it took for use later?
             finalGameTime = e.gameTimer.totalTime;
 
             //Do camera stuff here for the fade out and showcase level
         }
+    }
+
+    private void DisplayTimer(PlayerCanvasEventArgs e)
+    {
+        inGameTimer.text = string.Format("{0:00}:{01:00}:{2:000}",  e.gameTimer.minutes, e.gameTimer.seconds, e.gameTimer.milliseconds);
     }
 
 }

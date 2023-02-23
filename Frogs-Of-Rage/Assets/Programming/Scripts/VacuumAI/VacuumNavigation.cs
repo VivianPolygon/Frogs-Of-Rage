@@ -10,7 +10,7 @@ public class VacuumNavigation : MonoBehaviour
 {
     //irrelevant to the inspector
     #region "Script Variables/Events"
-    static event Action onPlayerHit;
+    public static event Action onPlayerHit;
 
     //event for the player being hit
     public static void InvokeOnPlayerHit() { onPlayerHit?.Invoke(); }

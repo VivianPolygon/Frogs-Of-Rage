@@ -215,7 +215,7 @@ CharacterController:
   m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.0001
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &7587290521112274944
@@ -232,11 +232,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthMax: 100
   staminaMax: 100
-  walkSpeed: 5
-  sprintSpeed: 7
-  jumpForce: 3
+  walkSpeed: 9
+  sprintSpeed: 12
+  jumpForce: 2
   movingJumpForce: 1
-  gravityValue: -9.81
+  gravityValue: -38
   rotationSpeed: 4
   staminaGauge: {fileID: 0}
   healthGauge: {fileID: 0}
@@ -279,7 +279,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7587290521358477422}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalPosition: {x: 0, y: 1.79, z: 0.147}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7587290521112275070}

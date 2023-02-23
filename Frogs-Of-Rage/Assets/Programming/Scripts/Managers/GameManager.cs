@@ -14,6 +14,11 @@ public class GameManager : Singleton<GameManager>
     public Vector3 lastCheckpointPos;
     public GameTimer gameTimer;
 
+
+    public delegate void PlayerDeath(PlayerDeathEventArgs e);
+    public static event PlayerDeath OnPlayerDeath;
+
+
     public override void Awake()
     {
         base.Awake();
@@ -21,4 +26,35 @@ public class GameManager : Singleton<GameManager>
         mainCam = Camera.main;
         gameTimer = GetComponent<GameTimer>();
     }
+
+    public void Update()
+    {
+        ManageRespawn();
+    }
+
+    private void ManageRespawn()
+    {
+        if (playerController.curHealth > 0)
+            return;
+        else if (playerController.curHealth <= 0)
+        {
+            playerController.curHealth = playerController.healthMax;
+            OnPlayerDeath?.Invoke(new PlayerDeathEventArgs(lastCheckpointPos));
+
+        }
+    }
 }
+#region Player Death Event
+[System.Serializable]
+public class PlayerDeathEvent : UnityEvent<PlayerDeathEventArgs> { }
+public class PlayerDeathEventArgs
+{
+    public Vector3 respawnPos;
+
+
+    public PlayerDeathEventArgs(Vector3 respawnPos)
+    {
+        this.respawnPos = respawnPos;
+    }
+}
+#endregion

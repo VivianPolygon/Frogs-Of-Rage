@@ -17,6 +17,7 @@ public class UIManager : Singleton<UIManager>
     public GameObject collectablePanel;
     [HideInInspector]
     public CollectableData collectedData;
+    public GameObject checkpointIcon;
 
     [Header("Pause Canvas")]
     [Space(10)]
@@ -144,7 +145,7 @@ public class UIManager : Singleton<UIManager>
             grasshopperImageYouWin.sprite = e.playerData.GrasshopperImage;
             spiderImageYouWin.sprite = e.playerData.SpiderImage;
                 //Displays the game timers current time
-            timer.text = string.Format("{0:00}:{1:00}", e.gameTimer.minutes, e.gameTimer.seconds);
+            timer.text = "Your Time: " + string.Format("{0:00}:{1:00}:{0:00.000}", e.gameTimer.minutes, e.gameTimer.seconds, e.gameTimer.milliseconds);
 
             //Stores the total time it took for use later?
             finalGameTime = e.gameTimer.totalTime;

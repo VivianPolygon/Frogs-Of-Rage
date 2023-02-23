@@ -8,10 +8,13 @@ using UnityEngine.Events;
 
 public class GameManager : Singleton<GameManager>
 {
-
+    [HideInInspector]
     public PlayerController playerController;
+    [HideInInspector]
     public Camera mainCam;
+    [HideInInspector]
     public Vector3 lastCheckpointPos;
+    [HideInInspector]
     public GameTimer gameTimer;
 
 

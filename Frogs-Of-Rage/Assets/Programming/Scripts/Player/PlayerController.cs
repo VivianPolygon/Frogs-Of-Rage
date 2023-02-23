@@ -1,8 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
-using System;
+using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
@@ -36,6 +36,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private ManageSlider healthGauge;
 
+    [Space(5)]
+    public PlayerData playerData;
+    
     #endregion
 
     #region Private Variables
@@ -48,8 +51,6 @@ public class PlayerController : MonoBehaviour
     private Vector3 playerVelocity;
     private bool groundedPlayer;
     private float curSpeed;
-    private Vector3 fallPos;
-    private float fallTime;
     private GameManager gameManager;
 
     [HideInInspector]
@@ -58,10 +59,16 @@ public class PlayerController : MonoBehaviour
     public float curStamina;
     #endregion
 
-    #region Events
-    public delegate void OnCollectible();
-    public static event OnCollectible onCollectable;
 
+    #region Events
+    
+    //public event EventHandler OnPlayerFall;
+
+    public delegate void PlayerFallEvent(PlayerFallEventArgs e);
+    public static PlayerFallEvent OnPlayerFall;
+
+    public delegate void PlayerWinEvent(PlayerWinEventArgs e);
+    public static PlayerWinEvent OnPlayerWin;
 
     #endregion
 
@@ -75,8 +82,8 @@ public class PlayerController : MonoBehaviour
         ManageSlider.SetHealthValue += SetHealthValue;
         #endregion
         Hazard.OnDamage += ReduceHealth;
-        EventManager.OnPlayerFall += TestFall;
-        EventManager.OnPlayerDeath += Respawn;
+        //EventManager.OnPlayerFall += TestFall;
+        //EventManager.OnPlayerDeath += Respawn;
 
 
     }
@@ -89,8 +96,8 @@ public class PlayerController : MonoBehaviour
         ManageSlider.SetHealthValue -= SetHealthValue;
         #endregion
         Hazard.OnDamage -= ReduceHealth;
-        EventManager.OnPlayerFall -= TestFall;
-        EventManager.OnPlayerDeath -= Respawn;
+        //EventManager.OnPlayerFall -= TestFall;
+        //EventManager.OnPlayerDeath -= Respawn;
 
 
     }
@@ -219,15 +226,16 @@ public class PlayerController : MonoBehaviour
         }
         else if(!inAir && airTime != 0)
         {
-            TestFall(transform.position, airTime);
+            PlayerFell(transform.position, airTime);
             airTime = 0; 
         }
 
     }
 
-    private void TestFall(Vector3 fallpos, float time)
+    private void PlayerFell(Vector3 fallpos, float time)
     {
-        Debug.Log(fallpos + "  " + time);
+        //Debug.Log(fallpos + "  " + time);
+        OnPlayerFall?.Invoke(new PlayerFallEventArgs(fallpos, time));
     }
 
     #endregion
@@ -281,19 +289,49 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    //Return the time player is in the air
-    public float AirTime
-    {
-        get { return airTime; }
-    }
-
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Exit")
         {
+            //Invoke on player win event
+            OnPlayerWin?.Invoke(new PlayerWinEventArgs(gameManager.gameTimer, playerData));
             Debug.Log("You exited");
         }
     }
 
+
 }
+
+#region Player Fall Event
+[System.Serializable]
+public class PlayerFallEvent : UnityEvent<PlayerFallEventArgs> { }
+public class PlayerFallEventArgs
+{
+    public Vector3 fallPos;
+    public float time;
+
+   
+    public PlayerFallEventArgs(Vector3 fallPos, float time)
+    {
+        this.fallPos = fallPos;
+        this.time = time;
+    }
+}
+#endregion
+
+#region Player Win Event
+[System.Serializable]
+public class PlayerWinEvent : UnityEvent<PlayerWinEventArgs> { }
+public class PlayerWinEventArgs
+{
+    public GameTimer gameTimer;
+    public PlayerData playerData;
+
+    public PlayerWinEventArgs(GameTimer gameTimer, PlayerData playerData)
+    {
+        this.gameTimer = gameTimer;
+        this.playerData = playerData;
+    }
+}
+#endregion
+

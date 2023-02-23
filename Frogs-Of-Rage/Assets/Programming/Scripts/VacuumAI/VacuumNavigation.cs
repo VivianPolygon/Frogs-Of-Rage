@@ -76,8 +76,8 @@ public class VacuumNavigation : MonoBehaviour
 
     #endregion
 
-    //general movement variables for the vacuum
-    #region "General Variables"
+    //general movement variables for the vacuum and the general struct
+    #region "General Phase Variables"
     [Header("General Vacuum Variables")]
     [SerializeField] [Tooltip("The Speed the Vacuum Moves Forward")] private float _baseSpeed;
     [SerializeField] [Tooltip("The Speed the Vacuum Turns")] [Range(40, 120)] private float _baseTurnSpeed;
@@ -86,19 +86,26 @@ public class VacuumNavigation : MonoBehaviour
     [SerializeField] [Tooltip("Angle threshold expresed as a dot product needed before entering movment phase")] [Range(-1f, 0.95f)] private float _turnAngleThreshold;
     #endregion
     //variables used for the roaming state and struct
-    #region "Roaming Variables"
+    #region "Roaming Phase Variables"
     [Header("Roaming Variables")]
     [Space(15)]
     [SerializeField] [Tooltip("Multiplier that modifies the base speed, acceleration, turning speed, and turning forward speed from the general data while in this state")] [Range(1, 2)] private float _roamingSpeedFactor;
     [SerializeField] [Tooltip("Distance Scanned when Choosing Point While Roaming")] private float _maxRoamingPointRange;
     [SerializeField] [Tooltip("Distance from a navmesh a scan can give to allow navigation")] private float _roamingPointScanRange;
     [SerializeField] [Tooltip("Number of Times Scanned to Find a point. If scans are unsucsessful, Vacuume Stays Still Untill Next Scan")] private int _roamingScanCap;
-    [SerializeField] [Tooltip("Amount of Time Before The Vacume is forced a new point if it hasent reached its target point. prevents getting stuck")] [Range (1f, 5f)]private float _forceNewRoamingPointTime;
-    [SerializeField] [Tooltip("Amount of World Units away From the Target the Vacume needs to Be away from the target point before being able to find a new point")] [Range (0.5f, 5f)] private float _distanceForNewPoint;
+    [SerializeField] [Tooltip("Amount of Time Before The Vacuum is forced a new point if it hasent reached its target point. prevents getting stuck")] [Range (4f, 12f)]private float _forceNewRoamingPointTime;
+    [SerializeField] [Tooltip("Amount of World Units away From the Target the Vacuum needs to Be away from the target point before being able to find a new point")] [Range (0.5f, 5f)] private float _distanceForNewPoint;
     [SerializeField] [Tooltip("Time Limit on the Rotation Phase")] [Range(0.1f, 3f)] private float _rotationPhaseTimeCap;
+
+    //property for scan range, bail time and point range, and rotation phase cap used elsewhere too, but mostly relevant for roaming 
+    public float VacuumNavMeshScanRange { get { return _roamingPointScanRange; } }
+    public float VacuumPointBailOutTime{ get { return _forceNewRoamingPointTime; } }
+    public float VacuumPointReachedDistance { get { return _distanceForNewPoint; } }
+    public float VacuumRotationPhaseCap { get { return _rotationPhaseTimeCap; } }
+
     #endregion
     //variables used for the chasing state and struct
-    #region "Chasing Variables"
+    #region "Chasing Phase Variables"
     [Header("Chasing Variables")]
     [Space(20)]
     [SerializeField] [Tooltip("Multiplier applied to the base speeds at which the vacuum moves during the chase speed.")] [Range(1, 2)] private float _chasingSpeedFactor;
@@ -113,6 +120,22 @@ public class VacuumNavigation : MonoBehaviour
     [SerializeField] [Tooltip("distance from the player needs to be before attacking")] private float _attackDistance;
     // for Editor scrit
     public float AttackDistance { get { return _attackDistance; } }
+    #endregion
+    //variables used for the detection state and struct
+    #region "Detection Phase Variables"
+    [SerializeField] [Tooltip("Speed mult for the detection phase")] private float _detectionSpeedFactor;
+
+    [SerializeField] [Tooltip("1 Second = 1 world unit Multiplied by this variable to determine if the sound made from the player landing is within detection range")] [Min(0)] private float _hearingSensitivity;
+    [SerializeField] [Tooltip("Height Diffrence between the vacuum and the player to activate the detection phase")] [Min(0)] private float _detectionHeightRange;
+    [SerializeField] [Tooltip("Speed bonus for the vacuum during its final spin in the detection phase")] [Range(2,5)] private float _turboSpinSpeed;
+    //properties of the above two for the editor script
+    public float SoundVolumeAmplifier { get { return _hearingSensitivity; } }
+    public float DetectionHeightRange { get { return _detectionHeightRange; } }
+
+    [SerializeField] [Tooltip("the vacuum spins in place scanning for the player when they get to the point where the player was heard, which corresponds to the duration of that spin")] private float _spinScanTime;
+
+    private Vector3 _detectionPoint;
+
     #endregion
 
     //events for seeing and losing sight of the player
@@ -221,11 +244,32 @@ public class VacuumNavigation : MonoBehaviour
         return retreivedData;
     }
 
+
+    public struct DetectionData
+    {
+        public float detectionSpeedFactor;
+        public float hearingSensitivity;
+        public float spinScanTime;
+        public float turboSpinSpeed;
+        public Vector3 detectionPoint;
+    }
+    public DetectionData GetDetectionData()
+    {
+        DetectionData retreivedData = new DetectionData();
+
+        retreivedData.hearingSensitivity = _hearingSensitivity;
+        retreivedData.spinScanTime = _spinScanTime;
+        retreivedData.detectionPoint = _detectionPoint;
+        retreivedData.detectionSpeedFactor = _detectionSpeedFactor;
+        retreivedData.turboSpinSpeed = _turboSpinSpeed;
+
+        return retreivedData;
+    }
     #endregion
 
     //for state pattern
     //states
-    private IVacuumState _roamingState, _chasingState;
+    private IVacuumState _roamingState, _chasingState, _detectionState, _closeroam;
     //state context, used for transitioning states
     private VacuumStateContext _vacuumStateContext;
 
@@ -242,6 +286,8 @@ public class VacuumNavigation : MonoBehaviour
         _vacuumStateContext = new VacuumStateContext(this);  
         _roamingState = gameObject.AddComponent<VacuumStateRoaming>();
         _chasingState = gameObject.AddComponent<VacuumStateChasing>();
+        _detectionState = gameObject.AddComponent<VacuumStateDetection>();
+        _closeroam = gameObject.AddComponent<VacuumStateCloseroam>();
     }
 
     private void ResetActionCoroutine() // stops and empties the action coroutine in preperation for a state change
@@ -252,7 +298,6 @@ public class VacuumNavigation : MonoBehaviour
             vacuumStateActionCoroutine = null;
         }
     }
-
     public void Roam()
     {
         ResetActionCoroutine();
@@ -265,6 +310,21 @@ public class VacuumNavigation : MonoBehaviour
         _vacuumStateContext.TransitionStates(_chasingState);
     }
 
+    public void Detection(Vector3 detectionPoint)
+    {
+        _detectionPoint = detectionPoint;
+
+        ResetActionCoroutine();
+        _vacuumStateContext.TransitionStates(_detectionState);
+    }
+
+    public void Closeroam(Vector3 closeRoamPoint)
+    {
+        _detectionPoint = closeRoamPoint;
+
+        ResetActionCoroutine();
+        _vacuumStateContext.TransitionStates(_closeroam);
+    }
 
     //initilizes the navmesh agent, creating it, or updating the current one with the vacume movment data
     private void InitilizeNavmeshAgent()
@@ -370,6 +430,30 @@ public class VacuumNavigation : MonoBehaviour
         _sightCheckCoroutine = null;
     }
 
+    public VacuumHearingResult CheckSoundInRange(Vector3 fallPosition, float fallTime)
+    {
+        Vector3 flattendPlayerPosition = fallPosition;
+        flattendPlayerPosition.y = transform.position.y; // takes the Y out for distance math
+
+        int returnValue = 0;
+
+        if (!NavMesh.SamplePosition(flattendPlayerPosition, out NavMeshHit _navHit, VacuumNavMeshScanRange, NavMesh.AllAreas))
+        {
+            return (VacuumHearingResult)returnValue; // returns out if a point couldnt be moved to
+        }
+
+        if (Vector3.Distance(flattendPlayerPosition, transform.position) <= (fallTime * _hearingSensitivity)) // distance check
+        {
+            //point found
+            returnValue++;
+        }
+        if (Mathf.Abs(fallPosition.y - transform.position.y) > _detectionHeightRange) // height check
+        {
+            returnValue *= 2;
+        }
+
+        return (VacuumHearingResult)returnValue;
+    }
 
     #endregion
 

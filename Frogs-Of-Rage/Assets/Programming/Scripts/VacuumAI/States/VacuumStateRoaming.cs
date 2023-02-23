@@ -81,11 +81,28 @@ public class VacuumStateRoaming : MonoBehaviour, IVacuumState //interface needed
     {
         _vacuumNavigation.VacuumAgent.SetDestination(roamingPoint);
         _vacuumNavigation.VacuumAgent.speed = _generalData.baseRotationPhaseForwardSpeed * _roamingData.roamingSpeedFactor;
+        _vacuumNavigation.VacuumAgent.angularSpeed = _generalData.baseTurnSpeed * _roamingData.roamingSpeedFactor;
 
+        _vacuumAnimation.UpdateWheelAnimationSpeed(_roamingData.roamingSpeedFactor); // updates the animation speeds for the wheels
+        _vacuumAnimation.UpdateEyeAnimation(VacuumAnimation.EyeAnimationState.Stop);
+
+        Vector3 caculatedAngle = (roamingPoint - transform.position).normalized;
         //rotation phase
         for (float t = 0; t < _roamingData.rotationPhaseTimeCap; t += Time.deltaTime)
         {
-            
+            //wheel animation
+            if(Mathf.Sign(Vector3.SignedAngle(caculatedAngle, transform.forward, transform.up)) > 0)
+            {
+                //Left
+                _vacuumAnimation.UpdateWheelAnimationDirection(VacuumAnimation.WheelRotationDirection.Left);
+            }
+            else
+            {
+                //Right
+                _vacuumAnimation.UpdateWheelAnimationDirection(VacuumAnimation.WheelRotationDirection.Right);
+
+            }
+
             if (Vector3.Dot(Vector3.Normalize(roamingPoint - transform.position), transform.forward) > _generalData.turnAngleThreshold) //checks that the vacuum is looking in the proper cone of vision before continuing
             {
                 break;
@@ -96,6 +113,8 @@ public class VacuumStateRoaming : MonoBehaviour, IVacuumState //interface needed
 
         //movement phase
         _vacuumNavigation.VacuumAgent.speed = _generalData.baseSpeed *  _roamingData.roamingSpeedFactor;
+
+        _vacuumAnimation.UpdateWheelAnimationDirection(VacuumAnimation.WheelRotationDirection.Straight);
 
         for (float t = 0; t < _roamingData.forceNewRoamingPointTime; t += Time.deltaTime)
         {

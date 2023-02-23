@@ -8,8 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     #region Variables in Inspector
     [Space(10)]
-    [SerializeField]
-    private float healthMax = 100f;
+    public  float healthMax = 100f;
     [Header("Movement Variables")]
     [Space(10)]
     public float staminaMax = 100f;
@@ -82,9 +81,8 @@ public class PlayerController : MonoBehaviour
         ManageSlider.SetHealthValue += SetHealthValue;
         #endregion
         Hazard.OnDamage += ReduceHealth;
-        //EventManager.OnPlayerFall += TestFall;
-        //EventManager.OnPlayerDeath += Respawn;
-
+        GameManager.OnPlayerDeath += Respawn;
+        VacuumNavigation.onPlayerHit -= VacuumInstaKill;
 
     }
     private void OnDisable()
@@ -96,9 +94,8 @@ public class PlayerController : MonoBehaviour
         ManageSlider.SetHealthValue -= SetHealthValue;
         #endregion
         Hazard.OnDamage -= ReduceHealth;
-        //EventManager.OnPlayerFall -= TestFall;
-        //EventManager.OnPlayerDeath -= Respawn;
-
+        GameManager.OnPlayerDeath -= Respawn;
+        VacuumNavigation.onPlayerHit -= VacuumInstaKill;
 
     }
     #endregion
@@ -116,7 +113,7 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        gameManager.lastCheckpointPos = transform.position;
+        //gameManager.lastCheckpointPos = transform.position;
     }
 
     private void Update()
@@ -126,7 +123,6 @@ public class PlayerController : MonoBehaviour
         HandleSprint();
         HandleAirTime();
         #endregion
-        ManageRespawn();
     }
 
     #region Movement
@@ -274,18 +270,18 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Respawn
-    private void ManageRespawn()
+    
+    private void Respawn(PlayerDeathEventArgs e)
     {
-        if (curHealth > 0)
-            return;
-        else if (curHealth <= 0)
-            Respawn();
+        controller.enabled= false;
+        transform.position = e.respawnPos;
+        controller.enabled = true;
+
     }
-    private void Respawn()
+
+    private void VacuumInstaKill()
     {
-        curHealth = healthMax;
-        transform.position = gameManager.lastCheckpointPos;
-        Debug.Log(transform.position);
+        Respawn(new PlayerDeathEventArgs(gameManager.lastCheckpointPos));
     }
     #endregion
 

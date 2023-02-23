@@ -15,7 +15,7 @@ public class Checkpoint : MonoBehaviour
         if (other.tag == "Player")
         {
             gameManager.lastCheckpointPos = transform.position;
-            Debug.Log(gameManager.lastCheckpointPos);
+            //Debug.Log(gameManager.lastCheckpointPos);
         }
     }
 }

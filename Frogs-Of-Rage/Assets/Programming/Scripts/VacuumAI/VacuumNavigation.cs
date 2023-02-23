@@ -8,7 +8,7 @@ using System;
 [RequireComponent(typeof(VacuumAnimation))]
 public class VacuumNavigation : MonoBehaviour
 {
-    static event Action onPlayerHit;
+    public static event Action onPlayerHit;
     public static void InvokeOnPlayerHit() { onPlayerHit?.Invoke(); }
 
     public VacuumAnimation VacuumAnimation // animation Script responsible for animating the model

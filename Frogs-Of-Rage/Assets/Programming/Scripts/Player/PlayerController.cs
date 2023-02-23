@@ -82,7 +82,7 @@ public class PlayerController : MonoBehaviour
         #endregion
         Hazard.OnDamage += ReduceHealth;
         GameManager.OnPlayerDeath += Respawn;
-        VacuumNavigation.onPlayerHit -= VacuumInstaKill;
+        VacuumNavigation.onPlayerHit += VacuumInstaKill;
 
     }
     private void OnDisable()

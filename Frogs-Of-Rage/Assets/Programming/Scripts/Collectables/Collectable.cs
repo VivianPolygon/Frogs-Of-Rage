@@ -15,7 +15,7 @@ public class Collectable : MonoBehaviour, ICollectable
     public static event OnCollectableEvent OnCollectable;
 
 
-    private void Start()
+    private void Awake()
     {
         texture = new Texture2D((int)collectableData.Image.rect.width, (int)collectableData.Image.rect.height);
 
@@ -30,6 +30,7 @@ public class Collectable : MonoBehaviour, ICollectable
         texture.Apply();
 
         collectableData.Material.SetTexture("_BaseMap", texture);
+
 
     }
 

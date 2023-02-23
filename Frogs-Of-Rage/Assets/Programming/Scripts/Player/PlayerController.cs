@@ -103,6 +103,7 @@ public class PlayerController : MonoBehaviour
         Cursor.visible = false;
 
         gameManager.lastCheckpointPos = transform.position;
+        //DontDestroyOnLoad(gameObject);
     }
 
     private void Update()

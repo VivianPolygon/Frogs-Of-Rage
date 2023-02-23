@@ -17,6 +17,15 @@ public class GameManager : Singleton<GameManager>
     [HideInInspector]
     public GameTimer gameTimer;
 
+    [HideInInspector]
+    public float fliesInScene;
+    [HideInInspector]
+    public float antsInScene;
+    [HideInInspector]
+    public float grasshoppersInScene;
+    [HideInInspector]
+    public float spidersInScene;
+
 
     public delegate void PlayerDeath(PlayerDeathEventArgs e);
     public static event PlayerDeath OnPlayerDeath;
@@ -27,8 +36,13 @@ public class GameManager : Singleton<GameManager>
         base.Awake();
         playerController = GameObject.Find("Player").GetComponent<PlayerController>();
         mainCam = Camera.main;
+        DontDestroyOnLoad(mainCam);
         gameTimer = GetComponent<GameTimer>();
+        
+
     }
+
+   
 
     public void Update()
     {

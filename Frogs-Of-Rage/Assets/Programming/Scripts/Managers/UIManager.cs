@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -70,6 +71,33 @@ public class UIManager : Singleton<UIManager>
         inputManager = InputManager.Instance;
     }
     
+
+    public void Continue()
+    {
+        isPaused = false;
+    }
+    public void SaveGame()
+    {
+        Debug.Log("Saving game");
+
+    }
+    public void Options()
+    {
+        Debug.Log("Options menu");
+
+    }
+    public void ExitGame()
+    {
+        Application.Quit();
+        Debug.Log("Quitting game");
+    }
+    public void Menu()
+    {
+        //For now this will just reload scene 
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+
     private void DisplayCollectedItem(CollectableData collectableData)
     {
         
@@ -143,10 +171,10 @@ public class UIManager : Singleton<UIManager>
 
             //Display UI info
             //Count
-            flyCountYouWin.text = e.playerData.FlyCount.ToString();
-            antCountYouWin.text = e.playerData.AntCount.ToString();
-            grasshopperCountYouWin.text = e.playerData.GrasshopperCount.ToString();
-            spiderCountYouWin.text = e.playerData.SpiderCount.ToString();
+            flyCountYouWin.text = e.playerData.FlyCount.ToString() + "/" + GameManager.Instance.fliesInScene;
+            antCountYouWin.text = e.playerData.AntCount.ToString() + "/" + GameManager.Instance.antsInScene;
+            grasshopperCountYouWin.text = e.playerData.GrasshopperCount.ToString() + "/" + GameManager.Instance.grasshoppersInScene;
+            spiderCountYouWin.text = e.playerData.SpiderCount.ToString() + "/" + GameManager.Instance.spidersInScene;
                 //Images
             flyImageYouWin.sprite = e.playerData.FlyImage;
             antImageYouWin.sprite = e.playerData.AntImage;

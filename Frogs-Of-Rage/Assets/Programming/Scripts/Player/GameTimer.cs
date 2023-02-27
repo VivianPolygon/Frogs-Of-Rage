@@ -13,14 +13,14 @@ public class GameTimer : MonoBehaviour
     private void Start()
     {
         UIManager.Instance.isPaused = true;
-        Time.timeScale = 100f;
+
     }
     private void Update()
     {
         totalTime += Time.deltaTime;
 
-        hours = Mathf.FloorToInt((totalTime / 60) / 60);
-        minutes = Mathf.FloorToInt((totalTime / 60) % 60);
+        //hours = Mathf.FloorToInt((totalTime / 60) / 60);
+        minutes = Mathf.FloorToInt(totalTime / 60);
         seconds = Mathf.FloorToInt(totalTime % 60);
         milliseconds = Mathf.FloorToInt(totalTime * 1000) % 1000;
 

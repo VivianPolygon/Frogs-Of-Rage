@@ -213,8 +213,8 @@ CharacterController:
   serializedVersion: 2
   m_Height: 2
   m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
+  m_SlopeLimit: 60
+  m_StepOffset: 0.01
   m_SkinWidth: 0.0001
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 1, z: 0}
@@ -237,6 +237,8 @@ MonoBehaviour:
   jumpForce: 2
   movingJumpForce: 1
   gravityValue: -38
+  slopeForce: -800
+  slopeDetectionDistance: 0.45
   rotationSpeed: 4
   staminaGauge: {fileID: 0}
   healthGauge: {fileID: 0}

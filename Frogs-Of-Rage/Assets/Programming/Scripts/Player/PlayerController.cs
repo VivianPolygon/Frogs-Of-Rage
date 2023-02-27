@@ -24,6 +24,10 @@ public class PlayerController : MonoBehaviour
     private float movingJumpForce = 1.0f;
     [SerializeField, Tooltip("The gravity force on the player")]
     private float gravityValue = -9.81f;
+    [SerializeField, Tooltip("The gravity force on the player when on a slope")]
+    private float slopeForce = -100f;
+    [SerializeField, Tooltip("The detection distance from bottom of player down if they are on a slope")]
+    private float slopeDetectionDistance = 0.2f;
 
     [Space(5)]
     [SerializeField]
@@ -51,6 +55,8 @@ public class PlayerController : MonoBehaviour
     private bool groundedPlayer;
     private float curSpeed;
     private GameManager gameManager;
+    private bool isJumping = false;
+
 
     [HideInInspector]
     public float curHealth;
@@ -154,9 +160,11 @@ public class PlayerController : MonoBehaviour
         //Moves the actual character controller
         controller.Move(move * Time.deltaTime * curSpeed);
 
+
         //Jump
         if (inputManager.GetJump() && groundedPlayer)
         {
+            isJumping = true;
             //Player is moving
             if (movement == Vector2.zero)
                 playerVelocity.y += Mathf.Sqrt(jumpForce * -3.0f * gravityValue);
@@ -166,9 +174,13 @@ public class PlayerController : MonoBehaviour
             //Debug.Log(movement);
         }
 
+        if (move != Vector3.zero && OnSlope())
+            playerVelocity.y += slopeForce * Time.deltaTime;
+        else
+            //Adds gravity
+            playerVelocity.y += gravityValue * Time.deltaTime;
 
-        //Adds gravity
-        playerVelocity.y += gravityValue * Time.deltaTime;
+        
         //Moves the character controller for gravity
         controller.Move(playerVelocity * Time.deltaTime);
 
@@ -215,6 +227,7 @@ public class PlayerController : MonoBehaviour
         else if(!inAir && airTime != 0)
         {
             PlayerFell(transform.position, airTime);
+            isJumping = false;
             airTime = 0; 
         }
 
@@ -226,6 +239,17 @@ public class PlayerController : MonoBehaviour
         OnPlayerFall?.Invoke(new PlayerFallEventArgs(fallpos, time));
     }
 
+    private bool OnSlope()
+    {
+        if (isJumping)
+            return false;
+
+        if(Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, slopeDetectionDistance))
+            if (hit.normal != Vector3.up)
+                return true;
+        return false;
+        
+    }
     #endregion
 
     #region UI

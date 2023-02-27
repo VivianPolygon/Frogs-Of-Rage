@@ -3763,10 +3763,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7587290521112275071, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
-      propertyPath: m_SlopeLimit
-      value: 60
-      objectReference: {fileID: 0}
     - target: {fileID: 7587290521358477422, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -11508,6 +11504,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 3496261862752618958, guid: c39a3631560e84e419c273c570ee048c, type: 3}
+      propertyPath: m_FillAmount
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3496261862752618959, guid: c39a3631560e84e419c273c570ee048c, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -11572,6 +11572,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3496261861293196716, guid: c39a3631560e84e419c273c570ee048c, type: 3}
   m_PrefabInstance: {fileID: 1225925928}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1225925940 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4060107050880420458, guid: c39a3631560e84e419c273c570ee048c, type: 3}
+  m_PrefabInstance: {fileID: 1225925928}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1228265045
 GameObject:
   m_ObjectHideFlags: 0
@@ -16171,6 +16182,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 19470960}
     - target: {fileID: 8648235601608648111, guid: a53354e86d5792f4eab0bcea17ca01c9, type: 3}
+      propertyPath: inGameTimer
+      value: 
+      objectReference: {fileID: 1225925940}
+    - target: {fileID: 8648235601608648111, guid: a53354e86d5792f4eab0bcea17ca01c9, type: 3}
       propertyPath: pauseCanvas
       value: 
       objectReference: {fileID: 19470961}
@@ -17593,19 +17608,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.822128
+      value: 0.087489046
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.46731052
+      value: 0.0497301
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.2826806
+      value: 0.86495584
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.16068009
+      value: -0.4916544
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296575147496, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_RootOrder
@@ -20141,6 +20156,8 @@ MonoBehaviour:
   jumpForce: 2
   movingJumpForce: 1
   gravityValue: -38
+  slopeForce: -100
+  slopeDetectionDistance: 0.2
   rotationSpeed: 4
   staminaGauge: {fileID: 1225925929}
   healthGauge: {fileID: 1225925930}

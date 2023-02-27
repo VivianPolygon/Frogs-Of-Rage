@@ -138,7 +138,6 @@ public class UIManager : Singleton<UIManager>
 
     }
 
-    
     private void DisplayPauseScreen(PlayerPauseEventArgs e)
     {
         //Activate win canvas
@@ -150,10 +149,10 @@ public class UIManager : Singleton<UIManager>
 
         //Display UI info
         //Count
-        flyCount.text = e.playerData.FlyCount.ToString();
-        antCount.text = e.playerData.AntCount.ToString();
-        grasshopperCount.text = e.playerData.GrasshopperCount.ToString();
-        spiderCount.text = e.playerData.SpiderCount.ToString();
+        flyCount.text = e.playerData.FlyCount.ToString() + "/" + GameManager.Instance.fliesInScene;
+        antCount.text = e.playerData.AntCount.ToString() + "/" + GameManager.Instance.antsInScene;
+        grasshopperCount.text = e.playerData.GrasshopperCount.ToString() + "/" + GameManager.Instance.grasshoppersInScene;
+        spiderCount.text = e.playerData.SpiderCount.ToString() + "/" + GameManager.Instance.spidersInScene;
         //Images
         flyImage.sprite = e.playerData.FlyImage;
         antImage.sprite = e.playerData.AntImage;
@@ -185,7 +184,7 @@ public class UIManager : Singleton<UIManager>
             grasshopperImageYouWin.sprite = e.playerData.GrasshopperImage;
             spiderImageYouWin.sprite = e.playerData.SpiderImage;
                 //Displays the game timers current time
-            timer.text = "Your Time: " + string.Format("{0:00}:{0:00}:{1:00}:{2:000}",e.gameTimer.hours, e.gameTimer.minutes, e.gameTimer.seconds, e.gameTimer.milliseconds);
+            timer.text = "Your Time: " + string.Format("{0:00}:{1:00}:{2:000}", e.gameTimer.minutes, e.gameTimer.seconds, e.gameTimer.milliseconds);
 
             //Stores the total time it took for use later?
             finalGameTime = e.gameTimer.totalTime;

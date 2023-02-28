@@ -35,6 +35,12 @@ public class PlayerController : MonoBehaviour
     private float speedModifier = 0.5f;
     [SerializeField, Tooltip("Max speed player can have")]
     private float maxSpeed = 15f;
+
+    [SerializeField, Tooltip("How much stamina is increased per ants collected")]
+    private float staminaModifier = 0.5f;
+    [SerializeField, Tooltip("Max stamina player can have")]
+    private float maxStamina = 200f;
+
     [SerializeField, Tooltip("How much total health is increased per fly collected")]
     private float healthModifier = 0.5f;
     [SerializeField, Tooltip("Max health player can have")]
@@ -68,7 +74,8 @@ public class PlayerController : MonoBehaviour
     private GameManager gameManager;
     private bool isJumping = false;
     private bool isMoving = false;
-
+    private float baseHealth;
+    private float baseStamina;
 
     [HideInInspector]
     public float curHealth;
@@ -118,6 +125,9 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
+        baseHealth = curHealthMax;
+        baseStamina = staminaMax;
+
         gameManager.lastCheckpointPos = transform.position;
         //DontDestroyOnLoad(gameObject);
     }
@@ -137,6 +147,20 @@ public class PlayerController : MonoBehaviour
     }
 
     #region Movement
+
+    //Increases max stamina on collectables
+    public void IncreaseMaxStamina()
+    {
+        float newStaminaMax;
+
+        newStaminaMax = baseStamina + (playerData.AntCount * staminaModifier);
+
+        newStaminaMax = Mathf.Clamp(newStaminaMax, staminaMax, maxStamina);
+
+        staminaMax = newStaminaMax;
+        curStamina = curStamina + (playerData.AntCount * staminaModifier);
+    }
+
 
     //Changes speed for amount of spiders
     private float HandleSpeed()
@@ -268,6 +292,7 @@ public class PlayerController : MonoBehaviour
         OnPlayerFall?.Invoke(new PlayerFallEventArgs(fallpos, time));
     }
 
+    //Returns true if on a slope
     private bool OnSlope()
     {
         if (isJumping)
@@ -336,7 +361,7 @@ public class PlayerController : MonoBehaviour
     {
         float newHealthMax;
 
-        newHealthMax = curHealthMax + (playerData.FlyCount * healthModifier);
+        newHealthMax = baseHealth + (playerData.FlyCount * healthModifier);
 
         newHealthMax = Mathf.Clamp(newHealthMax, curHealth, clampedMaxHealth);
 

@@ -131,7 +131,10 @@ public class UIManager : Singleton<UIManager>
             e.playerController.HandleHealth();
         }
         else if (type == ant)
+        {
             e.playerData.AntCount++;
+            e.playerController.IncreaseMaxStamina();
+        }
         else if (type == spider)
             e.playerData.SpiderCount++;
         else if (type == grasshopper)

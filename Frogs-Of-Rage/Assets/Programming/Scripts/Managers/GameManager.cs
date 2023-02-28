@@ -55,7 +55,7 @@ public class GameManager : Singleton<GameManager>
             return;
         else if (playerController.curHealth <= 0)
         {
-            playerController.curHealth = playerController.healthMax;
+            playerController.curHealth = playerController.curHealthMax;
             OnPlayerDeath?.Invoke(new PlayerDeathEventArgs(lastCheckpointPos));
 
         }

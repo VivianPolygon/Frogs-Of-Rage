@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     #region Variables in Inspector
     [Space(10)]
-    public  float healthMax = 100f;
+    public  float curHealthMax = 100f;
     [Header("Movement Variables")]
     [Space(10)]
     public float staminaMax = 100f;
@@ -29,7 +29,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Tooltip("The detection distance from bottom of player down if they are on a slope")]
     private float slopeDetectionDistance = 0.2f;
 
+    [Header("Collectable Bonus")]
     [Space(5)]
+    [SerializeField, Tooltip("How much speed is increased per spider collected")]
+    private float speedModifier = 0.5f;
+    [SerializeField, Tooltip("Max speed player can have")]
+    private float maxSpeed = 15f;
+    [SerializeField, Tooltip("How much total health is increased per fly collected")]
+    private float healthModifier = 0.5f;
+    [SerializeField, Tooltip("Max health player can have")]
+    private float clampedMaxHealth = 200f;
+
+    [Space(10)]
     [SerializeField]
     private float rotationSpeed = 4f;
 
@@ -56,6 +67,7 @@ public class PlayerController : MonoBehaviour
     private float curSpeed;
     private GameManager gameManager;
     private bool isJumping = false;
+    private bool isMoving = false;
 
 
     [HideInInspector]
@@ -63,8 +75,6 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public float curStamina;
     #endregion
-
-
    
     #region OnEnable/OnDisable
     private void OnEnable()
@@ -103,7 +113,7 @@ public class PlayerController : MonoBehaviour
         gameManager = GameManager.Instance;
         curSpeed = walkSpeed;
         curStamina = staminaMax;
-        curHealth = healthMax;
+        curHealth = curHealthMax;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -114,10 +124,13 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+
         #region Movemnt
         HandleMove();
         HandleSprint();
         HandleAirTime();
+        curSpeed = HandleSpeed();
+        
         #endregion
         HandlePauseMenu();
         OnPlayerCanvas?.Invoke(new PlayerCanvasEventArgs(GameManager.Instance.gameTimer, GameManager.Instance));
@@ -125,10 +138,22 @@ public class PlayerController : MonoBehaviour
 
     #region Movement
 
+    //Changes speed for amount of spiders
+    private float HandleSpeed()
+    {
+        float newSpeed;
+
+        newSpeed = curSpeed + (playerData.SpiderCount * speedModifier);
+
+        newSpeed = Mathf.Clamp(newSpeed, curSpeed, maxSpeed);
+
+        return newSpeed;
+    }
+
     //value is true if increasing stamina and false if decreasing
     private void HandleStamina(bool value)
     {
-        if (!value)
+        if (!value && isMoving)
             curStamina -= Time.deltaTime * 5;
         else
             curStamina += Time.deltaTime * 5;
@@ -160,6 +185,10 @@ public class PlayerController : MonoBehaviour
         //Moves the actual character controller
         controller.Move(move * Time.deltaTime * curSpeed);
 
+        if(move != Vector3.zero)
+            isMoving= true;
+        else
+            isMoving = false;
 
         //Jump
         if (inputManager.GetJump() && groundedPlayer)
@@ -267,7 +296,7 @@ public class PlayerController : MonoBehaviour
     private void SetHealthMax()
     {
         if (healthGauge != null)
-            healthGauge.SetMaxValue(healthMax);
+            healthGauge.SetMaxValue(curHealthMax);
     }
     private void SetHealthValue()
     {
@@ -301,10 +330,23 @@ public class PlayerController : MonoBehaviour
     {
         //Debug.Log("Player lost health and is now at " + curHealth);
     }
+
+    //Changes speed for amount of spiders
+    public void HandleHealth()
+    {
+        float newHealthMax;
+
+        newHealthMax = curHealthMax + (playerData.FlyCount * healthModifier);
+
+        newHealthMax = Mathf.Clamp(newHealthMax, curHealth, clampedMaxHealth);
+
+        curHealthMax = newHealthMax;
+        curHealth = curHealth + (playerData.FlyCount * healthModifier);
+    }
     #endregion
 
     #region Respawn
-    
+
     private void Respawn(PlayerDeathEventArgs e)
     {
         controller.enabled= false;

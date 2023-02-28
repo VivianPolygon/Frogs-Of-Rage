@@ -47,7 +47,7 @@ public class Collectable : MonoBehaviour, ICollectable
     
     public void Collect()
     {
-        OnCollectable?.Invoke(new OnCollectableEventArgs(collectableData, GameManager.Instance.playerController.playerData, gameObject));
+        OnCollectable?.Invoke(new OnCollectableEventArgs(collectableData, GameManager.Instance.playerController.playerData, gameObject, GameManager.Instance.playerController));
         Destroy(gameObject);
     }
 }
@@ -62,12 +62,14 @@ public class OnCollectableEventArgs
     public CollectableData collectableData;
     public PlayerData playerData;
     public GameObject gameObject;
+    public PlayerController playerController;
 
-    public OnCollectableEventArgs(CollectableData collectableData, PlayerData playerData, GameObject gameObject)
+    public OnCollectableEventArgs(CollectableData collectableData, PlayerData playerData, GameObject gameObject, PlayerController playerController)
     {
         this.collectableData = collectableData;
         this.playerData = playerData;
         this.gameObject = gameObject;
+        this.playerController = playerController;
     }
 }
 

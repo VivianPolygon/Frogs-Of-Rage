@@ -4,6 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+enum WallSide
+{
+    None = 0,
+    Right = 1,
+    Left = -1
+};
+
 public class PlayerController : MonoBehaviour
 {
     #region Variables in Inspector
@@ -29,6 +36,9 @@ public class PlayerController : MonoBehaviour
     private float slopeForce = -100f;
     [SerializeField, Tooltip("The detection distance from bottom of player down if they are on a slope")]
     private float slopeDetectionDistance = 0.2f;
+    [SerializeField, Tooltip("The wall gravity force on the player")]
+    private float wallGravity = -3f;
+
     #endregion
 
     #region Collectables
@@ -93,6 +103,9 @@ public class PlayerController : MonoBehaviour
     private float baseStamina;
     private float baseStandingJumpForce;
     private float baseMovingJumpForce;
+    private WallSide wallSide = WallSide.None;
+    private bool isOnWAll = false;
+    public Vector3 wallVelocity;
 
     [HideInInspector]
     public float curHealth;
@@ -156,10 +169,12 @@ public class PlayerController : MonoBehaviour
     {
 
         #region Movemnt
-        HandleMove();
+        HandleNormalMove();
         HandleSprint();
         HandleAirTime();
         curSpeed = IncreaseMaxSpeed();
+
+        HandleWallRun();
         
         #endregion
         HandlePauseMenu();
@@ -168,6 +183,7 @@ public class PlayerController : MonoBehaviour
 
     #region Movement
 
+    #region Collectable Increase
     //Increases max stamina on collectables
     public void IncreaseMaxStamina()
     {
@@ -211,6 +227,7 @@ public class PlayerController : MonoBehaviour
 
         return newSpeed;
     }
+    #endregion
 
     //value is true if increasing stamina and false if decreasing
     private void HandleStamina(bool value)
@@ -225,65 +242,154 @@ public class PlayerController : MonoBehaviour
     }
 
     //Controls player movement (WASD)
-    private void HandleMove()
+    private void HandleNormalMove()
     {
-        groundedPlayer = controller.isGrounded;
-
-        //Ensure player's Y velocity is 0 if grounded
-        if (groundedPlayer && playerVelocity.y < 0)
+        if (!isOnWAll)
         {
-            playerVelocity.y = 0f;
+            groundedPlayer = controller.isGrounded;
+
+            //Ensure player's Y velocity is 0 if grounded
+            if (groundedPlayer && playerVelocity.y < 0)
+            {
+                playerVelocity.y = 0f;
+            }
+
+            //Gets input from input manager
+            Vector2 movement = inputManager.GetMovement();
+            //Turns input into Vector3
+            Vector3 move = new Vector3(movement.x, 0, movement.y);
+            //Utilizes camera to move in the forwward direction
+            move = mainCamTransform.forward * move.z + mainCamTransform.right * move.x;
+            //Helps ensure the character controller doesn't "flicker" the grounded check
+            move.y = 0;
+            move.Normalize();
+            //Moves the actual character controller
+            controller.Move(move * Time.deltaTime * curSpeed);
+
+            if (move != Vector3.zero)
+                isMoving = true;
+            else
+                isMoving = false;
+
+            //Jump
+            if (inputManager.GetJump() && groundedPlayer)
+            {
+                isJumping = true;
+                //Player is moving
+                if (movement == Vector2.zero)
+                    playerVelocity.y += Mathf.Sqrt(standingJumpForce * -3.0f * gravityValue);
+                //Player is standing still
+                else if (movement != Vector2.zero)
+                    playerVelocity.y += Mathf.Sqrt(movingJumpForce * 2 * -3.0f * gravityValue);
+                //Debug.Log(movement);
+            }
+
+            //Adjusts gravity so the player doesnt skip down slopes
+            if (move != Vector3.zero && OnSlope())
+                playerVelocity.y += slopeForce * Time.deltaTime;
+            else
+                //Adds gravity
+                playerVelocity.y += gravityValue * Time.deltaTime;
+
+
+            //Moves the character controller for gravity
+            controller.Move(playerVelocity * Time.deltaTime);
+
+            //Rotates player to face direction based on input
+            if (movement != Vector2.zero)
+            {
+                float targetAngle = Mathf.Atan2(movement.x, movement.y) * Mathf.Rad2Deg + mainCamTransform.eulerAngles.y;
+                Quaternion rotation = Quaternion.Euler(0, targetAngle, 0);
+                transform.rotation = Quaternion.Lerp(transform.rotation, rotation, Time.deltaTime * rotationSpeed);
+            }
+
+            //Keep player facing the same direction as the camera
+            //transform.rotation = Quaternion.Euler(0, mainCamTransform.rotation.eulerAngles.y, 0);
         }
+    }
 
-        //Gets input from input manager
-        Vector2 movement = inputManager.GetMovement();
-        //Turns input into Vector3
-        Vector3 move = new Vector3(movement.x, 0, movement.y);
-        //Utilizes camera to move in the forwward direction
-        move = mainCamTransform.forward * move.z + mainCamTransform.right * move.x;
-        //Helps ensure the character controller doesn't "flicker" the grounded check
-        move.y = 0;
-        move.Normalize();
-        //Moves the actual character controller
-        controller.Move(move * Time.deltaTime * curSpeed);
+    private void HandleWallRun()
+    {
+        RaycastHit rightHit = default;
+        RaycastHit leftHit = default;
 
-        if(move != Vector3.zero)
-            isMoving= true;
+        //Send raycast to left and right to find wall
+        if(Physics.SphereCast(new Vector3(transform.position.x + 0.5f, transform.position.y + 1, transform.position.z),0.5f, transform.right, out rightHit, 1f,~LayerMask.GetMask("Player")))
+        //if (Physics.Raycast(new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), transform.right, 1f, ~LayerMask.GetMask("Player")))
+        {
+            wallSide = WallSide.Right;
+            isOnWAll = true;
+        }
+        else if (Physics.SphereCast(new Vector3(transform.position.x - 0.5f, transform.position.y + 1, transform.position.z), 0.5f, -transform.right, out leftHit, 1f, ~LayerMask.GetMask("Player")))
+        //else if (Physics.Raycast(new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), -transform.right, 1f, ~LayerMask.GetMask("Player")))
+        {
+            wallSide = WallSide.Left;
+            isOnWAll = true;
+        }
         else
-            isMoving = false;
-
-        //Jump
-        if (inputManager.GetJump() && groundedPlayer)
         {
-            isJumping = true;
-            //Player is moving
-            if (movement == Vector2.zero)
-                playerVelocity.y += Mathf.Sqrt(standingJumpForce * -3.0f * gravityValue);
-            //Player is standing still
-            else if (movement != Vector2.zero)
-                playerVelocity.y += Mathf.Sqrt(movingJumpForce * 2 * -3.0f * gravityValue);
-            //Debug.Log(movement);
+            wallSide = WallSide.None;
+            isOnWAll = false;
         }
 
-        if (move != Vector3.zero && OnSlope())
-            playerVelocity.y += slopeForce * Time.deltaTime;
-        else
-            //Adds gravity
-            playerVelocity.y += gravityValue * Time.deltaTime;
+        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), transform.right, Color.blue);
+        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), -transform.right, Color.red);
 
-        
-        //Moves the character controller for gravity
-        controller.Move(playerVelocity * Time.deltaTime);
-
-        if (movement != Vector2.zero)
+        if (isOnWAll)
         {
-            float targetAngle = Mathf.Atan2(movement.x, movement.y) * Mathf.Rad2Deg + mainCamTransform.eulerAngles.y;
-            Quaternion rotation = Quaternion.Euler(0, targetAngle, 0);
-            transform.rotation = Quaternion.Lerp(transform.rotation, rotation, Time.deltaTime * rotationSpeed);
+
+            //Gets input from input manager
+            Vector2 movement = inputManager.GetMovement();
+            //Turns input into Vector3
+            Vector3 move = new Vector3(movement.x, 0, movement.y);
+
+            switch (wallSide)
+            {
+                case WallSide.Right:
+                    Debug.Log("Player is on right wall");
+                    //Add wall gravity
+                    wallVelocity.x += wallGravity * Time.deltaTime;
+                    
+                    //Utilizes camera to move in the forward direction
+                    move = transform.forward * move.z + transform.right * move.x;
+                    //Helps ensure the character controller doesn't "flicker" the grounded check
+                    move.y = 0;
+                    move.Normalize();
+                    //Moves the actual character controller
+                    controller.Move(move * Time.deltaTime * curSpeed);
+
+                    //Rotate player to be perpendicular to wall
+                    //transform.rotation = Quaternion.Euler(Vector3.Cross(rightHit.normal, -rightHit.normal));
+
+                    break;
+                case WallSide.Left:
+                    Debug.Log("Player is on left wall");
+                    //Add wall gravity
+                    wallVelocity.x += -wallGravity * Time.deltaTime;
+
+                    //Utilizes camera to move in the forward direction
+                    move = transform.forward * move.z + transform.right * move.x;
+                    //Helps ensure the character controller doesn't "flicker" the grounded check
+                    move.y = 0;
+                    move.Normalize();
+                    //Moves the actual character controller
+                    controller.Move(move * Time.deltaTime * curSpeed);
+
+                    //Rotate player to be perpendicular to wall
+                    //transform.rotation = Quaternion.Euler(Vector3.Cross(leftHit.normal, -leftHit.normal));
+
+                    break;
+                case WallSide.None:
+                default:
+                    break;
+            }
+            wallVelocity.z = 0;
+            wallVelocity.y = -0.2f;
+
+            wallVelocity = transform.InverseTransformDirection(wallVelocity);
+            controller.Move(wallVelocity * Time.deltaTime);
         }
 
-        //Keep player facing the same direction as the camera
-        //transform.rotation = Quaternion.Euler(0, mainCamTransform.rotation.eulerAngles.y, 0);
     }
 
     private void HandleSprint()

@@ -7,6 +7,7 @@ using UnityEngine.Events;
 public class PlayerController : MonoBehaviour
 {
     #region Variables in Inspector
+    #region Movement
     [Space(10)]
     public  float curHealthMax = 100f;
     [Header("Movement Variables")]
@@ -19,7 +20,7 @@ public class PlayerController : MonoBehaviour
     private float sprintSpeed = 7.0f;
     [Space(5)]
     [SerializeField, Tooltip("The jump force the player has while still.")]
-    private float jumpForce = 2.0f;
+    private float standingJumpForce = 2.0f;
     [SerializeField, Tooltip("The jump force the player has while moving.")]
     private float movingJumpForce = 1.0f;
     [SerializeField, Tooltip("The gravity force on the player")]
@@ -28,23 +29,37 @@ public class PlayerController : MonoBehaviour
     private float slopeForce = -100f;
     [SerializeField, Tooltip("The detection distance from bottom of player down if they are on a slope")]
     private float slopeDetectionDistance = 0.2f;
+    #endregion
 
+    #region Collectables
     [Header("Collectable Bonus")]
     [Space(5)]
     [SerializeField, Tooltip("How much speed is increased per spider collected")]
     private float speedModifier = 0.5f;
     [SerializeField, Tooltip("Max speed player can have")]
     private float maxSpeed = 15f;
+    [Space(5)]
 
     [SerializeField, Tooltip("How much stamina is increased per ants collected")]
     private float staminaModifier = 0.5f;
     [SerializeField, Tooltip("Max stamina player can have")]
     private float maxStamina = 200f;
+    [Space(5)]
 
-    [SerializeField, Tooltip("How much total health is increased per fly collected")]
+    [SerializeField, Tooltip("How much total health is increased per spider collected")]
     private float healthModifier = 0.5f;
     [SerializeField, Tooltip("Max health player can have")]
     private float clampedMaxHealth = 200f;
+    [Space(5)]
+
+    [SerializeField, Tooltip("How much total jump force is increased per grasshopper collected")]
+    private float jumpModifier = 0.5f;
+    [SerializeField, Tooltip("Max standing jump force player can have")]
+    private float maxStandingJumpForce = 10f;
+    [SerializeField, Tooltip("Max moving jump force player can have")]
+    private float maxMovingJumpForce = 7f;
+    #endregion
+
 
     [Space(10)]
     [SerializeField]
@@ -76,6 +91,8 @@ public class PlayerController : MonoBehaviour
     private bool isMoving = false;
     private float baseHealth;
     private float baseStamina;
+    private float baseStandingJumpForce;
+    private float baseMovingJumpForce;
 
     [HideInInspector]
     public float curHealth;
@@ -125,8 +142,11 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
+        //Get base variables for collectables
         baseHealth = curHealthMax;
         baseStamina = staminaMax;
+        baseStandingJumpForce = standingJumpForce;
+        baseMovingJumpForce = movingJumpForce;
 
         gameManager.lastCheckpointPos = transform.position;
         //DontDestroyOnLoad(gameObject);
@@ -139,7 +159,7 @@ public class PlayerController : MonoBehaviour
         HandleMove();
         HandleSprint();
         HandleAirTime();
-        curSpeed = HandleSpeed();
+        curSpeed = IncreaseMaxSpeed();
         
         #endregion
         HandlePauseMenu();
@@ -161,9 +181,27 @@ public class PlayerController : MonoBehaviour
         curStamina = curStamina + (playerData.AntCount * staminaModifier);
     }
 
+    //Increases jump force on collectables
+    public void IncreaseJumpForce()
+    {
+        float newStandingJumpForce;
+        float newMovingJumpForce;
+
+        //Increase new jump forces
+        newStandingJumpForce = baseStandingJumpForce + (playerData.GrasshopperCount * jumpModifier);
+        newMovingJumpForce = baseMovingJumpForce + (playerData.GrasshopperCount * jumpModifier);
+
+        //Clamp the new jump forces with min as base and max as max
+        newStandingJumpForce = Mathf.Clamp(newStandingJumpForce, baseStandingJumpForce, maxStandingJumpForce);
+        newMovingJumpForce = Mathf.Clamp(newMovingJumpForce, baseMovingJumpForce, maxMovingJumpForce);
+
+        standingJumpForce = newStandingJumpForce;
+        movingJumpForce = newMovingJumpForce;
+    }
+
 
     //Changes speed for amount of spiders
-    private float HandleSpeed()
+    private float IncreaseMaxSpeed()
     {
         float newSpeed;
 
@@ -220,7 +258,7 @@ public class PlayerController : MonoBehaviour
             isJumping = true;
             //Player is moving
             if (movement == Vector2.zero)
-                playerVelocity.y += Mathf.Sqrt(jumpForce * -3.0f * gravityValue);
+                playerVelocity.y += Mathf.Sqrt(standingJumpForce * -3.0f * gravityValue);
             //Player is standing still
             else if (movement != Vector2.zero)
                 playerVelocity.y += Mathf.Sqrt(movingJumpForce * 2 * -3.0f * gravityValue);

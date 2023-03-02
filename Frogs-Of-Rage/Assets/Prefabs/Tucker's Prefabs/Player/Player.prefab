@@ -234,7 +234,7 @@ MonoBehaviour:
   staminaMax: 100
   walkSpeed: 9
   sprintSpeed: 12
-  jumpForce: 2
+  standingJumpForce: 2
   movingJumpForce: 1
   gravityValue: -38
   slopeForce: -800
@@ -245,6 +245,9 @@ MonoBehaviour:
   maxStamina: 200
   healthModifier: 8
   clampedMaxHealth: 200
+  jumpModifier: 1
+  maxStandingJumpForce: 10
+  maxMovingJumpForce: 7
   rotationSpeed: 4
   staminaGauge: {fileID: 0}
   healthGauge: {fileID: 0}

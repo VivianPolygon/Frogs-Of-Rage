@@ -230,15 +230,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f443511571f133458b7877789d73bb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthMax: 100
+  curHealthMax: 100
   staminaMax: 100
   walkSpeed: 9
   sprintSpeed: 12
-  jumpForce: 2
+  standingJumpForce: 2
   movingJumpForce: 1
   gravityValue: -38
   slopeForce: -800
   slopeDetectionDistance: 0.45
+  speedModifier: 0.5
+  maxSpeed: 15
+  staminaModifier: 0.5
+  maxStamina: 200
+  healthModifier: 8
+  clampedMaxHealth: 200
+  jumpModifier: 1
+  maxStandingJumpForce: 10
+  maxMovingJumpForce: 7
   rotationSpeed: 4
   staminaGauge: {fileID: 0}
   healthGauge: {fileID: 0}

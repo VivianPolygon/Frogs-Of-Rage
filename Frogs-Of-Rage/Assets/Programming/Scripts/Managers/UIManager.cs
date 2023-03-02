@@ -125,14 +125,23 @@ public class UIManager : Singleton<UIManager>
         SpiderCollectable spider = type as SpiderCollectable;
         GrasshopperCollectable grasshopper = type as GrasshopperCollectable;
 
-        if(type == fly)
+        if (type == fly)
+        {
             e.playerData.FlyCount++;
-        else if(type == ant) 
+            e.playerController.IncreaseMaxHealth();
+        }
+        else if (type == ant)
+        {
             e.playerData.AntCount++;
-        else if(type == spider)
+            e.playerController.IncreaseMaxStamina();
+        }
+        else if (type == spider)
             e.playerData.SpiderCount++;
-        else if(type == grasshopper)
+        else if (type == grasshopper)
+        {
             e.playerData.GrasshopperCount++;
+            e.playerController.IncreaseJumpForce();
+        }
         #endregion
 
 

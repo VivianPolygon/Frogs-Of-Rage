@@ -11,6 +11,8 @@ public class AudioManager : Singleton<AudioManager>
     [SerializeField] private SoundSettings[] _soundSettings;
     [SerializeField] private SoundSettings _defaultSoundSettings;
 
+    private static int _audioSourceIndexer;
+
     #region "Sound Pool Variables"
     private Transform _lowPrioritySFXPool; // capped by _low priority sound limit
     public Transform LowPrioritySFXPool 
@@ -87,11 +89,13 @@ public class AudioManager : Singleton<AudioManager>
     }
     #endregion
 
-    Dictionary<int, TrackedAudioSource> _adjustableAudioDictionary;
+    private static Dictionary<int, TrackedAudioSource> _adjustableAudioDictionary;
 
     public override void Awake()
     {
         base.Awake();
+        _audioSourceIndexer = 0;
+        _adjustableAudioDictionary = new Dictionary<int, TrackedAudioSource>();
     }
 
     private Transform CreateAudioPool(int poolSize, string poolName)
@@ -260,7 +264,7 @@ public class AudioManager : Singleton<AudioManager>
     }
 
 
-    public int PlayAdjustableAudio(Vector3 position, SoundType soundType, bool loops, string soundSettings, AudioClip audioClip)
+    public int PlayAdjustableAudio(Vector3 position, SoundType soundType, string soundSettings, AudioClip audioClip, bool loopsInitialy)
     {
         //gets the current sound object, returns if there are none available
         GameObject currentSFXObject = GetSoundObject(soundType);
@@ -280,43 +284,96 @@ public class AudioManager : Singleton<AudioManager>
         }
         SetAudioSourceFromSoundSettings(audioSource, GetSoundSettingsByString(soundSettings));
 
+        //increments key value
+        _audioSourceIndexer++;
 
         //adds the basic sound source script and sets it
-        BasicAudioSource source = currentSFXObject.AddComponent<BasicAudioSource>();
-        source.SetBasicAudioSourcePosition(audioClip, audioSource);
+        TrackedAudioSource source = currentSFXObject.AddComponent<TrackedAudioSource>();
+        source.SetTrackedAudioSourcePosition(audioClip, audioSource, _audioSourceIndexer);
 
 
         //sets object to true to run
         currentSFXObject.SetActive(true);
 
-        return 0;
+        //sets to loop initialy
+        source.SetToLoop(loopsInitialy);
+
+        //adds to dictionary returns key. 
+        _adjustableAudioDictionary.Add(_audioSourceIndexer, source);
+        return _audioSourceIndexer;
     }
-    public int PlayAdjustableAudio(Transform soundParent, SoundType soundType, bool loops, string soundSettings, AudioClip audioClip)
+    public int PlayAdjustableAudio(Transform soundParent, SoundType soundType, string soundSettings, AudioClip audioClip, bool loopsInitialy)
     {
+        //gets the current sound object, returns if there are none available
+        GameObject currentSFXObject = GetSoundObject(soundType);
+        if (currentSFXObject == null) return 0;
+
+        //sets the position
+        currentSFXObject.transform.position = soundParent.transform.position;
+
+        //gets the audio source and sets it's settings
+        AudioSource audioSource;
+        if (currentSFXObject.TryGetComponent(out audioSource))
+        {
+            if (audioSource == null)
+            {
+                audioSource = currentSFXObject.AddComponent<AudioSource>();
+            }
+        }
+        SetAudioSourceFromSoundSettings(audioSource, GetSoundSettingsByString(soundSettings));
+
+        //increments key value
+        _audioSourceIndexer++;
+
+        //adds the basic sound source script and sets it
+        TrackedAudioSource source = currentSFXObject.AddComponent<TrackedAudioSource>();
+        source.SetTrackedAudioSourceTransform(audioClip, audioSource, soundParent, _audioSourceIndexer);
 
 
-        return 0;
+        //sets object to true to run
+        currentSFXObject.SetActive(true);
+
+        //sets to loop initialy
+        source.SetToLoop(loopsInitialy);
+
+        //adds to dictionary returns key. 
+        _adjustableAudioDictionary.Add(_audioSourceIndexer, source);
+        return _audioSourceIndexer;
     }
 
     #endregion
 
 
-    #region "Adjustable Audio adjustment Functions"
-    public void StopAdjustableAudio(int adjustableAudioIntKey)
+    #region "Adjustable Audio Adjustment Functions"
+    public static void RestartAdjustableAudio(int adjustableAudioIntKey)
     {
-
+        if (_adjustableAudioDictionary.TryGetValue(adjustableAudioIntKey, out TrackedAudioSource audioSource))
+        {
+            audioSource.MoveAudioPlayHead(0);
+        }
     }
-    public void RestartAdjustableAudio(int adjustableAudioIntKey)
+    public static void ChangeAdjustableAudioPlayhead(int adjustableAudioIntKey, float timeStamp)
     {
-
+        if (_adjustableAudioDictionary.TryGetValue(adjustableAudioIntKey, out TrackedAudioSource audioSource))
+        {
+            audioSource.MoveAudioPlayHead(timeStamp);
+        }
     }
-    public void ChangeAdjustableAudioPlayhead(int adjustableAudioIntKey, float timeStamp)
+    public static void SetAdjustableAudioLooping(int adjustableAudioIntKey, bool loop)
     {
-
+        if (_adjustableAudioDictionary.TryGetValue(adjustableAudioIntKey, out TrackedAudioSource audioSource))
+        {
+            audioSource.SetToLoop(loop);
+        }
     }
-    public void SetAdjustableAudioToLoop(int adjustableAudioIntKey, bool loop)
-    {
 
+    public void CancelTrackedAudio(int audioKey)
+    {
+        if (_adjustableAudioDictionary.TryGetValue(audioKey, out TrackedAudioSource audioSource))
+        {
+            _adjustableAudioDictionary.Remove(audioKey);
+            audioSource.gameObject.SetActive(false);
+        }
     }
 
     #endregion
@@ -393,16 +450,25 @@ public class TrackedAudioSource : MonoBehaviour
 
     private bool _trackingTransform;
 
-    public void SetBasicAudioSourcePosition(AudioClip clip, AudioSource source)
+    //adjustable specific
+    private int _key;
+    private bool _loopable;
+    private bool _paused = false;
+
+    public void SetTrackedAudioSourcePosition(AudioClip clip, AudioSource source, int key)
     {
+        _key = key;
+
         _trackingTransform = false;
         _transform = null;
 
         _audioclip = clip;
         _audiosource = source;
     }
-    public void SetBasicAudioSourceTransform(AudioClip clip, AudioSource source, Transform transform)
+    public void SetTrackedAudioSourceTransform(AudioClip clip, AudioSource source, Transform transform, int key)
     {
+        _key = key;
+
         _trackingTransform = true;
         _transform = transform;
 
@@ -416,7 +482,6 @@ public class TrackedAudioSource : MonoBehaviour
         {
             _audiosource.clip = _audioclip;
             _audiosource.Play();
-            StartCoroutine(TrackPlayTime());
         }
         else
         {
@@ -425,22 +490,56 @@ public class TrackedAudioSource : MonoBehaviour
         }
     }
 
-    private IEnumerator TrackPlayTime()
-    {
-        for (float t = 0; t < _audioclip.length; t += Time.deltaTime)
-        {
-            if (_trackingTransform && _transform != null)
-            {
-                transform.position = _transform.position;
-            }
-
-            yield return null;
-        }
-        gameObject.SetActive(false);
-    }
-
     private void OnDisable()
     {
         Destroy(this);
+    }
+
+    //tracked audio source functions
+
+    //loops the audio, prevents it from stopping and going back to the pool indefinitly (use with care)
+    public void SetToLoop(bool loop)
+    {
+        _loopable = loop;
+        _audiosource.loop = loop;
+    }
+    //moves the audio playhead within the clip to the specified time, clamped for saftey
+    public void MoveAudioPlayHead(float jumpToTime)
+    {
+        jumpToTime = Mathf.Clamp(jumpToTime, 0, _audioclip.length);
+        _audiosource.time = jumpToTime;
+    }
+
+    //pauses or unpauses the audio clip
+    public void PauseAudio()
+    {
+        if(!_paused)
+        {
+            _audiosource.Pause();
+        }
+    }
+    public void ResumeAudio()
+    {
+        if(_paused)
+        {
+            _audiosource.Play();
+        }
+    }
+
+    private void Update()
+    {
+        if(_trackingTransform && _transform)
+        {
+            transform.position = _transform.position;
+        }
+
+        if(_loopable)
+        {
+            return;
+        }
+        if(!_audiosource.isPlaying)
+        {
+            gameObject.SetActive(false);
+        }
     }
 }

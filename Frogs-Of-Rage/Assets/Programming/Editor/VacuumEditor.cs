@@ -73,7 +73,7 @@ public class VacuumEditor : Editor
         }
 
 
-        //for Player Detection visualization
+        //for Player Detection visualization 
         if (vNav.CheckPlayerInSight() != null)
         {
             Transform PlayerPos = vNav.CheckPlayerInSight();

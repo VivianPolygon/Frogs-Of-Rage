@@ -49,6 +49,15 @@ MonoBehaviour:
   mainCam: {fileID: 0}
   lastCheckpointPos: {x: 0, y: 0, z: 0}
   gameTimer: {fileID: 0}
+  fliesInScene: 0
+  antsInScene: 0
+  grasshoppersInScene: 0
+  spidersInScene: 0
+  collectableData:
+  - {fileID: 11400000, guid: 82aa0ec71a091c542ba21d3fd3a33309, type: 2}
+  - {fileID: 11400000, guid: 906510e90d829e242b61669f43c8af7f, type: 2}
+  - {fileID: 11400000, guid: 969fd9a18eadefb4c9c6b8b42c0216bb, type: 2}
+  - {fileID: 11400000, guid: 7f399a113c723fa4dbc18787dbe8a219, type: 2}
 --- !u!114 &5114699045382541208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,5 +83,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   totalTime: 0
+  hours: 0
   minutes: 0
   seconds: 0
+  milliseconds: 0

@@ -357,7 +357,7 @@ public class PlayerController : MonoBehaviour
     }
 
     //Changes speed for amount of spiders
-    public void HandleHealth()
+    public void IncreaseMaxHealth()
     {
         float newHealthMax;
 

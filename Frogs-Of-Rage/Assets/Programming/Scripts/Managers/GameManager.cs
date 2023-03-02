@@ -26,6 +26,8 @@ public class GameManager : Singleton<GameManager>
     [HideInInspector]
     public float spidersInScene;
 
+    public List<CollectableData> collectableData = new List<CollectableData>();
+
 
     public delegate void PlayerDeath(PlayerDeathEventArgs e);
     public static event PlayerDeath OnPlayerDeath;
@@ -59,6 +61,25 @@ public class GameManager : Singleton<GameManager>
             OnPlayerDeath?.Invoke(new PlayerDeathEventArgs(lastCheckpointPos));
 
         }
+    }
+
+
+    public void ResetCollectables()
+    {
+        if (playerController != null)
+        {
+            playerController.playerData.FlyCount = 0;
+            playerController.playerData.AntCount = 0;
+            playerController.playerData.SpiderCount = 0;
+            playerController.playerData.GrasshopperCount = 0;
+
+            foreach (CollectableData collectable in collectableData)
+            {
+                collectable.count = 0;
+            }
+        }
+        else
+            Debug.Log("Need to be in play mode to use this button");
     }
 }
 #region Player Death Event

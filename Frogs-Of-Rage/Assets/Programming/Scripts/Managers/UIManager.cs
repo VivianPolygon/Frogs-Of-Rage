@@ -128,7 +128,7 @@ public class UIManager : Singleton<UIManager>
         if (type == fly)
         {
             e.playerData.FlyCount++;
-            e.playerController.HandleHealth();
+            e.playerController.IncreaseMaxHealth();
         }
         else if (type == ant)
         {

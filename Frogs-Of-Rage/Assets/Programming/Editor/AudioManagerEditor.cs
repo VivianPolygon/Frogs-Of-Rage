@@ -9,7 +9,7 @@ public class AudioManagerEditor : Editor
 {
     private AudioManager.ProximityMode _proxMode;
     private AudioManager.AudioCullingQuality _cullingQuality;
-
+    private GameObject _customObject;
 
     private void OnSceneGUI()
     {
@@ -41,13 +41,33 @@ public class AudioManagerEditor : Editor
         base.OnInspectorGUI();
         AudioManager audioManager = (AudioManager)target;
 
-        if(audioManager.ProximityPrioritization)
+
+        _proxMode = audioManager.ProxMode;
+        _cullingQuality = audioManager.CullingQuality;
+
+        if(_customObject != null)
+            _customObject = audioManager.CustomObjectTransform.gameObject;
+
+
+        if (audioManager.ProximityPrioritization)
         {
+            _cullingQuality = (AudioManager.AudioCullingQuality)EditorGUILayout.EnumPopup("Culling Quality", _cullingQuality);
+            audioManager.SetQuality(_cullingQuality);
+
             _proxMode = (AudioManager.ProximityMode)EditorGUILayout.EnumPopup("Proximity Mode", _proxMode);
             audioManager.SetProximityMode(_proxMode);
 
-            _cullingQuality = (AudioManager.AudioCullingQuality)EditorGUILayout.EnumPopup("Culling Quality", _cullingQuality);
-            audioManager.SetQuality(_cullingQuality);
+            if(_proxMode == AudioManager.ProximityMode.CustomObject)
+            {
+                _customObject = (GameObject)EditorGUILayout.ObjectField("Custom Object Transform", _customObject, typeof(Object), true);
+
+                if (_customObject == null)
+                {
+                    return;
+                }
+
+                audioManager.CustomObjectTransform = _customObject.transform;
+            }
         }
 
     }

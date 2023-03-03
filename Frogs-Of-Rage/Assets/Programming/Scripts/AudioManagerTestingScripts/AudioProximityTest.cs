@@ -16,4 +16,10 @@ public class AudioProximityTest : MonoBehaviour
     {
         AudioManager.Instance.PlaySoundEffect(transform, SoundType.LowPrioritySoundEffect, "Sound Settings 1", _clip);
     }
+
+    private void OnGUI()
+    {
+        GUILayout.Box("Select the audio manager object in the heirarchy to see the proximity debug info in the scene on runtime");
+        GUILayout.Box("It's under Don't Destroy on Load");
+    }
 }

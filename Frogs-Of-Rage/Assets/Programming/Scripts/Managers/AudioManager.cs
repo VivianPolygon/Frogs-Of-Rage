@@ -4,12 +4,8 @@ using UnityEngine;
 
 public class AudioManager : Singleton<AudioManager>
 {
-    [SerializeField] [Min(0)] private int _lowPrioritySoundEffectLimit = 10;
-    [SerializeField] [Min(0)] private int _playerSoundEffectLimit = 4;
-    [Space(10)]
-    [SerializeField] private SoundSettings[] _soundSettings;
-    [SerializeField] private SoundSettings _defaultSoundSettings;
-
+    //Variables
+    #region "Proximity Prioritization Variables and Properties"
 
     public enum ProximityMode
     {
@@ -32,16 +28,42 @@ public class AudioManager : Singleton<AudioManager>
 
     [SerializeField] [HideInInspector] private ProximityMode _proximityMode;
     [SerializeField] [HideInInspector] private AudioCullingQuality _cullingquality;
-    [SerializeField] private Transform _customObjectTransform;
+
+    public ProximityMode ProxMode
+    {
+        get { return _proximityMode; }
+        set { _proximityMode = value; }
+    }
+    public AudioCullingQuality CullingQuality
+    {
+        get { return _cullingquality; }
+        set { _cullingquality = value; }
+    }
+
+    [SerializeField] [HideInInspector] private Transform _customObjectTransform;
+
+    public Transform CustomObjectTransform
+    {
+        get { return _customObjectTransform; }
+        set { _customObjectTransform = value; }
+    }
 
     private delegate void AudioCulling(Vector3 position, SoundType type);
     private AudioCulling _culling;
 
+    #endregion
 
+    #region "Audio Key Variables"
     //used to generate audiokeys
     private static int _audioSourceIndexer;
+    //dictionary that is acsessed via keys
+    private static Dictionary<int, TrackedAudioSource> _trackedAudioDictionary;
+    #endregion
 
     #region "Sound Pool Variables"
+    [SerializeField] [Min(0)] private int _lowPrioritySoundEffectLimit = 10;
+    [SerializeField] [Min(0)] private int _playerSoundEffectLimit = 4;
+
     private Transform _lowPrioritySFXPool; // capped by _low priority sound limit
     public Transform LowPrioritySFXPool 
     {
@@ -117,8 +139,14 @@ public class AudioManager : Singleton<AudioManager>
     }
     #endregion
 
-    private static Dictionary<int, TrackedAudioSource> _trackedAudioDictionary;
+    #region "Sound Setting Variables"
 
+    [Space(10)]
+    [SerializeField] private SoundSettings[] _soundSettings;
+    [SerializeField] private SoundSettings _defaultSoundSettings;
+    #endregion
+
+    // Functions
     public override void Awake()
     {
         base.Awake();
@@ -128,6 +156,7 @@ public class AudioManager : Singleton<AudioManager>
         SetCullingQuality(_cullingquality);
     }
 
+    #region "Pooling Related Functions"
     private Transform CreateAudioPool(int poolSize, string poolName)
     {
         Transform newPool = new GameObject().transform;
@@ -169,12 +198,12 @@ public class AudioManager : Singleton<AudioManager>
     {
         for (int i = 0; i < poolParent.childCount; i++)
         {
-            if(!poolParent.GetChild(i).gameObject.activeSelf)
+            if (!poolParent.GetChild(i).gameObject.activeSelf)
             {
                 return poolParent.GetChild(i).gameObject;
             }
         }
-        if(createNewWhenFull)
+        if (createNewWhenFull)
         {
             GameObject newSoundObject = new GameObject();
             newSoundObject.AddComponent<AudioSource>().Stop();
@@ -205,18 +234,41 @@ public class AudioManager : Singleton<AudioManager>
                 break;
         }
     }
+    #endregion
+
+    #region "Sound Setting Related Functions"
 
     private SoundSettings GetSoundSettingsByString(string settingsName)
     {
+        if (_soundSettings == null)
+        {
+            return DefaultSoundSettings();
+        }
+
         for (int i = 0; i < _soundSettings.Length; i++)
         {
-            if(settingsName == _soundSettings[i].name)
+            if (settingsName == _soundSettings[i].name)
             {
                 return _soundSettings[i];
             }
         }
+
         Debug.LogWarning("No Sound Setting by the name: <b>" + settingsName + "</b>");
-        return _defaultSoundSettings;
+        return DefaultSoundSettings();
+    }
+
+    private SoundSettings DefaultSoundSettings()
+    {
+        if (_defaultSoundSettings != null)
+        {
+            return _defaultSoundSettings;
+        }
+        else
+        {
+            //creates and sets sound settings if there is no default set
+            SoundSettings newSoundSettings = (SoundSettings)ScriptableObject.CreateInstance("SoundSettings");
+            return newSoundSettings;
+        }
     }
     private void SetAudioSourceFromSoundSettings(AudioSource audioSource, SoundSettings soundSettings)
     {
@@ -231,14 +283,18 @@ public class AudioManager : Singleton<AudioManager>
         audioSource.dopplerLevel = soundSettings.dopplerLevel;
     }
 
+    #endregion
+
     #region "Change from Editor Functions"
 
     public void SetQuality(AudioCullingQuality newQuality)
     {
+        CullingQuality = newQuality;
         SetCullingQuality(newQuality);
     }
     public void SetProximityMode(ProximityMode newProximityMode)
     {
+        ProxMode = newProximityMode;
         _proximityMode = newProximityMode;
     }
 
@@ -275,6 +331,13 @@ public class AudioManager : Singleton<AudioManager>
                     farthestDistance = Vector3.Distance(newAudio, comparisonObjectPosition);
                     break;
                 case ProximityMode.CustomObject:
+
+                    if (!_customObjectTransform)
+                    {
+                        Debug.LogWarning("The Audio Manager is set to proximity prioritization for a custom object, but no refrence to that object is set, defaulting to no proximity prioritization until this is set");
+                        return;
+                    }
+
                     comparisonObjectPosition = _customObjectTransform.position;
                     farthestDistance = Vector3.Distance(newAudio, comparisonObjectPosition);
                     break;
@@ -344,6 +407,13 @@ public class AudioManager : Singleton<AudioManager>
                     farthestDistance = Vector3.Distance(newAudio, comparisonObjectPosition);
                     break;
                 case ProximityMode.CustomObject:
+
+                    if (!_customObjectTransform)
+                    {
+                        Debug.LogWarning("The Audio Manager is set to proximity prioritization for a custom object, but no refrence to that object is set, defaulting to no proximity prioritization until this is set");
+                        return;
+                    }
+
                     comparisonObjectPosition = _customObjectTransform.position;
                     farthestDistance = Vector3.Distance(newAudio, comparisonObjectPosition);
                     break;
@@ -626,14 +696,15 @@ public class AudioManager : Singleton<AudioManager>
     }
 
     #endregion
-
 }
 
+//Interface for both types of audio source
 public interface IAudioSource
 {
     public void CullSource();
 }
 
+//classes for both types of audio source, both use IAudioSource
 public class BasicAudioSource : MonoBehaviour, IAudioSource
 {
     private AudioClip _audioclip;
@@ -817,4 +888,3 @@ public class TrackedAudioSource : MonoBehaviour, IAudioSource
         gameObject.SetActive(false);
     }
 }
-

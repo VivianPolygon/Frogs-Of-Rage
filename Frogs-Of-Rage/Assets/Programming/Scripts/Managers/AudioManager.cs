@@ -89,13 +89,13 @@ public class AudioManager : Singleton<AudioManager>
     }
     #endregion
 
-    private static Dictionary<int, TrackedAudioSource> _adjustableAudioDictionary;
+    private static Dictionary<int, TrackedAudioSource> _trackedAudioDictionary;
 
     public override void Awake()
     {
         base.Awake();
         _audioSourceIndexer = 0;
-        _adjustableAudioDictionary = new Dictionary<int, TrackedAudioSource>();
+        _trackedAudioDictionary = new Dictionary<int, TrackedAudioSource>();
     }
 
     private Transform CreateAudioPool(int poolSize, string poolName)
@@ -264,7 +264,7 @@ public class AudioManager : Singleton<AudioManager>
     }
 
 
-    public int PlayAdjustableAudio(Vector3 position, SoundType soundType, string soundSettings, AudioClip audioClip, bool loopsInitialy)
+    public int PlayTrackedAudio(Vector3 position, SoundType soundType, string soundSettings, AudioClip audioClip, bool loopsInitialy)
     {
         //gets the current sound object, returns if there are none available
         GameObject currentSFXObject = GetSoundObject(soundType);
@@ -299,10 +299,10 @@ public class AudioManager : Singleton<AudioManager>
         source.SetToLoop(loopsInitialy);
 
         //adds to dictionary returns key. 
-        _adjustableAudioDictionary.Add(_audioSourceIndexer, source);
+        _trackedAudioDictionary.Add(_audioSourceIndexer, source);
         return _audioSourceIndexer;
     }
-    public int PlayAdjustableAudio(Transform soundParent, SoundType soundType, string soundSettings, AudioClip audioClip, bool loopsInitialy)
+    public int PlayTrackedAudio(Transform soundParent, SoundType soundType, string soundSettings, AudioClip audioClip, bool loopsInitialy)
     {
         //gets the current sound object, returns if there are none available
         GameObject currentSFXObject = GetSoundObject(soundType);
@@ -337,43 +337,87 @@ public class AudioManager : Singleton<AudioManager>
         source.SetToLoop(loopsInitialy);
 
         //adds to dictionary returns key. 
-        _adjustableAudioDictionary.Add(_audioSourceIndexer, source);
+        _trackedAudioDictionary.Add(_audioSourceIndexer, source);
         return _audioSourceIndexer;
     }
 
     #endregion
 
-
-    #region "Adjustable Audio Adjustment Functions"
-    public static void RestartAdjustableAudio(int adjustableAudioIntKey)
+    #region "Tracked Audio Adjustment Functions"
+    /// <summary>
+    /// Restarts the audio from the beggining
+    /// </summary>
+    /// <param name="trackedAudioIntKey"> Integer key that corespondes to a tracked audio, generated when played, don't lose it. </param>
+    public static void RestartTrackedAudio(int trackedAudioIntKey)
     {
-        if (_adjustableAudioDictionary.TryGetValue(adjustableAudioIntKey, out TrackedAudioSource audioSource))
+        if (_trackedAudioDictionary.TryGetValue(trackedAudioIntKey, out TrackedAudioSource audioSource))
         {
             audioSource.MoveAudioPlayHead(0);
         }
     }
-    public static void ChangeAdjustableAudioPlayhead(int adjustableAudioIntKey, float timeStamp)
+    /// <summary>
+    /// Changes the playhead of the tracked audio to the float inputed, clamped to clip length.
+    /// </summary>
+    /// <param name="trackedAudioIntKey"></param>
+    /// <param name="timeStamp"> Integer key that corespondes to a tracked audio, generated when played, don't lose it. </param>
+    public static void ChangeTrackedAudioPlayhead(int trackedAudioIntKey, float timeStamp)
     {
-        if (_adjustableAudioDictionary.TryGetValue(adjustableAudioIntKey, out TrackedAudioSource audioSource))
+        if (_trackedAudioDictionary.TryGetValue(trackedAudioIntKey, out TrackedAudioSource audioSource))
         {
             audioSource.MoveAudioPlayHead(timeStamp);
         }
     }
-    public static void SetAdjustableAudioLooping(int adjustableAudioIntKey, bool loop)
+    /// <summary>
+    /// Set the tracked audio to loop or stop looping. Looping tracked audio will never stop playing unless told to stop looping and then it comes to an end naturaly, or manualy canceled through AudioManager.CancelTrackedAudio()
+    /// </summary>
+    /// <param name="trackedAudioIntKey"> Integer key that corespondes to a tracked audio, generated when played, don't lose it. </param>
+    /// <param name="loop"> true to set to loop, false to stop looping </param>
+    public static void SetTrackedAudioLooping(int trackedAudioIntKey, bool loop)
     {
-        if (_adjustableAudioDictionary.TryGetValue(adjustableAudioIntKey, out TrackedAudioSource audioSource))
+        if (_trackedAudioDictionary.TryGetValue(trackedAudioIntKey, out TrackedAudioSource audioSource))
         {
             audioSource.SetToLoop(loop);
         }
     }
-
-    public void CancelTrackedAudio(int audioKey)
+    /// <summary>
+    /// Immediatly stopes the tracked audio, removes the soundkey and audio object from the dictionary until it is called again through InputManager.PlayTrackedAudio()
+    /// </summary>
+    /// <param name="audioKey"> Integer key that corespondes to a tracked audio, generated when played, don't lose it. </param>
+    public static void CancelTrackedAudio(int audioKey)
     {
-        if (_adjustableAudioDictionary.TryGetValue(audioKey, out TrackedAudioSource audioSource))
+        if (_trackedAudioDictionary.TryGetValue(audioKey, out TrackedAudioSource audioSource))
         {
-            _adjustableAudioDictionary.Remove(audioKey);
+            _trackedAudioDictionary.Remove(audioKey);
             audioSource.gameObject.SetActive(false);
         }
+    }
+    /// <summary>
+    /// Checks if the tracked audio is playing. Returns true if it is, returns false if it isin't, or the inputed soundkey dosen't link up to any audio
+    /// </summary>
+    /// <param name="audioKey"></param>
+    /// <returns></returns>
+    public static bool CheckTrackedAudioIsPlaying(int audioKey)
+    {
+        if (_trackedAudioDictionary.TryGetValue(audioKey, out TrackedAudioSource audioSource))
+        {
+            return audioSource.GetIsPlaying();
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Gives you direct acsess to an audiosource on a tracked audio object. Only use if you need to overide a setting like volume or priority directly and specificaly and don't want to make a new sound setting scriptable object. do not use this to track or change if the audio is playing, instead use functions from the Audio Manager. 
+    /// </summary>
+    /// <param name="audioKey"> Integer key that corespondes to a tracked audio, generated when played, don't lose it. </param>
+    /// <returns></returns>
+    public static AudioSource GetAudioSource(int audioKey)
+    {
+        if (_trackedAudioDictionary.TryGetValue(audioKey, out TrackedAudioSource audioSource))
+        {
+            return audioSource.GetAudiosourceForOverride();
+        }
+        return null;
     }
 
     #endregion
@@ -450,7 +494,7 @@ public class TrackedAudioSource : MonoBehaviour
 
     private bool _trackingTransform;
 
-    //adjustable specific
+    //tracked specific
     private int _key;
     private bool _loopable;
     private bool _paused = false;
@@ -524,6 +568,16 @@ public class TrackedAudioSource : MonoBehaviour
         {
             _audiosource.Play();
         }
+    }
+
+    public bool GetIsPlaying()
+    {
+        return _audiosource.isPlaying;
+    }
+
+    public AudioSource GetAudiosourceForOverride()
+    {
+        return _audiosource;
     }
 
     private void Update()

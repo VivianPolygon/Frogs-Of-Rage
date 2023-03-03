@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
 
 public class AudioManager : Singleton<AudioManager>
 {
@@ -11,6 +10,35 @@ public class AudioManager : Singleton<AudioManager>
     [SerializeField] private SoundSettings[] _soundSettings;
     [SerializeField] private SoundSettings _defaultSoundSettings;
 
+
+    public enum ProximityMode
+    {
+        MainCamera,
+        CustomObject
+    }
+    public enum AudioCullingQuality
+    {
+        High,
+        Low
+    }
+
+    [SerializeField] private bool _proximityPrioritization;
+    public bool ProximityPrioritization
+    {
+        get { return _proximityPrioritization; }
+        private set { _proximityPrioritization = value; }
+    }
+
+
+    [SerializeField] [HideInInspector] private ProximityMode _proximityMode;
+    [SerializeField] [HideInInspector] private AudioCullingQuality _cullingquality;
+    [SerializeField] private Transform _customObjectTransform;
+
+    private delegate void AudioCulling(Vector3 position, SoundType type);
+    private AudioCulling _culling;
+
+
+    //used to generate audiokeys
     private static int _audioSourceIndexer;
 
     #region "Sound Pool Variables"
@@ -96,6 +124,8 @@ public class AudioManager : Singleton<AudioManager>
         base.Awake();
         _audioSourceIndexer = 0;
         _trackedAudioDictionary = new Dictionary<int, TrackedAudioSource>();
+
+        SetCullingQuality(_cullingquality);
     }
 
     private Transform CreateAudioPool(int poolSize, string poolName)
@@ -201,11 +231,177 @@ public class AudioManager : Singleton<AudioManager>
         audioSource.dopplerLevel = soundSettings.dopplerLevel;
     }
 
+    #region "Change from Editor Functions"
+
+    public void SetQuality(AudioCullingQuality newQuality)
+    {
+        SetCullingQuality(newQuality);
+    }
+    public void SetProximityMode(ProximityMode newProximityMode)
+    {
+        _proximityMode = newProximityMode;
+    }
+
+    #endregion
+
+    #region "Proximity Prioritization Functions"
+
+    private void SetCullingQuality(AudioCullingQuality quality)
+    {
+        switch (quality)
+        {
+            case AudioCullingQuality.High:
+                _culling = new AudioCulling(CullDistantAudioHighQuality);
+                break;
+            case AudioCullingQuality.Low:
+                _culling = new AudioCulling(CullDistantAudioLowQuality);
+                break;
+            default:
+                break;
+        }
+    }
+
+    //Culls audio thats far away when a close source wants to fire for low priority sfx and player sfx
+    private void CullDistantAudioHighQuality(Vector3 newAudio, SoundType type)
+    {
+        if (_proximityPrioritization)
+        {
+            float farthestDistance = 0;
+            Vector3 comparisonObjectPosition = Vector3.zero;
+            switch (_proximityMode)
+            {
+                case ProximityMode.MainCamera:
+                    comparisonObjectPosition = Camera.main.transform.position;
+                    farthestDistance = Vector3.Distance(newAudio, comparisonObjectPosition);
+                    break;
+                case ProximityMode.CustomObject:
+                    comparisonObjectPosition = _customObjectTransform.position;
+                    farthestDistance = Vector3.Distance(newAudio, comparisonObjectPosition);
+                    break;
+                default:
+                    break;
+            }
+
+            float currentDistance = 0;
+            int farthestIndex = -1;
+
+            switch (type)
+            {
+                case SoundType.LowPrioritySoundEffect:
+                    for (int i = 0; i < LowPrioritySFXPool.childCount; i++)
+                    {
+                        if(LowPrioritySFXPool.GetChild(i).gameObject.activeSelf)
+                            currentDistance = Vector3.Distance(LowPrioritySFXPool.GetChild(i).transform.position, comparisonObjectPosition);
+
+
+                        if (currentDistance > farthestDistance)
+                        {
+                            farthestDistance = currentDistance;
+                            farthestIndex = i;
+                        }
+                    }
+                    if(farthestIndex >= 0)
+                    {
+                        if (LowPrioritySFXPool.GetChild(farthestIndex).gameObject.TryGetComponent(out IAudioSource audioSourceScript))
+                            audioSourceScript.CullSource();
+                    }
+                    break;
+                case SoundType.PlayerSoundEffect:
+                    for (int i = 0; i < PlayerSFXPool.childCount; i++)
+                    {
+                        if (PlayerSFXPool.GetChild(i).gameObject.activeSelf)
+                            currentDistance = Vector3.Distance(PlayerSFXPool.GetChild(i).transform.position, comparisonObjectPosition);
+
+
+                        if (currentDistance > farthestDistance)
+                        {
+                            farthestDistance = currentDistance;
+                            farthestIndex = i;
+                        }
+                    }
+                    if (farthestIndex >= 0)
+                    {
+                        if (PlayerSFXPool.GetChild(farthestIndex).gameObject.TryGetComponent(out IAudioSource audioSourceScript))
+                            audioSourceScript.CullSource();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void CullDistantAudioLowQuality(Vector3 newAudio, SoundType type)
+    {
+        if (_proximityPrioritization)
+        {
+            float farthestDistance = 0;
+            Vector3 comparisonObjectPosition = Vector3.zero;
+            switch (_proximityMode)
+            {
+                case ProximityMode.MainCamera:
+                    comparisonObjectPosition = Camera.main.transform.position;
+                    farthestDistance = Vector3.Distance(newAudio, comparisonObjectPosition);
+                    break;
+                case ProximityMode.CustomObject:
+                    comparisonObjectPosition = _customObjectTransform.position;
+                    farthestDistance = Vector3.Distance(newAudio, comparisonObjectPosition);
+                    break;
+                default:
+                    break;
+            }
+
+            float currentDistance = 0;
+
+            switch (type)
+            {
+                case SoundType.LowPrioritySoundEffect:
+                    for (int i = 0; i < LowPrioritySFXPool.childCount; i++)
+                    {
+                        if (LowPrioritySFXPool.GetChild(i).gameObject.activeSelf)
+                        {
+                            currentDistance = Vector3.Distance(LowPrioritySFXPool.GetChild(i).transform.position, comparisonObjectPosition);
+
+                            if (currentDistance > farthestDistance)
+                            {
+                                if (LowPrioritySFXPool.GetChild(i).gameObject.TryGetComponent(out IAudioSource audioSourceScript))
+                                    audioSourceScript.CullSource();
+                            }
+                        }
+                    }
+                    break;
+                case SoundType.PlayerSoundEffect:
+                    for (int i = 0; i < PlayerSFXPool.childCount; i++)
+                    {
+                        if (PlayerSFXPool.GetChild(i).gameObject.activeSelf)
+                        {
+                            currentDistance = Vector3.Distance(PlayerSFXPool.GetChild(i).transform.position, comparisonObjectPosition);
+
+                            if (currentDistance > farthestDistance)
+                            {
+
+                                if (PlayerSFXPool.GetChild(i).gameObject.TryGetComponent(out IAudioSource audioSourceScript))
+                                    audioSourceScript.CullSource();
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    #endregion
+
     #region "Playing Sounds Functions"
 
 
     public void PlaySoundEffect(Vector3 position, SoundType soundType, string soundSettings, AudioClip audioClip)
     {
+        //does the culling check for low priority and player audio
+        _culling(position, soundType);
+
         //gets the current sound object, returns if there are none available
         GameObject currentSFXObject = GetSoundObject(soundType);
         if (currentSFXObject == null) return;
@@ -235,6 +431,9 @@ public class AudioManager : Singleton<AudioManager>
     }
     public void PlaySoundEffect(Transform soundParent, SoundType soundType, string soundSettings, AudioClip audioClip)
     {
+        //does the culling check for low priority and player audio
+        _culling(soundParent.position, soundType);
+
         //gets the current sound object, returns if there are none available
         GameObject currentSFXObject = GetSoundObject(soundType);
         if (currentSFXObject == null) return;
@@ -266,6 +465,9 @@ public class AudioManager : Singleton<AudioManager>
 
     public int PlayTrackedAudio(Vector3 position, SoundType soundType, string soundSettings, AudioClip audioClip, bool loopsInitialy)
     {
+        //does the culling check for low priority and player audio
+        _culling(position, soundType);
+
         //gets the current sound object, returns if there are none available
         GameObject currentSFXObject = GetSoundObject(soundType);
         if (currentSFXObject == null) return 0;
@@ -304,6 +506,9 @@ public class AudioManager : Singleton<AudioManager>
     }
     public int PlayTrackedAudio(Transform soundParent, SoundType soundType, string soundSettings, AudioClip audioClip, bool loopsInitialy)
     {
+        //does the culling check for low priority and player audio
+        _culling(soundParent.position, soundType);
+
         //gets the current sound object, returns if there are none available
         GameObject currentSFXObject = GetSoundObject(soundType);
         if (currentSFXObject == null) return 0;
@@ -424,7 +629,12 @@ public class AudioManager : Singleton<AudioManager>
 
 }
 
-public class BasicAudioSource : MonoBehaviour
+public interface IAudioSource
+{
+    public void CullSource();
+}
+
+public class BasicAudioSource : MonoBehaviour, IAudioSource
 {
     private AudioClip _audioclip;
     private AudioSource _audiosource;
@@ -483,9 +693,14 @@ public class BasicAudioSource : MonoBehaviour
     {
         Destroy(this);
     }
+
+    public void CullSource()
+    {
+        gameObject.SetActive(false);
+    }
 }
 
-public class TrackedAudioSource : MonoBehaviour
+public class TrackedAudioSource : MonoBehaviour, IAudioSource
 {
     private AudioClip _audioclip;
     private AudioSource _audiosource;
@@ -596,4 +811,10 @@ public class TrackedAudioSource : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
+
+    public void CullSource()
+    {
+        gameObject.SetActive(false);
+    }
 }
+

@@ -2563,17 +2563,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f443511571f133458b7877789d73bb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthMax: 100
+  curHealthMax: 100
   staminaMax: 100
   walkSpeed: 10
   sprintSpeed: 7
-  jumpForce: 2
+  groundDrag: 2
+  airMultiplier: 2
+  standingJumpForce: 2
   movingJumpForce: 1
-  gravityValue: -9.81
+  slopeDetectionDistance: 0.2
+  speedModifier: 0.5
+  maxSpeed: 15
+  staminaModifier: 0.5
+  maxStamina: 200
+  healthModifier: 0.5
+  clampedMaxHealth: 200
+  jumpModifier: 0.5
+  maxStandingJumpForce: 10
+  maxMovingJumpForce: 7
   rotationSpeed: 4
   staminaGauge: {fileID: 0}
   healthGauge: {fileID: 0}
   playerData: {fileID: 0}
+  isMoving: 0
+  state: 0
+  walking: 0
+  sprinting: 0
+  wallRunning: 0
+  jumping: 0
+  useGravity: 1
   curHealth: 0
   curStamina: 0
 --- !u!114 &866406850
@@ -4996,6 +5014,7 @@ MonoBehaviour:
   antsInScene: 0
   grasshoppersInScene: 0
   spidersInScene: 0
+  collectableData: []
 --- !u!1 &2141141823
 GameObject:
   m_ObjectHideFlags: 0

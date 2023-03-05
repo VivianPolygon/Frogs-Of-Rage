@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7999852775109126926}
   - component: {fileID: 6253497678376986600}
   - component: {fileID: 5574631350182381075}
-  - component: {fileID: 8368164562887333022}
+  - component: {fileID: 3628837002304595655}
   m_Layer: 0
   m_Name: Collectible - Grasshopper
   m_TagString: Untagged
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 4274209490625070453}
   m_LocalRotation: {x: -0, y: -0.77140236, z: -0, w: 0.6363478}
   m_LocalPosition: {x: -15.21, y: 0.76, z: 105.24}
-  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_LocalScale: {x: 0.005, y: 0.005, z: 0.005}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -91,12 +91,12 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4274209490625070453}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 523.82336, y: 523.82336, z: 45.241226}
   m_Center: {x: -0.000076293945, y: -0.000061035156, z: 0}
---- !u!114 &8368164562887333022
+--- !u!114 &3628837002304595655
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -105,7 +105,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4274209490625070453}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee4241c8ab42cb644ad881515ae5df7d, type: 3}
+  m_Script: {fileID: 11500000, guid: 9e2d45a43371e3244a5e7051e3cdae57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collectableData: {fileID: 11400000, guid: 7f399a113c723fa4dbc18787dbe8a219, type: 2}
+  collectableData: {fileID: 11400000, guid: 969fd9a18eadefb4c9c6b8b42c0216bb, type: 2}

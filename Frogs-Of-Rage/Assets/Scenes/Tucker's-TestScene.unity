@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571336, b: 0.3069219, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -481,13 +481,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3978689627859985141, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
+      propertyPath: exitWallTime
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3978689627859985141, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
+      propertyPath: wallJumpForce
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3978689627859985141, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
+      propertyPath: wallJumpSideForce
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
       propertyPath: healthGauge
       value: 
       objectReference: {fileID: 714297001}
     - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
       propertyPath: wallGravity
-      value: -3
+      value: -0.75
       objectReference: {fileID: 0}
     - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
       propertyPath: staminaGauge
@@ -726,9 +738,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 762857678}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -554.9502, y: -641.1, z: 19.2}
-  m_LocalScale: {x: 18.312334, y: 9.623622, z: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -549, y: -641.1, z: 4.1}
+  m_LocalScale: {x: 42.913124, y: 9.623622, z: 1}
   m_Children: []
   m_Father: {fileID: 558446}
   m_RootOrder: 0
@@ -1465,9 +1477,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1459803862}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -554.9502, y: -641.1, z: 27.4}
-  m_LocalScale: {x: 18.312334, y: 9.623622, z: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -549, y: -641.1, z: 12.299997}
+  m_LocalScale: {x: 42.913124, y: 9.623622, z: 1}
   m_Children: []
   m_Father: {fileID: 558446}
   m_RootOrder: 8

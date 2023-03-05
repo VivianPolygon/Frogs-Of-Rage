@@ -176,6 +176,7 @@ GameObject:
   - component: {fileID: 7587290521112275071}
   - component: {fileID: 7587290521112274944}
   - component: {fileID: 7587290521112274946}
+  - component: {fileID: 3978689627859985141}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -239,6 +240,7 @@ MonoBehaviour:
   gravityValue: -38
   slopeForce: -800
   slopeDetectionDistance: 0.45
+  wallGravity: -3
   speedModifier: 0.5
   maxSpeed: 15
   staminaModifier: 0.5
@@ -252,6 +254,13 @@ MonoBehaviour:
   staminaGauge: {fileID: 0}
   healthGauge: {fileID: 0}
   playerData: {fileID: 11400000, guid: 9c416c4ee9bf4924596ef9d62f06f8ff, type: 2}
+  wallVelocity: {x: 0, y: 0, z: 0}
+  state: 0
+  walking: 0
+  sprinting: 0
+  wallRunning: 0
+  jumping: 0
+  useGravity: 1
   curHealth: 0
   curStamina: 0
 --- !u!114 &7587290521112274946
@@ -266,6 +275,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5822e07b968dd5848bcf7fc76f595bce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3978689627859985141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7587290521112275068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fefb7b00ed637864b8e0a730dce72c30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wallCheckDistance: 1
+  minJumpHieght: 1
 --- !u!1 &7587290521358477422
 GameObject:
   m_ObjectHideFlags: 0

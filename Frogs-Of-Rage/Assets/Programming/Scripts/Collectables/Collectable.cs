@@ -15,23 +15,24 @@ public class Collectable : MonoBehaviour, ICollectable
     public static event OnCollectableEvent OnCollectable;
 
 
-    private void Start()
-    {
-        texture = new Texture2D((int)collectableData.Image.rect.width, (int)collectableData.Image.rect.height);
+    //private void Awake()
+    //{
+    //    texture = new Texture2D((int)collectableData.Image.rect.width, (int)collectableData.Image.rect.height);
 
-        //collectableData.Material.SetTexture("_BaseMap",);
+    //    //collectableData.Material.SetTexture("_BaseMap",);
         
-        var pixels = collectableData.Image.texture.GetPixels((int)collectableData.Image.textureRect.x,
-            (int)collectableData.Image.rect.y,
-            (int)collectableData.Image.rect.width,
-            (int)collectableData.Image.rect.height);
+    //    var pixels = collectableData.Image.texture.GetPixels((int)collectableData.Image.textureRect.x,
+    //        (int)collectableData.Image.rect.y,
+    //        (int)collectableData.Image.rect.width,
+    //        (int)collectableData.Image.rect.height);
 
-        texture.SetPixels(pixels);
-        texture.Apply();
+    //    texture.SetPixels(pixels);
+    //    texture.Apply();
 
-        collectableData.Material.SetTexture("_BaseMap", texture);
+    //    collectableData.Material.SetTexture("_BaseMap", texture);
 
-    }
+
+    //}
 
     private void Update()
     {
@@ -46,7 +47,7 @@ public class Collectable : MonoBehaviour, ICollectable
     
     public void Collect()
     {
-        OnCollectable?.Invoke(new OnCollectableEventArgs(collectableData, GameManager.Instance.playerController.playerData, gameObject));
+        OnCollectable?.Invoke(new OnCollectableEventArgs(collectableData, GameManager.Instance.playerController.playerData, gameObject, GameManager.Instance.playerController));
         Destroy(gameObject);
     }
 }
@@ -61,12 +62,14 @@ public class OnCollectableEventArgs
     public CollectableData collectableData;
     public PlayerData playerData;
     public GameObject gameObject;
+    public PlayerController playerController;
 
-    public OnCollectableEventArgs(CollectableData collectableData, PlayerData playerData, GameObject gameObject)
+    public OnCollectableEventArgs(CollectableData collectableData, PlayerData playerData, GameObject gameObject, PlayerController playerController)
     {
         this.collectableData = collectableData;
         this.playerData = playerData;
         this.gameObject = gameObject;
+        this.playerController = playerController;
     }
 }
 

@@ -787,7 +787,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Menu
+  m_Text: Restart
 --- !u!1 &1182881819177535806
 GameObject:
   m_ObjectHideFlags: 0
@@ -908,7 +908,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1182881819177535805}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: ExitGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1182881819238795485
 GameObject:
   m_ObjectHideFlags: 0
@@ -1231,7 +1243,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -300}
-  m_SizeDelta: {x: 494.3306, y: 67.14783}
+  m_SizeDelta: {x: 696.489, y: 67.1478}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &1182881819461206969
 CanvasRenderer:
@@ -1274,7 +1286,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Your Time: 99:99'
+  m_Text: 'Your Time: 99:99.999'
 --- !u!114 &1182881819461206971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1600,4 +1612,16 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1182881819683823300}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: Menu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2

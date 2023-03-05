@@ -10,10 +10,6 @@ public class VacuumEditor : Editor
     {
         VacuumNavigation vNav = (VacuumNavigation)target;
 
-        //draws the circle showing view range
-        Handles.color = Color.white;
-        Handles.DrawWireArc(vNav.transform.position, vNav.transform.up, vNav.transform.forward, 360, vNav.DistanceOfView);
-        Handles.Label(vNav.transform.position + -vNav.transform.forward * vNav.DistanceOfView, "View Range");
 
         //draws navmesh agent radius
         Handles.color = Color.green;
@@ -25,19 +21,30 @@ public class VacuumEditor : Editor
         Handles.color = Color.blue;
         Vector3 viewAngleA = vNav.DirectionFromAngle(-vNav.FieldOfView / 2, true);
         Vector3 viewAngleB = vNav.DirectionFromAngle(vNav.FieldOfView / 2, true);
+        Vector3 heightOffset = (vNav.transform.up * vNav.HeightOfView);
         //draws horizontal lines
-        Handles.DrawLine(vNav.transform.position, vNav.transform.position + viewAngleA * vNav.DistanceOfView);
-        Handles.Label((vNav.transform.position + viewAngleA * vNav.DistanceOfView), ("Left View Bound"));
-        Handles.DrawLine(vNav.transform.position, vNav.transform.position + viewAngleB * vNav.DistanceOfView);
-        Handles.Label((vNav.transform.position + viewAngleB * vNav.DistanceOfView), ("Right View Bound"));
-        //draws vertical lines
-        viewAngleA = vNav.DirectionFromAngle(-vNav.FieldOfView / 2, false);
-        viewAngleB = vNav.DirectionFromAngle(vNav.FieldOfView / 2, false);
+        Handles.DrawLine(vNav.transform.position + heightOffset, vNav.transform.position - heightOffset);
 
-        Handles.DrawLine(vNav.transform.position, vNav.transform.position + viewAngleA * vNav.DistanceOfView);
-        Handles.Label((vNav.transform.position + viewAngleA * vNav.DistanceOfView), ("Bottom View Bound"));
-        Handles.DrawLine(vNav.transform.position, vNav.transform.position + viewAngleB * vNav.DistanceOfView);
-        Handles.Label((vNav.transform.position + viewAngleB * vNav.DistanceOfView), ("Top View Bound"));
+        Handles.DrawLine(vNav.transform.position + heightOffset, vNav.transform.position + heightOffset + viewAngleA * vNav.DistanceOfView);
+        Handles.DrawLine(vNav.transform.position - heightOffset, vNav.transform.position - heightOffset + viewAngleA * vNav.DistanceOfView);
+        Handles.Label((vNav.transform.position + viewAngleA * vNav.DistanceOfView), ("Left View Bound"));
+
+        Handles.DrawLine(vNav.transform.position + heightOffset, vNav.transform.position + heightOffset + viewAngleB * vNav.DistanceOfView);
+        Handles.DrawLine(vNav.transform.position - heightOffset, vNav.transform.position - heightOffset + viewAngleB * vNav.DistanceOfView);
+        Handles.Label((vNav.transform.position + viewAngleB * vNav.DistanceOfView), ("Right View Bound"));
+
+        Handles.Label(vNav.transform.position + vNav.transform.forward * vNav.DistanceOfView, "View Distance");
+        //draws height lines
+        Vector3 viewAngleAPoint = vNav.transform.position + viewAngleA * vNav.DistanceOfView;
+        Vector3 viewAngleBPoint = vNav.transform.position + viewAngleB * vNav.DistanceOfView;
+        Handles.DrawLine(viewAngleAPoint + heightOffset, viewAngleAPoint - heightOffset);
+        Handles.DrawLine(viewAngleBPoint + heightOffset, viewAngleBPoint - heightOffset);
+
+        //draws height lines across
+        Handles.DrawWireArc(vNav.transform.position + heightOffset, vNav.transform.up, viewAngleA, vNav.FieldOfView, vNav.DistanceOfView);
+        Handles.DrawWireArc(vNav.transform.position - heightOffset, vNav.transform.up, viewAngleA, vNav.FieldOfView, vNav.DistanceOfView);
+
+
 
         //for Player Hearing Visuilization
         {
@@ -66,7 +73,7 @@ public class VacuumEditor : Editor
         }
 
 
-        //for Player Detection visualization
+        //for Player Detection visualization 
         if (vNav.CheckPlayerInSight() != null)
         {
             Transform PlayerPos = vNav.CheckPlayerInSight();

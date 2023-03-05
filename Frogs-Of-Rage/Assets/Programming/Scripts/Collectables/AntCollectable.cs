@@ -4,5 +4,9 @@ using UnityEngine;
 
 public class AntCollectable : Collectable, ICollectable
 {
+    public void Start()
+    {
+        GameManager.Instance.antsInScene++;
 
+    }
 }

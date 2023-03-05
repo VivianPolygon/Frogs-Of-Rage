@@ -9,8 +9,6 @@ public class EventManager : Singleton<EventManager>
     //public static event PlayerFall OnPlayerFall;
 
 
-    public delegate void PlayerDeath();
-    public static event PlayerDeath OnPlayerDeath;
-
+    
 
 }

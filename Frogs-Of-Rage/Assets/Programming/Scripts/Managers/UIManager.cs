@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -17,11 +18,14 @@ public class UIManager : Singleton<UIManager>
     public GameObject collectablePanel;
     [HideInInspector]
     public CollectableData collectedData;
+    public GameObject checkpointIcon;
+    public Text inGameTimer;
 
     [Header("Pause Canvas")]
     [Space(10)]
     public Canvas pauseCanvas;
-    private bool isPaused = false;
+    [HideInInspector]
+    public bool isPaused = false;
     public Image flyImage;
     public Text flyCount;
     public Image antImage;
@@ -53,12 +57,15 @@ public class UIManager : Singleton<UIManager>
     {
         Collectable.OnCollectable += CollectCollectable;
         PlayerController.OnPlayerWin += HandleWinScreen;
+        PlayerController.OnPlayerPause += DisplayPauseScreen;
+        PlayerController.OnPlayerCanvas += DisplayTimer;
     }
     private void OnDisable()
     {
         Collectable.OnCollectable -= CollectCollectable;
         PlayerController.OnPlayerWin -= HandleWinScreen;
-
+        PlayerController.OnPlayerPause -= DisplayPauseScreen;
+        PlayerController.OnPlayerCanvas -= DisplayTimer;
     }
 
     private void Start()
@@ -67,10 +74,34 @@ public class UIManager : Singleton<UIManager>
         inputManager = InputManager.Instance;
     }
 
-    private void Update()
+
+    #region Buttons
+    public void Continue()
     {
-        HandlePauseMenu();
+        isPaused = false;
     }
+    public void SaveGame()
+    {
+        Debug.Log("Saving game");
+
+    }
+    public void Options()
+    {
+        Debug.Log("Options menu");
+
+    }
+    public void ExitGame()
+    {
+        Application.Quit();
+        Debug.Log("Quitting game");
+    }
+    public void Menu()
+    {
+        //For now this will just reload scene 
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    #endregion
+
     private void DisplayCollectedItem(CollectableData collectableData)
     {
         
@@ -94,34 +125,48 @@ public class UIManager : Singleton<UIManager>
         SpiderCollectable spider = type as SpiderCollectable;
         GrasshopperCollectable grasshopper = type as GrasshopperCollectable;
 
-        if(type == fly)
+        if (type == fly)
+        {
             e.playerData.FlyCount++;
-        else if(type == ant) 
+            e.playerController.IncreaseMaxHealth();
+        }
+        else if (type == ant)
+        {
             e.playerData.AntCount++;
-        else if(type == spider)
+            e.playerController.IncreaseMaxStamina();
+        }
+        else if (type == spider)
             e.playerData.SpiderCount++;
-        else if(type == grasshopper)
+        else if (type == grasshopper)
+        {
             e.playerData.GrasshopperCount++;
+            e.playerController.IncreaseJumpForce();
+        }
         #endregion
 
 
     }
 
-    private void HandlePauseMenu()
+    private void DisplayPauseScreen(PlayerPauseEventArgs e)
     {
-        //Toggle paused bool
-        if(InputManager.Instance.GetPause())
-            isPaused = !isPaused;
-        if(isPaused)
-        {
-            pauseCanvas.gameObject.SetActive(true);
-            Time.timeScale = 0f;
-        }
-        else if(!isPaused)
-        {
-            pauseCanvas.gameObject.SetActive(false);
-            Time.timeScale = 1f;
-        }
+        //Activate win canvas
+        pauseCanvas.gameObject.SetActive(true);
+        Time.timeScale = 0f;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        //Display UI info
+        //Count
+        flyCount.text = e.playerData.FlyCount.ToString() + "/" + GameManager.Instance.fliesInScene;
+        antCount.text = e.playerData.AntCount.ToString() + "/" + GameManager.Instance.antsInScene;
+        grasshopperCount.text = e.playerData.GrasshopperCount.ToString() + "/" + GameManager.Instance.grasshoppersInScene;
+        spiderCount.text = e.playerData.SpiderCount.ToString() + "/" + GameManager.Instance.spidersInScene;
+        //Images
+        flyImage.sprite = e.playerData.FlyImage;
+        antImage.sprite = e.playerData.AntImage;
+        grasshopperImage.sprite = e.playerData.GrasshopperImage;
+        spiderImage.sprite = e.playerData.SpiderImage;
     }
 
     private void HandleWinScreen(PlayerWinEventArgs e)
@@ -131,26 +176,35 @@ public class UIManager : Singleton<UIManager>
         {
             //Activate win canvas
             youWinCanvas.gameObject.SetActive(true);
+            inputManager.playerControls.Disable();
+            isPaused = true;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
 
             //Display UI info
-                //Count
-            flyCountYouWin.text = e.playerData.FlyCount.ToString();
-            antCountYouWin.text = e.playerData.AntCount.ToString();
-            grasshopperCountYouWin.text = e.playerData.GrasshopperCount.ToString();
-            spiderCountYouWin.text = e.playerData.SpiderCount.ToString();
+            //Count
+            flyCountYouWin.text = e.playerData.FlyCount.ToString() + "/" + GameManager.Instance.fliesInScene;
+            antCountYouWin.text = e.playerData.AntCount.ToString() + "/" + GameManager.Instance.antsInScene;
+            grasshopperCountYouWin.text = e.playerData.GrasshopperCount.ToString() + "/" + GameManager.Instance.grasshoppersInScene;
+            spiderCountYouWin.text = e.playerData.SpiderCount.ToString() + "/" + GameManager.Instance.spidersInScene;
                 //Images
             flyImageYouWin.sprite = e.playerData.FlyImage;
             antImageYouWin.sprite = e.playerData.AntImage;
             grasshopperImageYouWin.sprite = e.playerData.GrasshopperImage;
             spiderImageYouWin.sprite = e.playerData.SpiderImage;
                 //Displays the game timers current time
-            timer.text = string.Format("{0:00}:{1:00}", e.gameTimer.minutes, e.gameTimer.seconds);
+            timer.text = "Your Time: " + string.Format("{0:00}:{1:00}:{2:000}", e.gameTimer.minutes, e.gameTimer.seconds, e.gameTimer.milliseconds);
 
             //Stores the total time it took for use later?
             finalGameTime = e.gameTimer.totalTime;
 
             //Do camera stuff here for the fade out and showcase level
         }
+    }
+
+    private void DisplayTimer(PlayerCanvasEventArgs e)
+    {
+        inGameTimer.text = string.Format("{0:00}:{01:00}:{2:000}",  e.gameTimer.minutes, e.gameTimer.seconds, e.gameTimer.milliseconds);
     }
 
 }

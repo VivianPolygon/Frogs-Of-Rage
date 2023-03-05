@@ -5,5 +5,8 @@ using UnityEngine;
 
 public class FlyCollectable : Collectable, ICollectable
 {
-    
+    public void Start()
+    {
+        GameManager.Instance.fliesInScene++;
+    }
 }

@@ -21,7 +21,7 @@ public class Singleton<T> : MonoBehaviour where T : Component
                     obj.name = typeof(T).Name;
                     _instance = obj.AddComponent<T>();
                 }
-
+                DontDestroyOnLoad(_instance.gameObject);
             }
             //If there is already one then return it
             return _instance;
@@ -32,13 +32,18 @@ public class Singleton<T> : MonoBehaviour where T : Component
     {
         if (_instance == null)
         {
-            _instance = this as T;
             DontDestroyOnLoad(gameObject);
+            _instance = this as T;
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(this.gameObject);
         }
     }
+
+    //private void OnDestroy()
+    //{
+    //    _instance= null;
+    //}
 }
 

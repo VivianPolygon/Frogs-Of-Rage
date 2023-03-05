@@ -6,14 +6,17 @@ public class WallRunning : MonoBehaviour
 {
 
     [Header("Detection")]
-    [SerializeField]
+    [SerializeField, Tooltip("How close does the player have to be to the wall")]
     private  float wallCheckDistance;
-    [SerializeField]
+    [SerializeField, Tooltip("Minimum hieght off the floor before the player can stick to a wall")]
     private float minJumpHieght;
-    [SerializeField]
+    [SerializeField, Tooltip("Force the player jumps up when on a wall")]
     private float wallJumpForce;
-    [SerializeField]
+    [SerializeField, Tooltip("Force the player jumps away from the wall")]
     private float wallJumpSideForce;
+    [SerializeField, Tooltip("The wall gravity counter force on the player")]
+    private float wallGravityCounterForce = -3f;
+    private bool useGravity = true;
 
     private RaycastHit leftWallHit;
     private RaycastHit rightWallHit;
@@ -33,14 +36,16 @@ public class WallRunning : MonoBehaviour
     [Header("References")]
     private InputManager inputManager;
     private PlayerController playerController;
-    private CharacterController controller;
+    //private CharacterController controller;
+    private Rigidbody rb;
 
 
     private void Start()
     {
         inputManager = InputManager.Instance;
         playerController = GetComponent<PlayerController>();
-        controller = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>(); 
+        //controller = GetComponent<CharacterController>();
     }
 
     private void Update()
@@ -53,8 +58,7 @@ public class WallRunning : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(controller.isGrounded)
-            playerController.useGravity = true;
+
     }
 
     private void CheckForWall()
@@ -68,7 +72,7 @@ public class WallRunning : MonoBehaviour
 
     private bool AboveGround()
     {
-        return !Physics.Raycast(transform.position, Vector3.down, minJumpHieght);
+        return !Physics.Raycast(transform.position + (Vector3.up / 2), Vector3.down, minJumpHieght);
     }
 
     private void StateMachine()
@@ -78,7 +82,7 @@ public class WallRunning : MonoBehaviour
         verticalInput = inputManager.GetMovement().y;
 
         //Wallrunning
-        if ((wallLeft || wallRight)  && AboveGround() && !exitingWall)
+        if ((wallLeft || wallRight)  && AboveGround() && !exitingWall && playerController.curStamina > 0)
         {
             if (!playerController.wallRunning)
                 StartWallRun();
@@ -106,10 +110,13 @@ public class WallRunning : MonoBehaviour
     private void StartWallRun()
     {
         playerController.wallRunning = true;
+
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
     }
     private void WallRunningMovement()
     {
-        playerController.useGravity = false;
+        rb.useGravity = useGravity;
         Vector3 wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal;
 
         Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
@@ -120,19 +127,21 @@ public class WallRunning : MonoBehaviour
 
         //Push to wall force
         if(!(wallLeft && horizontalInput > 0) && !(wallRight && horizontalInput < 0))
-            controller.Move(-wallNormal * Time.deltaTime * 100);
+            //controller.Move(-wallNormal * Time.deltaTime * 100);
+            rb.AddForce(-wallNormal * 100 * Time.deltaTime);
 
-
+        //Weaken gravity on wall
+        if (useGravity)
+            rb.AddForce(transform.up * wallGravityCounterForce, ForceMode.Force);
     }
     private void StopWallRun()
     {
         playerController.wallRunning = false;
+        rb.useGravity = true;
 
         Vector3 wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal;
 
         Vector3 forceToApply = transform.up * wallJumpForce + wallNormal * wallJumpSideForce;
-
-        playerController.wallVelocity -= forceToApply;
 
     }
     private void WallJump()
@@ -141,16 +150,11 @@ public class WallRunning : MonoBehaviour
         exitWallTimer = exitWallTime;
 
         Vector3 wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal;
-        Debug.Log(wallNormal);
-        Debug.Log(wallRight);
-        Debug.Log(rightWallHit.normal);
-        Debug.Log(leftWallHit.normal);
 
         Vector3 forceToApply = transform.up * wallJumpForce + wallNormal * wallJumpSideForce;
 
-        playerController.wallVelocity = new Vector3(playerController.wallVelocity.x, 0, playerController.wallVelocity.z);
-        playerController.wallVelocity += forceToApply;
-        Debug.Log(forceToApply);
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        rb.AddForce(forceToApply, ForceMode.Impulse);
 
     }
 }

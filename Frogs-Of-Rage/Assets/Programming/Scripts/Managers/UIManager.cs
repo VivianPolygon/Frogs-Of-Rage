@@ -10,6 +10,10 @@ public class UIManager : Singleton<UIManager>
 {
     private InputManager inputManager;
     private Animator panelAnimator;
+    [Header("Start Canvas")]
+    [Space(10)]
+    public Canvas startCanvas;
+
 
     [Header("Player Canvas")]
     [Space(10)]

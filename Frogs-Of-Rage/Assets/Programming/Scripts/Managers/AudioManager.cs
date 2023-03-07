@@ -15,8 +15,7 @@ public class AudioManager : Singleton<AudioManager>
         Music
     }
 
-
-    [SerializeField] private AudioMixerGroup _sfxGroup;
+    [SerializeField] private AudioMixerGroup _SFXGroup;
     [SerializeField] private AudioMixerGroup _musicGroup;
 
     #endregion
@@ -164,6 +163,7 @@ public class AudioManager : Singleton<AudioManager>
     #endregion
 
     // Functions
+
     public override void Awake()
     {
         base.Awake();
@@ -175,32 +175,47 @@ public class AudioManager : Singleton<AudioManager>
 
     #region "Mixer Related Functions
 
-    public void SetAudioMixer(MixerGroup mixerGroup, AudioSource source)
+    private void SetAudioMixer(MixerGroup mixerGroup, AudioSource source)
     {
         AudioMixerGroup mixer = null;
         switch (mixerGroup)
         {
             case MixerGroup.SFX:
-                if(_sfxGroup != null)
-                mixer = _sfxGroup;
+                if(_SFXGroup)
+                mixer = _SFXGroup;
                 break;
             case MixerGroup.Music:
-                if(_musicGroup != null)
+                if(_musicGroup)
                 mixer = _musicGroup;
                 break;
             default:
                 break;
         }
 
-        Debug.LogWarning("No Mixer of type: " + mixerGroup + " Could be found on the audio manager. Make sure it is set in the inspector");
-        if(mixer == null) { return; } // no mixer could be gotten, returns out
+        if(!mixer) 
+        {
+            Debug.LogWarning("No Mixer of type: " + mixerGroup + " Could be found on the audio manager. Make sure it is set in the inspector");
+            return; // no mixer could be gotten, returns out
+        } 
 
         source.outputAudioMixerGroup = mixer;
     }
-
-    public MixerGroup ConvertSoundTypeToMixerGroup(SoundType type)
+    private MixerGroup ConvertSoundTypeToMixerGroup(SoundType type)
     {
-        return (MixerGroup)1;
+        switch (type)
+        {
+            case SoundType.LowPrioritySoundEffect:
+                return MixerGroup.SFX;
+            case SoundType.HighPrioritySoundEffect:
+                return MixerGroup.SFX;
+            case SoundType.PlayerSoundEffect:
+                return MixerGroup.SFX;
+            case SoundType.Music:
+                return MixerGroup.Music;
+            default:
+                Debug.LogWarning("Could not find the Soundtype: " + type + " when converting to a mixerground in AudioManager.ConvertSoundTypeToMixerGroup. returned SFX by default");
+                return MixerGroup.SFX;
+        }
     }
 
     #endregion
@@ -515,7 +530,6 @@ public class AudioManager : Singleton<AudioManager>
 
     #region "Playing Sounds Functions"
 
-
     public void PlaySoundEffect(Vector3 position, SoundType soundType, string soundSettings, AudioClip audioClip)
     {
         //does the culling check for low priority and player audio
@@ -540,7 +554,7 @@ public class AudioManager : Singleton<AudioManager>
         SetAudioSourceFromSoundSettings(audioSource, GetSoundSettingsByString(soundSettings));
 
         //sets the mixer
-
+        SetAudioMixer(ConvertSoundTypeToMixerGroup(soundType), audioSource);
 
         //adds the basic sound source script and sets it
         BasicAudioSource source = currentSFXObject.AddComponent<BasicAudioSource>();
@@ -572,6 +586,8 @@ public class AudioManager : Singleton<AudioManager>
         }
         SetAudioSourceFromSoundSettings(audioSource, GetSoundSettingsByString(soundSettings));
 
+        //sets the mixer
+        SetAudioMixer(ConvertSoundTypeToMixerGroup(soundType), audioSource);
 
         //adds the basic sound source script and sets it
         BasicAudioSource source = currentSFXObject.AddComponent<BasicAudioSource>();
@@ -605,6 +621,9 @@ public class AudioManager : Singleton<AudioManager>
             }
         }
         SetAudioSourceFromSoundSettings(audioSource, GetSoundSettingsByString(soundSettings));
+
+        //sets the mixer
+        SetAudioMixer(ConvertSoundTypeToMixerGroup(soundType), audioSource);
 
         //increments key value
         _audioSourceIndexer++;
@@ -646,6 +665,9 @@ public class AudioManager : Singleton<AudioManager>
             }
         }
         SetAudioSourceFromSoundSettings(audioSource, GetSoundSettingsByString(soundSettings));
+
+        //sets the mixer
+        SetAudioMixer(ConvertSoundTypeToMixerGroup(soundType), audioSource);
 
         //increments key value
         _audioSourceIndexer++;

@@ -129,6 +129,7 @@ public class WallRunning : MonoBehaviour
         //Weaken gravity on wall
         if (useGravity)
             rb.AddForce(transform.up * wallGravityCounterForce, ForceMode.Force);
+        
     }
     private void StopWallRun()
     {

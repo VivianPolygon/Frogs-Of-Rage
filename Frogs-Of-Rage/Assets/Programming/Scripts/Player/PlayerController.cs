@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     public  float curHealthMax = 100f;
     [Header("Movement Variables")]
     [Space(10)]
-    public float staminaMax = 100f;
+    public float curStaminaMax = 100f;
     [Space(5)]
     [SerializeField, Tooltip("The walk speed of the player.")]
     private float walkSpeed = 5.0f;
@@ -162,7 +162,7 @@ public class PlayerController : MonoBehaviour
         mainCamTransform = Camera.main.transform;
         gameManager = GameManager.Instance;
         curSpeed = walkSpeed;
-        curStamina = staminaMax;
+        curStamina = curStaminaMax;
         curHealth = curHealthMax;
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -170,7 +170,7 @@ public class PlayerController : MonoBehaviour
 
         //Get base variables for collectables
         baseHealth = curHealthMax;
-        baseStamina = staminaMax;
+        baseStamina = curStaminaMax;
         baseStandingJumpForce = standingJumpForce;
         baseMovingJumpForce = movingJumpForce;
 
@@ -232,9 +232,9 @@ public class PlayerController : MonoBehaviour
 
         newStaminaMax = baseStamina + (playerData.AntCount * staminaModifier);
 
-        newStaminaMax = Mathf.Clamp(newStaminaMax, staminaMax, maxStamina);
+        newStaminaMax = Mathf.Clamp(newStaminaMax, curStaminaMax, maxStamina);
 
-        staminaMax = newStaminaMax;
+        curStaminaMax = newStaminaMax;
         curStamina = curStamina + (playerData.AntCount * staminaModifier);
     }
 
@@ -278,7 +278,7 @@ public class PlayerController : MonoBehaviour
         else
             curStamina += Time.deltaTime * 5;
 
-        curStamina = Mathf.Clamp(curStamina, 0, staminaMax);
+        curStamina = Mathf.Clamp(curStamina, 0, curStaminaMax);
         SetStaminaValue();
     }
     private void HandleStamina()
@@ -450,7 +450,7 @@ public class PlayerController : MonoBehaviour
     private void SetStaminaMax()
     {
         if (staminaGauge != null)
-            staminaGauge.SetMaxValue(staminaMax);
+            staminaGauge.SetMaxValue(curStaminaMax);
     }
     private void SetStaminaValue()
     {
@@ -514,7 +514,8 @@ public class PlayerController : MonoBehaviour
     private void Respawn(PlayerDeathEventArgs e)
     {
         transform.position = e.respawnPos;
-
+        curHealth = curHealthMax;
+        curStamina = curStaminaMax;
     }
 
     private void VacuumInstaKill()

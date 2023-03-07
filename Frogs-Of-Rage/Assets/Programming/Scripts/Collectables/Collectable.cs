@@ -15,24 +15,24 @@ public class Collectable : MonoBehaviour, ICollectable
     public static event OnCollectableEvent OnCollectable;
 
 
-    private void Awake()
-    {
-        texture = new Texture2D((int)collectableData.Image.rect.width, (int)collectableData.Image.rect.height);
+    //private void Awake()
+    //{
+    //    texture = new Texture2D((int)collectableData.Image.rect.width, (int)collectableData.Image.rect.height);
 
-        //collectableData.Material.SetTexture("_BaseMap",);
+    //    //collectableData.Material.SetTexture("_BaseMap",);
         
-        var pixels = collectableData.Image.texture.GetPixels((int)collectableData.Image.textureRect.x,
-            (int)collectableData.Image.rect.y,
-            (int)collectableData.Image.rect.width,
-            (int)collectableData.Image.rect.height);
+    //    var pixels = collectableData.Image.texture.GetPixels((int)collectableData.Image.textureRect.x,
+    //        (int)collectableData.Image.rect.y,
+    //        (int)collectableData.Image.rect.width,
+    //        (int)collectableData.Image.rect.height);
 
-        texture.SetPixels(pixels);
-        texture.Apply();
+    //    texture.SetPixels(pixels);
+    //    texture.Apply();
 
-        collectableData.Material.SetTexture("_BaseMap", texture);
+    //    collectableData.Material.SetTexture("_BaseMap", texture);
 
 
-    }
+    //}
 
     private void Update()
     {

@@ -6,8 +6,19 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
+public enum CanvasState
+{
+    Start,
+    Player,
+    Paused,
+    Win
+}
+
 public class UIManager : Singleton<UIManager>
 {
+    public CanvasState state;
+
+
     private InputManager inputManager;
     private Animator panelAnimator;
     [Header("Start Canvas")]
@@ -29,7 +40,6 @@ public class UIManager : Singleton<UIManager>
     [Space(10)]
     public Canvas pauseCanvas;
     [HideInInspector]
-    public bool isPaused = false;
     public Image flyImage;
     public Text flyCount;
     public Image antImage;
@@ -43,7 +53,6 @@ public class UIManager : Singleton<UIManager>
     [Space(10)]
     public Canvas youWinCanvas;
     public Text timer;
-    private bool isWin = false;
     public Image flyImageYouWin;
     public Text flyCountYouWin;
     public Image antImageYouWin;
@@ -55,6 +64,10 @@ public class UIManager : Singleton<UIManager>
 
     private float finalGameTime;
 
+    public bool isStartState = false;
+    public bool isPlayerState = false;
+    public bool isPaused = false;
+    public bool isWinState = false;
 
 
     private void OnEnable()
@@ -80,6 +93,18 @@ public class UIManager : Singleton<UIManager>
 
 
     #region Buttons
+    public void StartGame()
+    {
+
+    }
+    public void Credits()
+    {
+
+    }
+    public void Forum()
+    {
+
+    }
     public void Continue()
     {
         isPaused = false;
@@ -175,8 +200,8 @@ public class UIManager : Singleton<UIManager>
 
     private void HandleWinScreen(PlayerWinEventArgs e)
     {
-        isWin = !isWin;
-        if(isWin)
+        isWinState = !isWinState;
+        if(isWinState)
         {
             //Activate win canvas
             youWinCanvas.gameObject.SetActive(true);

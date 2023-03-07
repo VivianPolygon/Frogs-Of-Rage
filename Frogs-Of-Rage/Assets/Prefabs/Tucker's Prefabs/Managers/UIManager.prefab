@@ -93,7 +93,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5766849432767678010
 RectTransform:
   m_ObjectHideFlags: 0
@@ -618,6 +618,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0dbc5a91a22f2e4bb035fcc46b3b433, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  state: 0
   startCanvas: {fileID: 2829465917389959252}
   collectedImage: {fileID: 7314940685684786284}
   collectedCount: {fileID: 7314940685669164846}
@@ -626,7 +627,6 @@ MonoBehaviour:
   checkpointIcon: {fileID: 7314940685975734954}
   inGameTimer: {fileID: 7880931795123382125}
   pauseCanvas: {fileID: 5971676874919437309}
-  isPaused: 0
   flyImage: {fileID: 5971676873149212011}
   flyCount: {fileID: 5971676874521942082}
   antImage: {fileID: 5971676873066731741}
@@ -645,6 +645,7 @@ MonoBehaviour:
   grasshopperCountYouWin: {fileID: 3409533657873086989}
   spiderImageYouWin: {fileID: 3409533658630903445}
   spiderCountYouWin: {fileID: 3409533658438103448}
+  isPaused: 0
 --- !u!1 &8841155158148051984
 GameObject:
   m_ObjectHideFlags: 0

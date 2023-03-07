@@ -56,11 +56,6 @@ public class WallRunning : MonoBehaviour
             WallRunningMovement();
     }
 
-    private void FixedUpdate()
-    {
-
-    }
-
     private void CheckForWall()
     {
         wallRight = Physics.Raycast(transform.position + Vector3.up, transform.right, out rightWallHit, wallCheckDistance);
@@ -128,7 +123,7 @@ public class WallRunning : MonoBehaviour
         //Push to wall force
         if(!(wallLeft && horizontalInput > 0) && !(wallRight && horizontalInput < 0))
             //controller.Move(-wallNormal * Time.deltaTime * 100);
-            rb.AddForce(-wallNormal * 100 * Time.deltaTime);
+            rb.AddForce(-wallNormal * 200 * Time.deltaTime);
 
         //Weaken gravity on wall
         if (useGravity)

@@ -85,6 +85,7 @@ public class WallRunning : MonoBehaviour
             if (inputManager.GetJump())
                 WallJump();
         }
+        //Exiting
         else if(exitingWall)
         {
             if(playerController.wallRunning)

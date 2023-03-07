@@ -290,7 +290,7 @@ public class PlayerController : MonoBehaviour
     }
     public bool GroundedPlayer()
     {
-        return Physics.Raycast(transform.position + (Vector3.up / 2), Vector3.down, 1f, ~LayerMask.GetMask("Player"));
+        return Physics.Raycast(transform.position + (Vector3.up / 2), Vector3.down, 0.55f, ~LayerMask.GetMask("Player"));
     }
     private void HandleDrag()
     {

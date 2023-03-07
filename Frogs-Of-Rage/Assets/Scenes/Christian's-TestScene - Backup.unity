@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18174809, g: 0.22741301, b: 0.3074194, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731715, g: 0.13414735, b: 0.121078536, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1432,6 +1432,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1155854915}
     m_Modifications:
+    - target: {fileID: 5589817422669076008, guid: 17fc4dc8067c81049b26733f9ad7b93b, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 67645b754847a414d877f78263993c85, type: 2}
+    - target: {fileID: 5589817422669076008, guid: 17fc4dc8067c81049b26733f9ad7b93b, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 688935b6056538f409170669ec221526, type: 2}
     - target: {fileID: 6238603843393124349, guid: 17fc4dc8067c81049b26733f9ad7b93b, type: 3}
       propertyPath: m_Name
       value: TV (1)
@@ -1454,35 +1462,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6762200507833724231, guid: 17fc4dc8067c81049b26733f9ad7b93b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -84.871
+      value: -84.87
       objectReference: {fileID: 0}
     - target: {fileID: 6762200507833724231, guid: 17fc4dc8067c81049b26733f9ad7b93b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -20.94
+      value: -20.72
       objectReference: {fileID: 0}
     - target: {fileID: 6762200507833724231, guid: 17fc4dc8067c81049b26733f9ad7b93b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 89.048
+      value: 89.05
       objectReference: {fileID: 0}
     - target: {fileID: 6762200507833724231, guid: 17fc4dc8067c81049b26733f9ad7b93b, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.54704887
+      value: 0.5470373
       objectReference: {fileID: 0}
     - target: {fileID: 6762200507833724231, guid: 17fc4dc8067c81049b26733f9ad7b93b, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: -0.0035592439
       objectReference: {fileID: 0}
     - target: {fileID: 6762200507833724231, guid: 17fc4dc8067c81049b26733f9ad7b93b, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.8371007
+      value: 0.8370829
       objectReference: {fileID: 0}
     - target: {fileID: 6762200507833724231, guid: 17fc4dc8067c81049b26733f9ad7b93b, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0.0054463977
       objectReference: {fileID: 0}
     - target: {fileID: 6762200507833724231, guid: 17fc4dc8067c81049b26733f9ad7b93b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: -0.746
       objectReference: {fileID: 0}
     - target: {fileID: 6762200507833724231, guid: 17fc4dc8067c81049b26733f9ad7b93b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -3916,7 +3924,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &285890837
 Light:
   m_ObjectHideFlags: 0
@@ -7366,6 +7374,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 2415286830088902286, guid: 6587d0d3940800847a5e0754f6f2cece, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4623668c5be1985408f5504a75c79358, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6587d0d3940800847a5e0754f6f2cece, type: 3}
 --- !u!1001 &661567989
@@ -11550,7 +11562,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 264708797293082561, guid: e9b4053561d396b42afd6dac3d28be86, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 264708797293082561, guid: e9b4053561d396b42afd6dac3d28be86, type: 3}
       propertyPath: m_LocalPosition.x
@@ -20776,19 +20788,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7749315
+      value: 0.2695292
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.44048327
+      value: 0.1532046
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.39406088
+      value: 0.8265331
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.22399041
+      value: -0.46981427
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296575147496, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_RootOrder
@@ -21908,7 +21920,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 264708797293082561, guid: e9b4053561d396b42afd6dac3d28be86, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 264708797293082561, guid: e9b4053561d396b42afd6dac3d28be86, type: 3}
       propertyPath: m_LocalPosition.x
@@ -23925,10 +23937,10 @@ MonoBehaviour:
   staminaMax: 100
   walkSpeed: 9
   sprintSpeed: 12
+  groundDrag: 2
+  airMultiplier: 2
   standingJumpForce: 2
   movingJumpForce: 1
-  gravityValue: -38
-  slopeForce: -100
   slopeDetectionDistance: 0.2
   speedModifier: 0.5
   maxSpeed: 15
@@ -23943,6 +23955,13 @@ MonoBehaviour:
   staminaGauge: {fileID: 1225925929}
   healthGauge: {fileID: 1225925930}
   playerData: {fileID: 11400000, guid: 9c416c4ee9bf4924596ef9d62f06f8ff, type: 2}
+  isMoving: 0
+  state: 0
+  walking: 0
+  sprinting: 0
+  wallRunning: 0
+  jumping: 0
+  useGravity: 1
   curHealth: 0
   curStamina: 0
 --- !u!4 &7587290521302141248

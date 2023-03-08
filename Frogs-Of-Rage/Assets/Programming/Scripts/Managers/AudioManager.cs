@@ -1,55 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class AudioManager : Singleton<AudioManager>
 {
     //Variables
-    #region "Proximity Prioritization Variables and Properties"
 
-    public enum ProximityMode
+    #region "Mixer Related Variables"
+
+    public enum MixerGroup
     {
-        MainCamera,
-        CustomObject
-    }
-    public enum AudioCullingQuality
-    {
-        High,
-        Low
+        SFX,
+        Music
     }
 
-    [SerializeField] private bool _proximityPrioritization;
-    public bool ProximityPrioritization
-    {
-        get { return _proximityPrioritization; }
-        private set { _proximityPrioritization = value; }
-    }
-
-
-    [SerializeField] [HideInInspector] private ProximityMode _proximityMode;
-    [SerializeField] [HideInInspector] private AudioCullingQuality _cullingquality;
-
-    public ProximityMode ProxMode
-    {
-        get { return _proximityMode; }
-        set { _proximityMode = value; }
-    }
-    public AudioCullingQuality CullingQuality
-    {
-        get { return _cullingquality; }
-        set { _cullingquality = value; }
-    }
-
-    [SerializeField] [HideInInspector] private Transform _customObjectTransform;
-
-    public Transform CustomObjectTransform
-    {
-        get { return _customObjectTransform; }
-        set { _customObjectTransform = value; }
-    }
-
-    private delegate void AudioCulling(Vector3 position, SoundType type);
-    private AudioCulling _culling;
+    [SerializeField] private AudioMixerGroup _SFXGroup;
+    [SerializeField] private AudioMixerGroup _musicGroup;
 
     #endregion
 
@@ -61,6 +28,7 @@ public class AudioManager : Singleton<AudioManager>
     #endregion
 
     #region "Sound Pool Variables"
+    [Space(10)]
     [SerializeField] [Min(0)] private int _lowPrioritySoundEffectLimit = 10;
     [SerializeField] [Min(0)] private int _playerSoundEffectLimit = 4;
 
@@ -140,13 +108,62 @@ public class AudioManager : Singleton<AudioManager>
     #endregion
 
     #region "Sound Setting Variables"
-
-    [Space(10)]
     [SerializeField] private SoundSettings[] _soundSettings;
     [SerializeField] private SoundSettings _defaultSoundSettings;
     #endregion
 
+    #region "Proximity Prioritization Variables and Properties"
+
+    public enum ProximityMode
+    {
+        MainCamera,
+        CustomObject
+    }
+    public enum AudioCullingQuality
+    {
+        High,
+        Low
+    }
+
+    [Space(10)]
+    [SerializeField] private bool _proximityPrioritization;
+
+    public bool ProximityPrioritization
+    {
+        get { return _proximityPrioritization; }
+        private set { _proximityPrioritization = value; }
+    }
+
+
+    [SerializeField] [HideInInspector] private ProximityMode _proximityMode;
+    [SerializeField] [HideInInspector] private AudioCullingQuality _cullingquality;
+
+    public ProximityMode ProxMode
+    {
+        get { return _proximityMode; }
+        set { _proximityMode = value; }
+    }
+    public AudioCullingQuality CullingQuality
+    {
+        get { return _cullingquality; }
+        set { _cullingquality = value; }
+    }
+
+    [SerializeField] [HideInInspector] private Transform _customObjectTransform;
+
+    public Transform CustomObjectTransform
+    {
+        get { return _customObjectTransform; }
+        set { _customObjectTransform = value; }
+    }
+
+    private delegate void AudioCulling(Vector3 position, SoundType type);
+    private AudioCulling _culling;
+
+    #endregion
+
     // Functions
+
     public override void Awake()
     {
         base.Awake();
@@ -155,6 +172,53 @@ public class AudioManager : Singleton<AudioManager>
 
         SetCullingQuality(_cullingquality);
     }
+
+    #region "Mixer Related Functions
+
+    private void SetAudioMixer(MixerGroup mixerGroup, AudioSource source)
+    {
+        AudioMixerGroup mixer = null;
+        switch (mixerGroup)
+        {
+            case MixerGroup.SFX:
+                if(_SFXGroup)
+                mixer = _SFXGroup;
+                break;
+            case MixerGroup.Music:
+                if(_musicGroup)
+                mixer = _musicGroup;
+                break;
+            default:
+                break;
+        }
+
+        if(!mixer) 
+        {
+            Debug.LogWarning("No Mixer of type: " + mixerGroup + " Could be found on the audio manager. Make sure it is set in the inspector");
+            return; // no mixer could be gotten, returns out
+        } 
+
+        source.outputAudioMixerGroup = mixer;
+    }
+    private MixerGroup ConvertSoundTypeToMixerGroup(SoundType type)
+    {
+        switch (type)
+        {
+            case SoundType.LowPrioritySoundEffect:
+                return MixerGroup.SFX;
+            case SoundType.HighPrioritySoundEffect:
+                return MixerGroup.SFX;
+            case SoundType.PlayerSoundEffect:
+                return MixerGroup.SFX;
+            case SoundType.Music:
+                return MixerGroup.Music;
+            default:
+                Debug.LogWarning("Could not find the Soundtype: " + type + " when converting to a mixerground in AudioManager.ConvertSoundTypeToMixerGroup. returned SFX by default");
+                return MixerGroup.SFX;
+        }
+    }
+
+    #endregion
 
     #region "Pooling Related Functions"
     private Transform CreateAudioPool(int poolSize, string poolName)
@@ -466,7 +530,6 @@ public class AudioManager : Singleton<AudioManager>
 
     #region "Playing Sounds Functions"
 
-
     public void PlaySoundEffect(Vector3 position, SoundType soundType, string soundSettings, AudioClip audioClip)
     {
         //does the culling check for low priority and player audio
@@ -490,11 +553,12 @@ public class AudioManager : Singleton<AudioManager>
         }
         SetAudioSourceFromSoundSettings(audioSource, GetSoundSettingsByString(soundSettings));
 
+        //sets the mixer
+        SetAudioMixer(ConvertSoundTypeToMixerGroup(soundType), audioSource);
 
         //adds the basic sound source script and sets it
         BasicAudioSource source = currentSFXObject.AddComponent<BasicAudioSource>();
         source.SetBasicAudioSourcePosition(audioClip, audioSource);
-
 
         //sets object to true to run
         currentSFXObject.SetActive(true);
@@ -522,6 +586,8 @@ public class AudioManager : Singleton<AudioManager>
         }
         SetAudioSourceFromSoundSettings(audioSource, GetSoundSettingsByString(soundSettings));
 
+        //sets the mixer
+        SetAudioMixer(ConvertSoundTypeToMixerGroup(soundType), audioSource);
 
         //adds the basic sound source script and sets it
         BasicAudioSource source = currentSFXObject.AddComponent<BasicAudioSource>();
@@ -555,6 +621,9 @@ public class AudioManager : Singleton<AudioManager>
             }
         }
         SetAudioSourceFromSoundSettings(audioSource, GetSoundSettingsByString(soundSettings));
+
+        //sets the mixer
+        SetAudioMixer(ConvertSoundTypeToMixerGroup(soundType), audioSource);
 
         //increments key value
         _audioSourceIndexer++;
@@ -596,6 +665,9 @@ public class AudioManager : Singleton<AudioManager>
             }
         }
         SetAudioSourceFromSoundSettings(audioSource, GetSoundSettingsByString(soundSettings));
+
+        //sets the mixer
+        SetAudioMixer(ConvertSoundTypeToMixerGroup(soundType), audioSource);
 
         //increments key value
         _audioSourceIndexer++;

@@ -165,8 +165,8 @@ public class PlayerController : MonoBehaviour
         curStamina = curStaminaMax;
         curHealth = curHealthMax;
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
 
         //Get base variables for collectables
         baseHealth = curHealthMax;
@@ -473,15 +473,7 @@ public class PlayerController : MonoBehaviour
         //Toggle paused bool
         if (InputManager.Instance.GetPause())
         {
-            UIManager.Instance.isPaused = !UIManager.Instance.isPaused;
             OnPlayerPause?.Invoke(new PlayerPauseEventArgs(playerData));
-        }
-        if(!UIManager.Instance.isPaused) 
-        {
-            UIManager.Instance.pauseCanvas.gameObject.SetActive(false);
-            Time.timeScale = 1.0f;
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
         }
     }
 

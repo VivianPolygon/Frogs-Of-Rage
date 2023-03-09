@@ -10,11 +10,7 @@ public class GameTimer : MonoBehaviour
     public float seconds;
     public float milliseconds;
 
-    private void Start()
-    {
-        UIManager.Instance.isPaused = true;
-
-    }
+   
     private void Update()
     {
         totalTime += Time.deltaTime;

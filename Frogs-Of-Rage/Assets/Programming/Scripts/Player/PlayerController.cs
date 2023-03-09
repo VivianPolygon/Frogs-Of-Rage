@@ -35,9 +35,16 @@ public class PlayerController : MonoBehaviour
     private float standingJumpForce = 2.0f;
     [SerializeField, Tooltip("The jump force the player has while moving.")]
     private float movingJumpForce = 1.0f;
+    [SerializeField]
+    private float coyoteTime = 0.2f;
 
-    [SerializeField, Tooltip("The detection distance from bottom of player down if they are on a slope")]
+    [SerializeField, Tooltip("The detection distance from bottom of player down if they are on a slope"), HideInInspector]
     private float slopeDetectionDistance = 0.2f;
+
+    [SerializeField]
+    private float groundCheckDistance = 0.05f;
+    [SerializeField]
+    private float jumpCooldown = 0.25f;
 
 
 
@@ -99,14 +106,16 @@ public class PlayerController : MonoBehaviour
     private GameManager gameManager;
     public bool isMoving = false;
     private Vector2 movement;
-    private bool canJump = true;
-    private float jumpCooldown = 0.25f;
 
     private float baseHealth;
     private float baseStamina;
     private float baseStandingJumpForce;
     private float baseMovingJumpForce;
 
+    public bool canJump = true;
+
+    private float coyoteTimeCounter;
+   
 
     [HideInInspector]
     public MovementState state;
@@ -165,8 +174,8 @@ public class PlayerController : MonoBehaviour
         curStamina = curStaminaMax;
         curHealth = curHealthMax;
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
 
         //Get base variables for collectables
         baseHealth = curHealthMax;
@@ -176,7 +185,6 @@ public class PlayerController : MonoBehaviour
 
         gameManager.lastCheckpointPos = transform.position;
 
-        
     }
 
     private void Update()
@@ -188,6 +196,7 @@ public class PlayerController : MonoBehaviour
         HandleSprint();
         HandleAirTime();
         curSpeed = IncreaseMaxSpeed();
+        CoyoteTime();
         HandleJump();
         StateHandler();
         HandleStamina();
@@ -290,7 +299,7 @@ public class PlayerController : MonoBehaviour
     }
     public bool GroundedPlayer()
     {
-        return Physics.Raycast(transform.position + (Vector3.up / 2), Vector3.down, 0.55f, ~LayerMask.GetMask("Player"));
+        return Physics.Raycast(transform.position + (Vector3.up / 2), Vector3.down, 0.5f + groundCheckDistance, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
     }
     private void HandleDrag()
     {
@@ -335,13 +344,14 @@ public class PlayerController : MonoBehaviour
     }
     private void HandleJump()
     {
+        //movement= Vector2.zero;
         //Jump
-        if (inputManager.GetJump() && GroundedPlayer() && canJump)
+        if (inputManager.GetJump() && coyoteTimeCounter > 0f && canJump)
         {
             canJump = false;
-
+            
             //Reset velocity
-            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.y);
+            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
 
             jumping = true;
             //Player is standing still
@@ -351,12 +361,22 @@ public class PlayerController : MonoBehaviour
             else if (movement != Vector2.zero)
                 rb.AddForce(transform.up * movingJumpForce, ForceMode.Impulse);
 
+            coyoteTimeCounter = 0f;
+
             Invoke(nameof(ResetJump), jumpCooldown);
         }
     }
     private void ResetJump()
     {
         canJump = true;
+    }
+
+    private void CoyoteTime()
+    {
+        if (GroundedPlayer() && canJump)
+            coyoteTimeCounter = coyoteTime;
+        else
+            coyoteTimeCounter -= Time.deltaTime;
     }
     private void SpeedControl()
     {
@@ -473,15 +493,7 @@ public class PlayerController : MonoBehaviour
         //Toggle paused bool
         if (InputManager.Instance.GetPause())
         {
-            UIManager.Instance.isPaused = !UIManager.Instance.isPaused;
             OnPlayerPause?.Invoke(new PlayerPauseEventArgs(playerData));
-        }
-        if(!UIManager.Instance.isPaused) 
-        {
-            UIManager.Instance.pauseCanvas.gameObject.SetActive(false);
-            Time.timeScale = 1.0f;
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
         }
     }
 

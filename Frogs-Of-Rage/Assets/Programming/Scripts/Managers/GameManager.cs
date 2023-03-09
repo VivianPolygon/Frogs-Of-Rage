@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using UnityEngine.Events;
+using Cinemachine;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -15,7 +16,11 @@ public class GameManager : Singleton<GameManager>
     [HideInInspector]
     public Vector3 lastCheckpointPos;
     [HideInInspector]
+    public Vector3 startPos;
+    [HideInInspector]
     public GameTimer gameTimer;
+    [HideInInspector]
+    public CinemachineVirtualCamera playerCam;
 
     [HideInInspector]
     public float fliesInScene;
@@ -40,8 +45,8 @@ public class GameManager : Singleton<GameManager>
         mainCam = Camera.main;
         DontDestroyOnLoad(mainCam);
         gameTimer = GetComponent<GameTimer>();
-        
-
+        playerCam = GameObject.Find("3RD Person Cam").GetComponent<CinemachineVirtualCamera>();
+        startPos = playerController.transform.position;
     }
 
    

@@ -35,6 +35,8 @@ public class PlayerController : MonoBehaviour
     private float standingJumpForce = 2.0f;
     [SerializeField, Tooltip("The jump force the player has while moving.")]
     private float movingJumpForce = 1.0f;
+    [SerializeField]
+    private float coyoteWaitTime = 0.1f;
 
     [SerializeField, Tooltip("The detection distance from bottom of player down if they are on a slope")]
     private float slopeDetectionDistance = 0.2f;
@@ -99,13 +101,31 @@ public class PlayerController : MonoBehaviour
     private GameManager gameManager;
     public bool isMoving = false;
     private Vector2 movement;
-    private bool canJump = true;
     private float jumpCooldown = 0.25f;
 
     private float baseHealth;
     private float baseStamina;
     private float baseStandingJumpForce;
     private float baseMovingJumpForce;
+
+    public bool canJump = true;
+    public bool coyoteJump;
+    public float coyoteTimer;
+
+    public bool CoyoteJump
+    {
+        get
+        {
+            if (coyoteTimer <= 0)
+                return true;
+            else
+                return false;
+        }
+        set
+        {
+            coyoteJump = value;
+        }
+    }
 
 
     [HideInInspector]
@@ -176,7 +196,7 @@ public class PlayerController : MonoBehaviour
 
         gameManager.lastCheckpointPos = transform.position;
 
-        
+        coyoteTimer = coyoteWaitTime;
     }
 
     private void Update()
@@ -188,6 +208,7 @@ public class PlayerController : MonoBehaviour
         HandleSprint();
         HandleAirTime();
         curSpeed = IncreaseMaxSpeed();
+        CoyoteTime();
         HandleJump();
         StateHandler();
         HandleStamina();
@@ -290,7 +311,7 @@ public class PlayerController : MonoBehaviour
     }
     public bool GroundedPlayer()
     {
-        return Physics.Raycast(transform.position + (Vector3.up / 2), Vector3.down, 0.55f, ~LayerMask.GetMask("Player"));
+        return Physics.Raycast(transform.position + (Vector3.up / 2), Vector3.down, 0.65f, ~LayerMask.GetMask("Player"));
     }
     private void HandleDrag()
     {
@@ -336,7 +357,7 @@ public class PlayerController : MonoBehaviour
     private void HandleJump()
     {
         //Jump
-        if (inputManager.GetJump() && GroundedPlayer() && canJump)
+        if (inputManager.GetJump() && GroundedPlayer() && (canJump || CoyoteJump))
         {
             canJump = false;
 
@@ -357,6 +378,21 @@ public class PlayerController : MonoBehaviour
     private void ResetJump()
     {
         canJump = true;
+    }
+
+    private void CoyoteTime()
+    {
+        //If player is not grounded reduce coyotetimer
+        if(!GroundedPlayer() && coyoteTimer > coyoteWaitTime)
+        {
+            coyoteTimer -= Time.deltaTime;
+        }
+        else if(coyoteTimer < 0)
+        {
+            CoyoteJump = true;
+            coyoteTimer = coyoteWaitTime;
+        }
+
     }
     private void SpeedControl()
     {

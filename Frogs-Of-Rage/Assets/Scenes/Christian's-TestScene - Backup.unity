@@ -5385,15 +5385,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
       propertyPath: movingJumpForce
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
       propertyPath: standingJumpForce
-      value: 15
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
       propertyPath: maxMovingJumpForce
       value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
+      propertyPath: groundCheckDistance
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
       propertyPath: maxStandingJumpForce
@@ -25250,19 +25254,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.6177711
+      value: 0.8637604
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.35115078
+      value: 0.49097493
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.61168766
+      value: 0.0985945
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.34769285
+      value: -0.0560426
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296575147496, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_RootOrder
@@ -29265,7 +29269,9 @@ MonoBehaviour:
   airMultiplier: 2
   standingJumpForce: 2
   movingJumpForce: 1
+  coyoteWaitTime: 0.1
   slopeDetectionDistance: 0.2
+  groundCheckDistance: 0.05
   speedModifier: 0.5
   maxSpeed: 15
   staminaModifier: 0.5
@@ -29280,6 +29286,9 @@ MonoBehaviour:
   healthGauge: {fileID: 1225925930}
   playerData: {fileID: 11400000, guid: 9c416c4ee9bf4924596ef9d62f06f8ff, type: 2}
   isMoving: 0
+  canJump: 1
+  coyoteJump: 0
+  coyoteTimer: 0
   state: 0
   walking: 0
   sprinting: 0

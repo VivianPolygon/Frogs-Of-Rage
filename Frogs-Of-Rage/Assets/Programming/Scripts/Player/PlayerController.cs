@@ -41,6 +41,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Tooltip("The detection distance from bottom of player down if they are on a slope")]
     private float slopeDetectionDistance = 0.2f;
 
+    [SerializeField]
+    private float groundCheckDistance = 0.05f;
+
 
 
     #endregion
@@ -311,7 +314,7 @@ public class PlayerController : MonoBehaviour
     }
     public bool GroundedPlayer()
     {
-        return Physics.Raycast(transform.position + (Vector3.up / 2), Vector3.down, 0.65f, ~LayerMask.GetMask("Player"));
+        return Physics.Raycast(transform.position + (Vector3.up / 2), Vector3.down, 0.5f + groundCheckDistance, ~LayerMask.GetMask("Player"));
     }
     private void HandleDrag()
     {

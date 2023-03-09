@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4479034080766156224
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3107671331166735999}
+  - component: {fileID: 3983012236519398131}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3107671331166735999
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4479034080766156224}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3983012236519398131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4479034080766156224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47dec38a7dc231b4bb1af6d7e8645c05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _SFXGroup: {fileID: -3921644026478166200, guid: 814bf29290695624b94f945964a9b014, type: 2}
+  _musicGroup: {fileID: 2835377584040543768, guid: 814bf29290695624b94f945964a9b014, type: 2}
+  _lowPrioritySoundEffectLimit: 10
+  _playerSoundEffectLimit: 4
+  _soundSettings:
+  - {fileID: 11400000, guid: 714b6a4fe32883f49969a02391323f3f, type: 2}
+  - {fileID: 11400000, guid: 54c78fe30c8912447b1674b2f5319d82, type: 2}
+  - {fileID: 11400000, guid: 1dbd945d62819954eb086f417fd4fabe, type: 2}
+  - {fileID: 11400000, guid: f60848eb0c1f3754498869f5cf7af25b, type: 2}
+  - {fileID: 11400000, guid: abd2c70f249ad5d44af5ee7294e749c5, type: 2}
+  _defaultSoundSettings: {fileID: 11400000, guid: 714b6a4fe32883f49969a02391323f3f, type: 2}
+  _proximityPrioritization: 1
+  _proximityMode: 0
+  _cullingquality: 0
+  _customObjectTransform: {fileID: 0}

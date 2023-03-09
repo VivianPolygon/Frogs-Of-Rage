@@ -198,6 +198,7 @@ GameObject:
   - component: {fileID: 8017312068425891752}
   - component: {fileID: 836687804412364406}
   - component: {fileID: 8459843172257672876}
+  - component: {fileID: 3905828570256729487}
   m_Layer: 0
   m_Name: TV
   m_TagString: Untagged
@@ -361,6 +362,24 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 56.96926, y: 197.73724, z: 90.90741}
   m_Center: {x: -292.9, y: -309.0526, z: -121.11935}
+--- !u!114 &3905828570256729487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6238603843393124349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ae96d7ffe65282418e1788fff37171e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sourceOn: 1
+  _soundPriority: 1
+  _startAudioRange: 45
+  _soundSettings: TV Sound Settings
+  _loopingClip: {fileID: 8300000, guid: 60316233315097c418b458728a600976, type: 3}
+  _checksPerSecond: 2
 --- !u!1 &7275078633123388267
 GameObject:
   m_ObjectHideFlags: 0

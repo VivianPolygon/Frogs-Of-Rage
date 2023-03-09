@@ -36,9 +36,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Tooltip("The jump force the player has while moving.")]
     private float movingJumpForce = 1.0f;
     [SerializeField]
-    private float coyoteWaitTime = 0.1f;
+    private float coyoteTime = 0.2f;
 
-    [SerializeField, Tooltip("The detection distance from bottom of player down if they are on a slope")]
+    [SerializeField, Tooltip("The detection distance from bottom of player down if they are on a slope"), HideInInspector]
     private float slopeDetectionDistance = 0.2f;
 
     [SerializeField]
@@ -112,24 +112,9 @@ public class PlayerController : MonoBehaviour
     private float baseMovingJumpForce;
 
     public bool canJump = true;
-    public bool coyoteJump;
-    public float coyoteTimer;
 
-    public bool CoyoteJump
-    {
-        get
-        {
-            if (coyoteTimer <= 0)
-                return true;
-            else
-                return false;
-        }
-        set
-        {
-            coyoteJump = value;
-        }
-    }
-
+    private float coyoteTimeCounter;
+   
 
     [HideInInspector]
     public MovementState state;
@@ -199,7 +184,6 @@ public class PlayerController : MonoBehaviour
 
         gameManager.lastCheckpointPos = transform.position;
 
-        coyoteTimer = coyoteWaitTime;
     }
 
     private void Update()
@@ -314,7 +298,7 @@ public class PlayerController : MonoBehaviour
     }
     public bool GroundedPlayer()
     {
-        return Physics.Raycast(transform.position + (Vector3.up / 2), Vector3.down, 0.5f + groundCheckDistance, ~LayerMask.GetMask("Player"));
+        return Physics.Raycast(transform.position + (Vector3.up / 2), Vector3.down, 0.5f + groundCheckDistance, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
     }
     private void HandleDrag()
     {
@@ -359,13 +343,14 @@ public class PlayerController : MonoBehaviour
     }
     private void HandleJump()
     {
+        //movement= Vector2.zero;
         //Jump
-        if (inputManager.GetJump() && GroundedPlayer() && (canJump || CoyoteJump))
+        if (inputManager.GetJump() && coyoteTimeCounter > 0f && canJump)
         {
             canJump = false;
 
             //Reset velocity
-            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.y);
+            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
 
             jumping = true;
             //Player is standing still
@@ -374,6 +359,8 @@ public class PlayerController : MonoBehaviour
             //Player is moving
             else if (movement != Vector2.zero)
                 rb.AddForce(transform.up * movingJumpForce, ForceMode.Impulse);
+
+            coyoteTimeCounter = 0f;
 
             Invoke(nameof(ResetJump), jumpCooldown);
         }
@@ -385,17 +372,10 @@ public class PlayerController : MonoBehaviour
 
     private void CoyoteTime()
     {
-        //If player is not grounded reduce coyotetimer
-        if(!GroundedPlayer() && coyoteTimer > coyoteWaitTime)
-        {
-            coyoteTimer -= Time.deltaTime;
-        }
-        else if(coyoteTimer < 0)
-        {
-            CoyoteJump = true;
-            coyoteTimer = coyoteWaitTime;
-        }
-
+        if (GroundedPlayer())
+            coyoteTimeCounter = coyoteTime;
+        else
+            coyoteTimeCounter -= Time.deltaTime;
     }
     private void SpeedControl()
     {

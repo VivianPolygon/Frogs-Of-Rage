@@ -5181,14 +5181,6 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
-    - target: {fileID: 3978689627859985141, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
-      propertyPath: wallCheckDistance
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 3978689627859985141, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
-      propertyPath: wallJumpSideForce
-      value: 6
-      objectReference: {fileID: 0}
     - target: {fileID: 4415988960438964392, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -5266,61 +5258,13 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
-      propertyPath: maxSpeed
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
-      propertyPath: walkSpeed
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
-      propertyPath: groundDrag
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
       propertyPath: healthGauge
       value: 
       objectReference: {fileID: 1389953201}
     - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
-      propertyPath: sprintSpeed
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
-      propertyPath: jumpModifier
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
       propertyPath: staminaGauge
       value: 
       objectReference: {fileID: 1054739125}
-    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
-      propertyPath: airMultiplier
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
-      propertyPath: speedModifier
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
-      propertyPath: movingJumpForce
-      value: 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
-      propertyPath: standingJumpForce
-      value: 18
-      objectReference: {fileID: 0}
-    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
-      propertyPath: maxMovingJumpForce
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
-      propertyPath: groundCheckDistance
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
-      propertyPath: maxStandingJumpForce
-      value: 30
-      objectReference: {fileID: 0}
     - target: {fileID: 7587290521112275068, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
       propertyPath: m_Name
       value: Player
@@ -24816,19 +24760,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.5650698
+      value: 0.118690066
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.32119447
+      value: 0.0674653
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.6606808
+      value: 0.8612291
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.3755412
+      value: -0.48953602
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296575147496, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_RootOrder
@@ -28834,6 +28778,7 @@ MonoBehaviour:
   coyoteTime: 0.2
   slopeDetectionDistance: 0.2
   groundCheckDistance: 0.05
+  jumpCooldown: 0.25
   speedModifier: 0.5
   maxSpeed: 15
   staminaModifier: 0.5

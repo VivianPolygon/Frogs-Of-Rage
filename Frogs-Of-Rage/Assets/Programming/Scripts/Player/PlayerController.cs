@@ -37,6 +37,12 @@ public class PlayerController : MonoBehaviour
     private float movingJumpForce = 1.0f;
     [SerializeField]
     private float coyoteTime = 0.2f;
+    [SerializeField]
+    private float airDrag = 5f;
+    [SerializeField]
+    private float airGravity = -3f;
+    [SerializeField]
+    private float groundGravity = -1f;
 
     [SerializeField, Tooltip("The detection distance from bottom of player down if they are on a slope"), HideInInspector]
     private float slopeDetectionDistance = 0.2f;
@@ -202,6 +208,9 @@ public class PlayerController : MonoBehaviour
         HandleStamina();
         #endregion
         HandlePauseMenu();
+        if(!GroundedPlayer())
+            rb.velocity += Vector3.up * Physics.gravity.y * airGravity * Time.deltaTime;
+
         OnPlayerCanvas?.Invoke(new PlayerCanvasEventArgs(GameManager.Instance.gameTimer, GameManager.Instance));
     }
 
@@ -306,7 +315,7 @@ public class PlayerController : MonoBehaviour
         if (GroundedPlayer())
             rb.drag = groundDrag;
         else
-            rb.drag = 0f;
+            rb.drag = airDrag;
     }
     //Controls player movement (WASD)
     private void HandleNormalMove()
@@ -324,12 +333,14 @@ public class PlayerController : MonoBehaviour
         if(GroundedPlayer())
             rb.AddForce(AdjustVelocityForSlope(move) * curSpeed * 10, ForceMode.Force);
         else if(!GroundedPlayer())
-            rb.AddForce(move * curSpeed * 10 * airMultiplier, ForceMode.Force);
+            rb.AddForce(move * curSpeed  * airMultiplier, ForceMode.Force);
 
         if (move != Vector3.zero)
             isMoving = true;
         else
             isMoving = false;
+
+        //rb.AddForce(transform.up * groundGravity, ForceMode.Force);
 
         //Rotates player to face direction based on input
         if (movement != Vector2.zero && state !=MovementState.WallRunning)
@@ -361,6 +372,9 @@ public class PlayerController : MonoBehaviour
             else if (movement != Vector2.zero)
                 rb.AddForce(transform.up * movingJumpForce, ForceMode.Impulse);
 
+            //Add air gravity
+            //rb.AddForce(transform.up * airGravity, ForceMode.Force);
+
             coyoteTimeCounter = 0f;
 
             Invoke(nameof(ResetJump), jumpCooldown);
@@ -374,7 +388,11 @@ public class PlayerController : MonoBehaviour
     private void CoyoteTime()
     {
         if (GroundedPlayer() && canJump)
+        {
             coyoteTimeCounter = coyoteTime;
+            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+
+        }
         else
             coyoteTimeCounter -= Time.deltaTime;
     }

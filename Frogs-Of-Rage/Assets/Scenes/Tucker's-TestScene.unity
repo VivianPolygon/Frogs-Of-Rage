@@ -383,6 +383,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3978689627859985141, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
+      propertyPath: wallRunLayers.m_Bits
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
       propertyPath: healthGauge
       value: 
@@ -1657,6 +1661,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 264708796829740301, guid: e9b4053561d396b42afd6dac3d28be86, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 264708797293082561, guid: e9b4053561d396b42afd6dac3d28be86, type: 3}
       propertyPath: m_RootOrder
       value: 12
@@ -1704,6 +1712,18 @@ PrefabInstance:
     - target: {fileID: 264708797293082562, guid: e9b4053561d396b42afd6dac3d28be86, type: 3}
       propertyPath: m_Name
       value: Checkpoint
+      objectReference: {fileID: 0}
+    - target: {fileID: 264708797293082562, guid: e9b4053561d396b42afd6dac3d28be86, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3504515261356531352, guid: e9b4053561d396b42afd6dac3d28be86, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8506523755351655830, guid: e9b4053561d396b42afd6dac3d28be86, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e9b4053561d396b42afd6dac3d28be86, type: 3}

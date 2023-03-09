@@ -18,6 +18,9 @@ public class WallRunning : MonoBehaviour
     private float wallGravityCounterForce = -3f;
     private bool useGravity = true;
 
+    [SerializeField]
+    private LayerMask wallRunLayers;
+
     private RaycastHit leftWallHit;
     private RaycastHit rightWallHit;
     private bool wallLeft;
@@ -58,8 +61,8 @@ public class WallRunning : MonoBehaviour
 
     private void CheckForWall()
     {
-        wallRight = Physics.Raycast(transform.position + Vector3.up, transform.right, out rightWallHit, wallCheckDistance);
-        wallLeft = Physics.Raycast(transform.position + Vector3.up , -transform.right, out leftWallHit, wallCheckDistance);
+        wallRight = Physics.Raycast(transform.position + Vector3.up, transform.right, out rightWallHit, wallCheckDistance, wallRunLayers, QueryTriggerInteraction.Ignore);
+        wallLeft = Physics.Raycast(transform.position + Vector3.up , -transform.right, out leftWallHit, wallCheckDistance, wallRunLayers, QueryTriggerInteraction.Ignore);
 
         Debug.DrawRay(transform.position + Vector3.up, transform.right, Color.red);
         Debug.DrawRay(transform.position + Vector3.up, -transform.right, Color.blue);

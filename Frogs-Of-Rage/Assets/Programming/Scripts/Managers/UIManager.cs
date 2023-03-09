@@ -5,13 +5,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using Cinemachine;
 
 public enum CanvasState
 {
     Start,
     Player,
     Paused,
-    Win
+    Win,
+    Credits,
+    Options
 }
 
 public class UIManager : Singleton<UIManager>
@@ -28,6 +31,7 @@ public class UIManager : Singleton<UIManager>
 
     [Header("Player Canvas")]
     [Space(10)]
+    public Canvas playerCanvas;
     public Image collectedImage;
     public Text collectedCount;
     public GameObject collectablePanel;
@@ -62,12 +66,27 @@ public class UIManager : Singleton<UIManager>
     public Image spiderImageYouWin;
     public Text spiderCountYouWin;
 
+    [Header("Credits Canvas")]
+    [Space(10)]
+    public Canvas creditsCanvas;
+
+
+    [Header("Options Canvas")]
+    [Space(10)]
+    public Canvas optionsCanvas;
+
+
+    private List<Canvas> canvasList = new List<Canvas>();
+    private List<bool> boolCanvasList = new List<bool>();
+
     private float finalGameTime;
 
-    public bool isStartState = false;
-    public bool isPlayerState = false;
-    public bool isPaused = false;
-    public bool isWinState = false;
+    private bool isStartState = false;
+    private bool isPlayerState = false;
+    private bool isPausedState = false;
+    private bool isWinState = false;
+    private bool isCreditsState = false;
+    private bool isOptionsState = false;
 
 
     private void OnEnable()
@@ -89,25 +108,130 @@ public class UIManager : Singleton<UIManager>
     {
         panelAnimator = collectablePanel.GetComponent<Animator>();
         inputManager = InputManager.Instance;
+
+        //Add canvases to list in order
+        canvasList.Add(startCanvas);
+        canvasList.Add(playerCanvas);
+        canvasList.Add(pauseCanvas);
+        canvasList.Add(youWinCanvas);
+        canvasList.Add(creditsCanvas);
+        canvasList.Add(optionsCanvas);
+
+        boolCanvasList.Add(isStartState);
+        boolCanvasList.Add(isPlayerState);
+        boolCanvasList.Add(isPausedState);
+        boolCanvasList.Add(isWinState);
+        boolCanvasList.Add(isCreditsState);
+        boolCanvasList.Add(isOptionsState);
+    }
+
+    private void Update()
+    {
+        HandleCanvasState();
+    }
+
+    public void HandleCanvasState()
+    {
+        CanvasState tempState = state;
+
+        switch (state)
+        {
+            case CanvasState.Start:
+                TurnOnCanvasIndex(0);
+                Time.timeScale = 0f;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                inputManager.playerControls.Disable();
+
+                break;
+            case CanvasState.Player:
+                TurnOnCanvasIndex(1);
+                Time.timeScale = 1f;
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                inputManager.playerControls.Enable();
+
+                break;
+            case CanvasState.Paused:
+                TurnOnCanvasIndex(2);
+                Time.timeScale = 0f;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                inputManager.playerControls.Disable();
+
+                break;
+            case CanvasState.Win:
+                TurnOnCanvasIndex(3);
+                Time.timeScale = 0f;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                inputManager.playerControls.Disable();
+
+                break;
+            case CanvasState.Credits:
+                TurnOnCanvasIndex(4);
+                Time.timeScale = 0f;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                inputManager.playerControls.Disable();
+
+                break;
+            case CanvasState.Options:
+                TurnOnCanvasIndex(5);
+                Time.timeScale = 0f;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                inputManager.playerControls.Disable();
+
+                break;
+            default:
+                break;
+        }
+
+       
+            
+    }
+
+
+   
+    private void TurnOnCanvasIndex(int turnOn)
+    {
+        //Turn off all canvases except the index passed in 'turnOn'
+        for (int i = 0; i < canvasList.Count; i++)
+        {
+            if(i != turnOn)
+                canvasList[i].gameObject.SetActive(false);
+            else
+                canvasList[turnOn].gameObject.SetActive(true);
+        }
+
+        //Switch all bools to false except the indec passed in 'turnOn'
+        for (int i = 0; i < boolCanvasList.Count; i++)
+        {
+            if (i != turnOn)
+                boolCanvasList[i] = false;
+            else
+                boolCanvasList[turnOn] = true;
+        }
     }
 
 
     #region Buttons
     public void StartGame()
     {
-
+        state = CanvasState.Player;
     }
     public void Credits()
     {
-
+        state = CanvasState.Credits;
     }
     public void Forum()
     {
-
+        //Application.OpenURL();
     }
     public void Continue()
     {
-        isPaused = false;
+        state = CanvasState.Player;
     }
     public void SaveGame()
     {
@@ -116,8 +240,7 @@ public class UIManager : Singleton<UIManager>
     }
     public void Options()
     {
-        Debug.Log("Options menu");
-
+        state = CanvasState.Options;
     }
     public void ExitGame()
     {
@@ -126,10 +249,11 @@ public class UIManager : Singleton<UIManager>
     }
     public void Menu()
     {
-        //For now this will just reload scene 
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        state = CanvasState.Start;
     }
     #endregion
+
+
 
     private void DisplayCollectedItem(CollectableData collectableData)
     {
@@ -178,12 +302,8 @@ public class UIManager : Singleton<UIManager>
 
     private void DisplayPauseScreen(PlayerPauseEventArgs e)
     {
-        //Activate win canvas
-        pauseCanvas.gameObject.SetActive(true);
-        Time.timeScale = 0f;
-
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        //Change canvas state
+        state = CanvasState.Paused;
 
         //Display UI info
         //Count
@@ -200,15 +320,13 @@ public class UIManager : Singleton<UIManager>
 
     private void HandleWinScreen(PlayerWinEventArgs e)
     {
-        isWinState = !isWinState;
+        state = CanvasState.Win;
+        isWinState = true;
         if(isWinState)
         {
-            //Activate win canvas
-            youWinCanvas.gameObject.SetActive(true);
+            //Change canvas state
             inputManager.playerControls.Disable();
-            isPaused = true;
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            
 
             //Display UI info
             //Count

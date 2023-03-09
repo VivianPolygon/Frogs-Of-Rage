@@ -43,6 +43,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private float groundCheckDistance = 0.05f;
+    [SerializeField]
+    private float jumpCooldown = 0.25f;
 
 
 
@@ -104,7 +106,6 @@ public class PlayerController : MonoBehaviour
     private GameManager gameManager;
     public bool isMoving = false;
     private Vector2 movement;
-    private float jumpCooldown = 0.25f;
 
     private float baseHealth;
     private float baseStamina;
@@ -348,7 +349,7 @@ public class PlayerController : MonoBehaviour
         if (inputManager.GetJump() && coyoteTimeCounter > 0f && canJump)
         {
             canJump = false;
-
+            
             //Reset velocity
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
 
@@ -372,7 +373,7 @@ public class PlayerController : MonoBehaviour
 
     private void CoyoteTime()
     {
-        if (GroundedPlayer())
+        if (GroundedPlayer() && canJump)
             coyoteTimeCounter = coyoteTime;
         else
             coyoteTimeCounter -= Time.deltaTime;

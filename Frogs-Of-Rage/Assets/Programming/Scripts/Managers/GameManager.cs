@@ -16,6 +16,8 @@ public class GameManager : Singleton<GameManager>
     [HideInInspector]
     public Vector3 lastCheckpointPos;
     [HideInInspector]
+    public Vector3 startPos;
+    [HideInInspector]
     public GameTimer gameTimer;
     [HideInInspector]
     public CinemachineVirtualCamera playerCam;
@@ -44,7 +46,7 @@ public class GameManager : Singleton<GameManager>
         DontDestroyOnLoad(mainCam);
         gameTimer = GetComponent<GameTimer>();
         playerCam = GameObject.Find("3RD Person Cam").GetComponent<CinemachineVirtualCamera>();
-
+        startPos = playerController.transform.position;
     }
 
    

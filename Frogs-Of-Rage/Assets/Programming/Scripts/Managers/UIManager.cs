@@ -227,7 +227,7 @@ public class UIManager : Singleton<UIManager>
     }
     public void Forum()
     {
-        //Application.OpenURL();
+        Application.OpenURL("https://forms.gle/9UFB3gApZtU8cb9y9");
     }
     public void Continue()
     {
@@ -312,10 +312,10 @@ public class UIManager : Singleton<UIManager>
         grasshopperCount.text = e.playerData.GrasshopperCount.ToString() + "/" + GameManager.Instance.grasshoppersInScene;
         spiderCount.text = e.playerData.SpiderCount.ToString() + "/" + GameManager.Instance.spidersInScene;
         //Images
-        flyImage.sprite = e.playerData.FlyImage;
-        antImage.sprite = e.playerData.AntImage;
-        grasshopperImage.sprite = e.playerData.GrasshopperImage;
-        spiderImage.sprite = e.playerData.SpiderImage;
+        //flyImage.sprite = e.playerData.FlyImage;
+        //antImage.sprite = e.playerData.AntImage;
+        //grasshopperImage.sprite = e.playerData.GrasshopperImage;
+        //spiderImage.sprite = e.playerData.SpiderImage;
     }
 
     private void HandleWinScreen(PlayerWinEventArgs e)

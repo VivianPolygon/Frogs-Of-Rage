@@ -173,9 +173,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7587290521112275070}
-  - component: {fileID: 7587290521112275071}
   - component: {fileID: 7587290521112274944}
   - component: {fileID: 7587290521112274946}
+  - component: {fileID: 3978689627859985141}
+  - component: {fileID: 3345854768998846368}
+  - component: {fileID: 1564993388456189775}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -200,24 +202,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!143 &7587290521112275071
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7587290521112275068}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Height: 2
-  m_Radius: 0.5
-  m_SlopeLimit: 60
-  m_StepOffset: 0.01
-  m_SkinWidth: 0.0001
-  m_MinMoveDistance: 0
-  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &7587290521112274944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232,12 +216,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   curHealthMax: 100
   staminaMax: 100
-  walkSpeed: 9
+  walkSpeed: 7
   sprintSpeed: 12
-  standingJumpForce: 2
-  movingJumpForce: 1
-  gravityValue: -38
-  slopeForce: -800
+  groundDrag: 5
+  airMultiplier: 0.4
+  standingJumpForce: 12
+  movingJumpForce: 10
   slopeDetectionDistance: 0.45
   speedModifier: 0.5
   maxSpeed: 15
@@ -252,6 +236,13 @@ MonoBehaviour:
   staminaGauge: {fileID: 0}
   healthGauge: {fileID: 0}
   playerData: {fileID: 11400000, guid: 9c416c4ee9bf4924596ef9d62f06f8ff, type: 2}
+  isMoving: 0
+  state: 0
+  walking: 0
+  sprinting: 0
+  wallRunning: 0
+  jumping: 0
+  useGravity: 1
   curHealth: 0
   curStamina: 0
 --- !u!114 &7587290521112274946
@@ -266,6 +257,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5822e07b968dd5848bcf7fc76f595bce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3978689627859985141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7587290521112275068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fefb7b00ed637864b8e0a730dce72c30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wallCheckDistance: 0.75
+  minJumpHieght: 1
+  wallJumpForce: 7
+  wallJumpSideForce: 6
+  wallGravityCounterForce: 2.5
+  exitWallTime: 0.2
+--- !u!54 &3345854768998846368
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7587290521112275068}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 1
+  m_Constraints: 112
+  m_CollisionDetection: 1
+--- !u!136 &1564993388456189775
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7587290521112275068}
+  m_Material: {fileID: 13400000, guid: f22edbc5e7561f5478b7410e7f83854a, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &7587290521358477422
 GameObject:
   m_ObjectHideFlags: 0
@@ -611,15 +650,15 @@ PrefabInstance:
     - target: {fileID: 5643199267257540662, guid: 723e46b3edc2a4b4285eb56cf2104d74, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 6effa15a5793a8543b0828a2182ba448, type: 2}
+      objectReference: {fileID: 2100000, guid: 39196b8d1fcaf6e40a620f44fbe3929d, type: 2}
     - target: {fileID: 5643199267257540662, guid: 723e46b3edc2a4b4285eb56cf2104d74, type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
-      objectReference: {fileID: 2100000, guid: 9f18e747c2fdb80428271b264a59f76e, type: 2}
+      objectReference: {fileID: 2100000, guid: 6f9c1976189a52e46a94f5047ce05e30, type: 2}
     - target: {fileID: 5643199267257540662, guid: 723e46b3edc2a4b4285eb56cf2104d74, type: 3}
       propertyPath: m_Materials.Array.data[2]
       value: 
-      objectReference: {fileID: 2100000, guid: 55ce1e4cb18de854fb5eab014241340e, type: 2}
+      objectReference: {fileID: 2100000, guid: 41a83f42ab4c8e3418736144260787e1, type: 2}
     - target: {fileID: 6022887377953076155, guid: 723e46b3edc2a4b4285eb56cf2104d74, type: 3}
       propertyPath: m_Layer
       value: 6

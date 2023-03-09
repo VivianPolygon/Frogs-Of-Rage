@@ -222,7 +222,9 @@ MonoBehaviour:
   airMultiplier: 0.4
   standingJumpForce: 12
   movingJumpForce: 10
+  coyoteTime: 0.2
   slopeDetectionDistance: 0.45
+  groundCheckDistance: 0.05
   speedModifier: 0.5
   maxSpeed: 15
   staminaModifier: 0.5
@@ -237,6 +239,7 @@ MonoBehaviour:
   healthGauge: {fileID: 0}
   playerData: {fileID: 11400000, guid: 9c416c4ee9bf4924596ef9d62f06f8ff, type: 2}
   isMoving: 0
+  canJump: 1
   state: 0
   walking: 0
   sprinting: 0
@@ -274,6 +277,9 @@ MonoBehaviour:
   wallJumpForce: 7
   wallJumpSideForce: 8
   wallGravityCounterForce: 2.5
+  wallRunLayers:
+    serializedVersion: 2
+    m_Bits: 1
   exitWallTime: 0.2
 --- !u!54 &3345854768998846368
 Rigidbody:

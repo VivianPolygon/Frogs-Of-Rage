@@ -146,4 +146,9 @@ public class AudioProximityLoop : MonoBehaviour
         Gizmos.color = newColor;
         Gizmos.DrawSphere(transform.position, _startAudioRange);
     }
+
+    private void OnDisable()
+    {
+        StopAudio();
+    }
 }

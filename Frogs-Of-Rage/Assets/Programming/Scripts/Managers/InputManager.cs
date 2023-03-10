@@ -62,4 +62,9 @@ public class InputManager : Singleton<InputManager>
     {
         return (playerControls.Player.Jump.activeControl != null) ? true : false;
     }
+
+    public bool GetGrapple()
+    {
+        return (playerControls.Player.Grapple.activeControl != null) ? true : false;
+    }
 }

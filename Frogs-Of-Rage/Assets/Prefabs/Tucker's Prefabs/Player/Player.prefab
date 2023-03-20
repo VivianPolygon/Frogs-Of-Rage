@@ -220,12 +220,11 @@ MonoBehaviour:
   sprintSpeed: 20
   groundDrag: 15
   airMultiplier: 0.5
-  standingJumpForce: 38
-  movingJumpForce: 33
+  jumpHeight: 10
+  gravityScale: 10
+  fallingGravityScale: 30
   coyoteTime: 0.2
   airDrag: 1
-  airGravity: 1
-  groundGravity: 0
   slopeDetectionDistance: 0.45
   groundCheckDistance: 0.25
   jumpCooldown: 0.5
@@ -252,6 +251,8 @@ MonoBehaviour:
   useGravity: 1
   curHealth: 0
   curStamina: 0
+  onSlope: 0
+  Grounded: 0
 --- !u!114 &7587290521112274946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -278,12 +279,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wallCheckDistance: 0.6
   minJumpHieght: 1
-  wallJumpForce: 7
-  wallJumpSideForce: 6
+  wallJumpForce: 17
+  wallJumpSideForce: 8
   wallGravityCounterForce: 2.5
   wallRunLayers:
     serializedVersion: 2
     m_Bits: 1
+  onWall: 0
   exitWallTime: 0.2
 --- !u!54 &3345854768998846368
 Rigidbody:

@@ -384,13 +384,49 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
+      propertyPath: airDrag
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
+      propertyPath: jumpForce
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
+      propertyPath: airGravity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
+      propertyPath: groundDrag
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
+      propertyPath: jumpHeight
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
       propertyPath: healthGauge
       value: 
       objectReference: {fileID: 714297001}
     - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
+      propertyPath: gravityScale
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
       propertyPath: staminaGauge
       value: 
       objectReference: {fileID: 877047032}
+    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
+      propertyPath: fallingGravityScale
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
+      propertyPath: groundCheckDistance
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
+      propertyPath: slopeDetectionDistance
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: 7587290521112275068, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
       propertyPath: m_Name
       value: Player
@@ -453,7 +489,7 @@ GameObject:
   - component: {fileID: 733276663}
   - component: {fileID: 733276662}
   - component: {fileID: 733276661}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1468,7 +1504,7 @@ GameObject:
   - component: {fileID: 1899277212}
   - component: {fileID: 1899277211}
   - component: {fileID: 1899277210}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wall (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2316,6 +2352,10 @@ PrefabInstance:
     - target: {fileID: 8648235601608648110, guid: a53354e86d5792f4eab0bcea17ca01c9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8648235601608648111, guid: a53354e86d5792f4eab0bcea17ca01c9, type: 3}
+      propertyPath: state
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a53354e86d5792f4eab0bcea17ca01c9, type: 3}

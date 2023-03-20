@@ -31,10 +31,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Tooltip("Multiplies speed when in air")]
     private float airMultiplier = 2.0f;
     [Space(5)]
-    [SerializeField, Tooltip("The jump force the player has while still.")]
-    private float standingJumpForce = 2.0f;
-    [SerializeField, Tooltip("The jump force the player has while moving.")]
-    private float movingJumpForce = 1.0f;
+    [SerializeField, Tooltip("The jump force the player has.")]
+    private float jumpForce = 2.0f;
+   
     [SerializeField]
     private float coyoteTime = 0.2f;
     [SerializeField]
@@ -115,8 +114,7 @@ public class PlayerController : MonoBehaviour
 
     private float baseHealth;
     private float baseStamina;
-    private float baseStandingJumpForce;
-    private float baseMovingJumpForce;
+    private float baseJumpForce;
 
     public bool canJump = true;
 
@@ -186,8 +184,7 @@ public class PlayerController : MonoBehaviour
         //Get base variables for collectables
         baseHealth = curHealthMax;
         baseStamina = curStaminaMax;
-        baseStandingJumpForce = standingJumpForce;
-        baseMovingJumpForce = movingJumpForce;
+        baseJumpForce = jumpForce;
 
         gameManager.lastCheckpointPos = transform.position;
 
@@ -260,18 +257,14 @@ public class PlayerController : MonoBehaviour
     public void IncreaseJumpForce()
     {
         float newStandingJumpForce;
-        float newMovingJumpForce;
 
         //Increase new jump forces
-        newStandingJumpForce = baseStandingJumpForce + (playerData.GrasshopperCount * jumpModifier);
-        newMovingJumpForce = baseMovingJumpForce + (playerData.GrasshopperCount * jumpModifier);
+        newStandingJumpForce = baseJumpForce + (playerData.GrasshopperCount * jumpModifier);
 
         //Clamp the new jump forces with min as base and max as max
-        newStandingJumpForce = Mathf.Clamp(newStandingJumpForce, baseStandingJumpForce, maxStandingJumpForce);
-        newMovingJumpForce = Mathf.Clamp(newMovingJumpForce, baseMovingJumpForce, maxMovingJumpForce);
+        newStandingJumpForce = Mathf.Clamp(newStandingJumpForce, baseJumpForce, maxStandingJumpForce);
 
-        standingJumpForce = newStandingJumpForce;
-        movingJumpForce = newMovingJumpForce;
+        jumpForce = newStandingJumpForce;
     }
 
 
@@ -365,12 +358,8 @@ public class PlayerController : MonoBehaviour
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
 
             jumping = true;
-            //Player is standing still
-            if (movement == Vector2.zero)
-                rb.AddForce(transform.up * standingJumpForce, ForceMode.Impulse);
-            //Player is moving
-            else if (movement != Vector2.zero)
-                rb.AddForce(transform.up * movingJumpForce, ForceMode.Impulse);
+            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+
 
             //Add air gravity
             //rb.AddForce(transform.up * airGravity, ForceMode.Force);

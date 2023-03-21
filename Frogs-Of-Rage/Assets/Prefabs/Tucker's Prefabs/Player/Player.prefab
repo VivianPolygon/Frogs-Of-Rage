@@ -242,6 +242,7 @@ MonoBehaviour:
   healthGauge: {fileID: 0}
   playerData: {fileID: 11400000, guid: 9c416c4ee9bf4924596ef9d62f06f8ff, type: 2}
   isMoving: 0
+  onslope: 0
   canJump: 1
   state: 0
   walking: 0
@@ -251,8 +252,6 @@ MonoBehaviour:
   useGravity: 1
   curHealth: 0
   curStamina: 0
-  onSlope: 0
-  Grounded: 0
 --- !u!114 &7587290521112274946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -296,7 +295,7 @@ Rigidbody:
   m_GameObject: {fileID: 7587290521112275068}
   serializedVersion: 2
   m_Mass: 1
-  m_Drag: 0
+  m_Drag: 1
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0

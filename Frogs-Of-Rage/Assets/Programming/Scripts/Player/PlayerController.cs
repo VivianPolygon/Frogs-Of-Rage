@@ -317,10 +317,14 @@ public class PlayerController : MonoBehaviour
     }
     private void HandleDrag()
     {
-        if (GroundedPlayer())
-            rb.drag = groundDrag;
-        else
-            rb.drag = airDrag;
+        //if (GroundedPlayer())
+        //    rb.drag = groundDrag;
+        //else
+        //    rb.drag = airDrag;
+
+        if (movement == Vector2.zero && !jumping)
+            rb.velocity = rb.velocity / groundDrag;
+
     }
 
     //Controls player movement (WASD)
@@ -338,15 +342,14 @@ public class PlayerController : MonoBehaviour
         //Get slope move direction
         slopeMoveDirection = Vector3.ProjectOnPlane(moveDirection, slopeHit.normal);
 
-        
 
         //Moves the actual player
         if (GroundedPlayer() && !OnSlope())
             rb.AddForce(moveDirection.normalized * curSpeed * 10, ForceMode.Force);
-        else if(GroundedPlayer() && OnSlope())
+        else if (GroundedPlayer() && OnSlope())
             rb.AddForce(slopeMoveDirection.normalized * curSpeed * 10, ForceMode.Force);
         else if (!GroundedPlayer())
-            rb.AddForce(moveDirection.normalized * curSpeed  * airMultiplier, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * curSpeed * airMultiplier, ForceMode.Force);
 
         Debug.DrawRay(transform.position, slopeMoveDirection.normalized, Color.yellow);
 
@@ -381,11 +384,12 @@ public class PlayerController : MonoBehaviour
             canJump = false;
             //Reset velocity
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+            rb.drag = 0f;
             jumping = true;
 
             float jumpForce = Mathf.Sqrt(jumpHeight * (Physics.gravity.y * gravityScale) * - 2) * rb.mass;
 
-            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            rb.AddForce(transform.up * jumpForce, ForceMode.VelocityChange);
 
 
 
@@ -507,7 +511,6 @@ public class PlayerController : MonoBehaviour
             if (slopeHit.normal != Vector3.up)
                 return true;
 
-        Debug.Log("OnSlope is false");
         return false;
         
     }

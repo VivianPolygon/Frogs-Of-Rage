@@ -307,7 +307,7 @@ public class PlayerController : MonoBehaviour
     public bool GroundedPlayer()
     {
         //return Physics.Raycast(transform.position + (Vector3.up / 2), Vector3.down, 0.5f + groundCheckDistance, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
-        return Physics.CheckSphere(transform.position, groundCheckDistance, ~LayerMask.GetMask("Player"));
+        return Physics.CheckSphere(transform.position, groundCheckDistance, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
     }
     private void HandleDrag()
     {
@@ -328,16 +328,25 @@ public class PlayerController : MonoBehaviour
 
         //Debug.DrawRay(transform.position, slopeHit.normal * 10, Color.blue);
         //Get slope move direction
-        slopeMoveDirection = Vector3.ProjectOnPlane(moveDirection, slopeHit.normal);
+        slopeMoveDirection = Vector3.Project( moveDirection, slopeHit.normal);
 
 
         //Moves the actual player
         if (GroundedPlayer() && !OnSlope())
+        {
+            Debug.Log("Using normal move");
             rb.AddForce(moveDirection.normalized * curSpeed * 10, ForceMode.Force);
+        }
         else if (GroundedPlayer() && OnSlope())
+        {
+            Debug.Log("Using slope move");
             rb.AddForce(slopeMoveDirection.normalized * curSpeed * 10, ForceMode.Force);
-        else if (!GroundedPlayer())
+        }
+        else if (!GroundedPlayer() && !OnSlope())
+        {
+            Debug.Log("Using not grounded move");
             rb.AddForce(moveDirection.normalized * curSpeed * airMultiplier, ForceMode.Force);
+        }
 
         Debug.DrawRay(transform.position, slopeMoveDirection.normalized, Color.yellow);
 
@@ -495,7 +504,8 @@ public class PlayerController : MonoBehaviour
         if (jumping)
             return false;
 
-        if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, slopeDetectionDistance, LayerMask.GetMask("Ground")))
+        //if (Physics.CheckSphere(transform.position, slopeDetectionDistance, ~LayerMask.GetMask("Player")))
+        if(Physics.Raycast(transform.position, -transform.up, out slopeHit, slopeDetectionDistance, ~LayerMask.GetMask("Player")))
             if (slopeHit.normal != Vector3.up)
                 return true;
 

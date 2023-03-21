@@ -218,15 +218,14 @@ MonoBehaviour:
   curStaminaMax: 100
   walkSpeed: 15
   sprintSpeed: 20
-  groundDrag: 15
+  groundDrag: 10
   airMultiplier: 0.5
   jumpHeight: 10
   gravityScale: 10
   fallingGravityScale: 30
   coyoteTime: 0.2
-  airDrag: 1
-  slopeDetectionDistance: 0.45
-  groundCheckDistance: 0.25
+  slopeDetectionDistance: 0.25
+  groundCheckDistance: 0.2
   jumpCooldown: 0.5
   speedModifier: 3
   maxSpeed: 40
@@ -235,8 +234,7 @@ MonoBehaviour:
   healthModifier: 8
   clampedMaxHealth: 200
   jumpModifier: 2
-  maxStandingJumpForce: 30
-  maxMovingJumpForce: 15
+  maxJumpHeight: 10
   rotationSpeed: 4
   staminaGauge: {fileID: 0}
   healthGauge: {fileID: 0}

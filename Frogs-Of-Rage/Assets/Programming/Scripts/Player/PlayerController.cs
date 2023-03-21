@@ -18,18 +18,19 @@ public class PlayerController : MonoBehaviour
     #region Movement
     [Space(10)]
     public  float curHealthMax = 100f;
+    public float curStaminaMax = 100f;
     [Header("Movement Variables")]
     [Space(10)]
-    public float curStaminaMax = 100f;
     [Space(5)]
     [SerializeField, Tooltip("The walk speed of the player.")]
     private float walkSpeed = 5.0f;
     [SerializeField, Tooltip("The walk speed of the player.")]
     private float sprintSpeed = 7.0f;
-    [SerializeField, Tooltip("The drag force on the player when grounded.")]
+    [SerializeField, Tooltip("The deceleration on the player when grounded and no longer moving.")]
     private float groundDrag = 2.0f;
     [SerializeField, Tooltip("Multiplies speed when in air")]
     private float airMultiplier = 2.0f;
+    [Header("Jump Variables")]
     [Space(10)]
     [SerializeField, Tooltip("The jump force the player has.")]
     private float jumpHeight = 10.0f;
@@ -37,14 +38,9 @@ public class PlayerController : MonoBehaviour
     private float gravityScale = 10.0f;
     [SerializeField, Tooltip("The falling gravity scale on the player.")]
     private float fallingGravityScale = 30.0f;
-    [Space(10)]
-
     [SerializeField]
     private float coyoteTime = 0.2f;
-    [SerializeField]
-    private float airDrag = 5f;
-
-
+    [Space(10)]
 
     [SerializeField, Tooltip("The detection distance from bottom of player down if they are on a slope")]
     private float slopeDetectionDistance = 0.2f;
@@ -79,12 +75,10 @@ public class PlayerController : MonoBehaviour
     private float clampedMaxHealth = 200f;
     [Space(5)]
 
-    [SerializeField, Tooltip("How much total jump force is increased per grasshopper collected")]
+    [SerializeField, Tooltip("How much total jump height is increased per grasshopper collected")]
     private float jumpModifier = 0.5f;
-    [SerializeField, Tooltip("Max standing jump force player can have")]
-    private float maxStandingJumpForce = 10f;
-    [SerializeField, Tooltip("Max moving jump force player can have")]
-    private float maxMovingJumpForce = 7f;
+    [SerializeField, Tooltip("Max jump height player can have")]
+    private float maxJumpHeight = 10f;
     #endregion
 
 
@@ -120,7 +114,7 @@ public class PlayerController : MonoBehaviour
 
     private float baseHealth;
     private float baseStamina;
-    private float baseJumpForce;
+    private float baseJumpHeight;
 
     public bool canJump = true;
 
@@ -194,7 +188,7 @@ public class PlayerController : MonoBehaviour
         //Get base variables for collectables
         baseHealth = curHealthMax;
         baseStamina = curStaminaMax;
-        baseJumpForce = jumpHeight;
+        baseJumpHeight = jumpHeight;
 
         gameManager.lastCheckpointPos = transform.position;
 
@@ -265,17 +259,17 @@ public class PlayerController : MonoBehaviour
     }
 
     //Increases jump force on collectables
-    public void IncreaseJumpForce()
+    public void IncreaseJumpHeight()
     {
-        float newStandingJumpForce;
+        float newStandingJumpHeight;
 
         //Increase new jump forces
-        newStandingJumpForce = baseJumpForce + (playerData.GrasshopperCount * jumpModifier);
+        newStandingJumpHeight = baseJumpHeight + (playerData.GrasshopperCount * jumpModifier);
 
         //Clamp the new jump forces with min as base and max as max
-        newStandingJumpForce = Mathf.Clamp(newStandingJumpForce, baseJumpForce, maxStandingJumpForce);
+        newStandingJumpHeight = Mathf.Clamp(newStandingJumpHeight, baseJumpHeight, maxJumpHeight);
 
-        jumpHeight = newStandingJumpForce;
+        jumpHeight = newStandingJumpHeight;
     }
 
 
@@ -317,14 +311,8 @@ public class PlayerController : MonoBehaviour
     }
     private void HandleDrag()
     {
-        //if (GroundedPlayer())
-        //    rb.drag = groundDrag;
-        //else
-        //    rb.drag = airDrag;
-
         if (movement == Vector2.zero && !jumping)
             rb.velocity = rb.velocity / groundDrag;
-
     }
 
     //Controls player movement (WASD)

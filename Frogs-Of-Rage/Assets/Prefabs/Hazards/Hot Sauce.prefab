@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 4460791683852866854}
   - component: {fileID: 740897061454355075}
   - component: {fileID: 3291223931361357385}
+  - component: {fileID: 5260173670675307343}
+  - component: {fileID: 6743617339984632713}
   m_Layer: 0
   m_Name: Hot Sauce
   m_TagString: Untagged
@@ -25,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3939588415172988828}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.0042376956, y: 0.0042376956, z: 0.0042376956}
   m_Children: []
@@ -81,3 +83,31 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &5260173670675307343
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3939588415172988828}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 410.4138
+  m_Height: 1929.8326
+  m_Direction: 1
+  m_Center: {x: -0, y: 964.9163, z: 0}
+--- !u!136 &6743617339984632713
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3939588415172988828}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 212.8
+  m_Height: 988.6298
+  m_Direction: 1
+  m_Center: {x: -0, y: 1980.672, z: 0}

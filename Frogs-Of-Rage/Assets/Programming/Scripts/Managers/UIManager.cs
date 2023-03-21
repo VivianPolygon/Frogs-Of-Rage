@@ -293,7 +293,7 @@ public class UIManager : Singleton<UIManager>
         else if (type == grasshopper)
         {
             e.playerData.GrasshopperCount++;
-            e.playerController.IncreaseJumpForce();
+            e.playerController.IncreaseJumpHeight();
         }
         #endregion
 

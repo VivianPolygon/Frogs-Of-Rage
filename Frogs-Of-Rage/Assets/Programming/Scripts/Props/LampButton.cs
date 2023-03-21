@@ -21,16 +21,16 @@ public class LampButton : MonoBehaviour
         originalColor = GetComponent<Renderer>().material.color;
         pressedColor = new Color(0f, 0f, 0f);
 
-        // Get the material from an object named "LampLightBulb"
-        Transform lightBulbTransform = transform.Find("LampLightBulb");
-        if (lightBulbTransform != null)
-        {
-            Renderer lightBulbRenderer = lightBulbTransform.GetComponent<Renderer>();
-            if (lightBulbRenderer != null)
-            {
-                material = lightBulbRenderer.material;
-            }
-        }
+        //// Get the material from an object named "LampLightBulb"
+        //Transform lightBulbTransform = transform.Find("LampLightBulb");
+        //if (lightBulbTransform != null)
+        //{
+        //    Renderer lightBulbRenderer = lightBulbTransform.GetComponent<Renderer>();
+        //    if (lightBulbRenderer != null)
+        //    {
+        //        material = lightBulbRenderer.material;
+        //    }
+        //}
     }
 
     private void OnTriggerEnter(Collider other)
@@ -48,7 +48,7 @@ public class LampButton : MonoBehaviour
                 GetComponent<Renderer>().material.color = pressedColor;
 
                 // Set the emission value to 0
-                material.SetColor("_EmissionColor", Color.black * pressedEmissionIntensity);
+               // material.SetColor("_EmissionColor", Color.black * pressedEmissionIntensity);
             }
             else
             {
@@ -59,7 +59,7 @@ public class LampButton : MonoBehaviour
                 GetComponent<Renderer>().material.color = originalColor;
 
                 // Set the emission value to the desired intensity
-                material.SetColor("_EmissionColor", Color.white * emissionIntensity);
+                //material.SetColor("_EmissionColor", Color.white * emissionIntensity);
             }
         }
     }

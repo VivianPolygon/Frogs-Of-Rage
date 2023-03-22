@@ -738,6 +738,11 @@ Canvas:
   m_CorrespondingSourceObject: {fileID: 1182881818702840902, guid: 6ebbcc6d5ff2edd4a9213d2802574007, type: 3}
   m_PrefabInstance: {fileID: 1182881819326580110}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &1823920709 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3499187892866628381, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
+  m_PrefabInstance: {fileID: 724309763}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1874306936 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2067547481384582224, guid: 498efd514d2556249a99056f5e63fd12, type: 3}
@@ -749,6 +754,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2029475089 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7587290521112275068, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
+  m_PrefabInstance: {fileID: 724309763}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2029475091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2029475089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78426b0078c140c48a7c609365c23244, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshRenderer: {fileID: 1823920709}
+  _effectDuration: 2
+  _particleQuantity: 6
+  _particleSpeed: 5
+  _damageSprite: {fileID: 8361413838944073013, guid: d48dffa47f8cbae4bb3795632174a36f, type: 3}
+  _damageSpriteScale: 0.35
+  _electrocutedSprite: {fileID: -2537877574659570364, guid: d48dffa47f8cbae4bb3795632174a36f, type: 3}
+  _electrocutedSpriteScale: 0.35
+  _healSprite: {fileID: -5072775540731225091, guid: d48dffa47f8cbae4bb3795632174a36f, type: 3}
+  _healSpriteScale: 0.2
+  _stunSprite: {fileID: 3711702023138232236, guid: d48dffa47f8cbae4bb3795632174a36f, type: 3}
+  _stunSpriteScale: 0.4
 --- !u!114 &2141141825 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2067547481650421865, guid: 498efd514d2556249a99056f5e63fd12, type: 3}
@@ -1015,19 +1049,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.86928827
+      value: 0.516241
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.4941169
+      value: 0.29343945
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.011865932
+      value: -0.6994985
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.006744807
+      value: 0.3976058
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296575147496, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_RootOrder
@@ -1141,6 +1175,10 @@ PrefabInstance:
     - target: {fileID: 3326821030614728648, guid: ee1c1c347276dfa419e40ba17a40732f, type: 3}
       propertyPath: m_Name
       value: CandleFlameSmall
+      objectReference: {fileID: 0}
+    - target: {fileID: 3326821030614728648, guid: ee1c1c347276dfa419e40ba17a40732f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ee1c1c347276dfa419e40ba17a40732f, type: 3}
@@ -1454,6 +1492,10 @@ PrefabInstance:
     - target: {fileID: 7024773379777620893, guid: 36d560b7dc91a6349b745c1d307d79f5, type: 3}
       propertyPath: m_Name
       value: CandleFlameLarge
+      objectReference: {fileID: 0}
+    - target: {fileID: 7024773379777620893, guid: 36d560b7dc91a6349b745c1d307d79f5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7653536094359892263, guid: 36d560b7dc91a6349b745c1d307d79f5, type: 3}
       propertyPath: m_RootOrder

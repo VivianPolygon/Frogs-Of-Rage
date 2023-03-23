@@ -42,17 +42,17 @@ public class PickExit : MonoBehaviour
                     canvasElement.SetActive(false);
                 }
 
-                //Text exitText = canvasElement.GetComponent<Text>();
+                Text exitText = canvasElement.GetComponent<Text>();
 
-                //if (exitText != null)
-                //{
-                //    Debug.Log("Is this working?");
-                //    exitText.text = exit.name;
-                //}
-                //else
-                //{
-                //    Debug.LogError("No Text component found on the canvas element for exit " + exit.name);
-                //}
+                if (exitText != null)
+                {
+                    Debug.Log("Is this working?");
+                    exitText.text = exit.name;
+                }
+                else
+                {
+                    Debug.LogError("No Text component found on the canvas element for exit " + exit.name);
+                }
             }
         }
         else

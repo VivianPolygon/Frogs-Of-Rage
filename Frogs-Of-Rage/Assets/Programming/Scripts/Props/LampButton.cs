@@ -5,7 +5,7 @@ using UnityEngine;
 public class LampButton : MonoBehaviour
 {
     public Animator animator;
-    public Light light;
+    public Light lightSource;
 
     private bool isPressed = false;
 
@@ -39,9 +39,9 @@ public class LampButton : MonoBehaviour
         {
             animator.SetBool("isPressed", true);
 
-            if (light.enabled)
+            if (lightSource.enabled)
             {
-                light.enabled = false;
+                lightSource.enabled = false;
                 isPressed = false;
 
                 // Restore the original color of the material
@@ -52,7 +52,7 @@ public class LampButton : MonoBehaviour
             }
             else
             {
-                light.enabled = true;
+                lightSource.enabled = true;
                 isPressed = true;
 
                 // Change the color of the material to pressed color

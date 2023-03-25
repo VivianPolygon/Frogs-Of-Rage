@@ -18,32 +18,31 @@ public class PlayerController : MonoBehaviour
     #region Movement
     [Space(10)]
     public  float curHealthMax = 100f;
+    public float curStaminaMax = 100f;
     [Header("Movement Variables")]
     [Space(10)]
-    public float curStaminaMax = 100f;
     [Space(5)]
     [SerializeField, Tooltip("The walk speed of the player.")]
     private float walkSpeed = 5.0f;
     [SerializeField, Tooltip("The walk speed of the player.")]
     private float sprintSpeed = 7.0f;
-    [SerializeField, Tooltip("The drag force on the player when grounded.")]
+    [SerializeField, Tooltip("The deceleration on the player when grounded and no longer moving.")]
     private float groundDrag = 2.0f;
     [SerializeField, Tooltip("Multiplies speed when in air")]
     private float airMultiplier = 2.0f;
-    [Space(5)]
+    [Header("Jump Variables")]
+    [Space(10)]
     [SerializeField, Tooltip("The jump force the player has.")]
-    private float jumpForce = 2.0f;
-   
+    private float jumpHeight = 10.0f;
+    [SerializeField, Tooltip("The gravity scale on the player.")]
+    private float gravityScale = 10.0f;
+    [SerializeField, Tooltip("The falling gravity scale on the player.")]
+    private float fallingGravityScale = 30.0f;
     [SerializeField]
     private float coyoteTime = 0.2f;
-    [SerializeField]
-    private float airDrag = 5f;
-    [SerializeField]
-    private float airGravity = -3f;
-    [SerializeField]
-    private float groundGravity = -1f;
+    [Space(10)]
 
-    [SerializeField, Tooltip("The detection distance from bottom of player down if they are on a slope"), HideInInspector]
+    [SerializeField, Tooltip("The detection distance from bottom of player down if they are on a slope")]
     private float slopeDetectionDistance = 0.2f;
 
     [SerializeField]
@@ -76,12 +75,10 @@ public class PlayerController : MonoBehaviour
     private float clampedMaxHealth = 200f;
     [Space(5)]
 
-    [SerializeField, Tooltip("How much total jump force is increased per grasshopper collected")]
+    [SerializeField, Tooltip("How much total jump height is increased per grasshopper collected")]
     private float jumpModifier = 0.5f;
-    [SerializeField, Tooltip("Max standing jump force player can have")]
-    private float maxStandingJumpForce = 10f;
-    [SerializeField, Tooltip("Max moving jump force player can have")]
-    private float maxMovingJumpForce = 7f;
+    [SerializeField, Tooltip("Max jump height player can have")]
+    private float maxJumpHeight = 10f;
     #endregion
 
 
@@ -111,15 +108,20 @@ public class PlayerController : MonoBehaviour
     private GameManager gameManager;
     public bool isMoving = false;
     private Vector2 movement;
+    private Vector3 moveDirection, slopeMoveDirection;
+    private RaycastHit slopeHit;
+    public bool onslope;
 
     private float baseHealth;
     private float baseStamina;
-    private float baseJumpForce;
+    private float baseJumpHeight;
 
     public bool canJump = true;
 
     private float coyoteTimeCounter;
-   
+    private float currentGravityScale;
+
+
 
     [HideInInspector]
     public MovementState state;
@@ -181,10 +183,12 @@ public class PlayerController : MonoBehaviour
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
 
+        currentGravityScale = gravityScale;
+
         //Get base variables for collectables
         baseHealth = curHealthMax;
         baseStamina = curStaminaMax;
-        baseJumpForce = jumpForce;
+        baseJumpHeight = jumpHeight;
 
         gameManager.lastCheckpointPos = transform.position;
 
@@ -205,15 +209,16 @@ public class PlayerController : MonoBehaviour
         HandleStamina();
         #endregion
         HandlePauseMenu();
-        if(!GroundedPlayer())
-            rb.velocity += Vector3.up * Physics.gravity.y * airGravity * Time.deltaTime;
 
+        rb.useGravity = !OnSlope();
+        onslope = OnSlope();
         OnPlayerCanvas?.Invoke(new PlayerCanvasEventArgs(GameManager.Instance.gameTimer, GameManager.Instance));
     }
 
     private void FixedUpdate()
     {
         HandleNormalMove();
+        HandleGravity();
     }
 
     #region Movement
@@ -254,17 +259,17 @@ public class PlayerController : MonoBehaviour
     }
 
     //Increases jump force on collectables
-    public void IncreaseJumpForce()
+    public void IncreaseJumpHeight()
     {
-        float newStandingJumpForce;
+        float newStandingJumpHeight;
 
         //Increase new jump forces
-        newStandingJumpForce = baseJumpForce + (playerData.GrasshopperCount * jumpModifier);
+        newStandingJumpHeight = baseJumpHeight + (playerData.GrasshopperCount * jumpModifier);
 
         //Clamp the new jump forces with min as base and max as max
-        newStandingJumpForce = Mathf.Clamp(newStandingJumpForce, baseJumpForce, maxStandingJumpForce);
+        newStandingJumpHeight = Mathf.Clamp(newStandingJumpHeight, baseJumpHeight, maxJumpHeight);
 
-        jumpForce = newStandingJumpForce;
+        jumpHeight = newStandingJumpHeight;
     }
 
 
@@ -301,39 +306,55 @@ public class PlayerController : MonoBehaviour
     }
     public bool GroundedPlayer()
     {
-        return Physics.Raycast(transform.position + (Vector3.up / 2), Vector3.down, 0.5f + groundCheckDistance, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
+        //return Physics.Raycast(transform.position + (Vector3.up / 2), Vector3.down, 0.5f + groundCheckDistance, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
+        return Physics.CheckSphere(transform.position, groundCheckDistance, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
     }
     private void HandleDrag()
     {
-        if (GroundedPlayer())
-            rb.drag = groundDrag;
-        else
-            rb.drag = airDrag;
+        if (movement == Vector2.zero && !jumping)
+            rb.velocity = rb.velocity / groundDrag;
     }
+
     //Controls player movement (WASD)
     private void HandleNormalMove()
     {
         //Gets input from input manager
         movement = inputManager.GetMovement();
         //Turns input into Vector3
-        Vector3 move = new Vector3(movement.x, 0, movement.y);
-        //Utilizes camera to move in the forwward direction
-        move = mainCamTransform.forward * move.z + mainCamTransform.right * move.x;
+        moveDirection = new Vector3(movement.x, 0, movement.y);
+        
+        //Utilizes camera to move in the forward direction
+        moveDirection = mainCamTransform.forward * moveDirection.z + mainCamTransform.right * moveDirection.x;
 
-        move.y = 0f;
-        move.Normalize();
+        //Debug.DrawRay(transform.position, slopeHit.normal * 10, Color.blue);
+        //Get slope move direction
+        slopeMoveDirection = Vector3.Project( moveDirection, slopeHit.normal);
+
+
         //Moves the actual player
-        if(GroundedPlayer())
-            rb.AddForce(AdjustVelocityForSlope(move) * curSpeed * 10, ForceMode.Force);
-        else if(!GroundedPlayer())
-            rb.AddForce(move * curSpeed  * airMultiplier, ForceMode.Force);
+        if (GroundedPlayer() && !OnSlope())
+        {
+            Debug.Log("Using normal move");
+            rb.AddForce(moveDirection.normalized * curSpeed * 10, ForceMode.Force);
+        }
+        else if (GroundedPlayer() && OnSlope())
+        {
+            Debug.Log("Using slope move");
+            rb.AddForce(slopeMoveDirection.normalized * curSpeed * 10, ForceMode.Force);
+        }
+        else if (!GroundedPlayer() && !OnSlope())
+        {
+            Debug.Log("Using not grounded move");
+            rb.AddForce(moveDirection.normalized * curSpeed * airMultiplier, ForceMode.Force);
+        }
 
-        if (move != Vector3.zero)
+        Debug.DrawRay(transform.position, slopeMoveDirection.normalized, Color.yellow);
+
+        if (moveDirection != Vector3.zero)
             isMoving = true;
         else
             isMoving = false;
 
-        //rb.AddForce(transform.up * groundGravity, ForceMode.Force);
 
         //Rotates player to face direction based on input
         if (movement != Vector2.zero && state !=MovementState.WallRunning)
@@ -346,6 +367,11 @@ public class PlayerController : MonoBehaviour
         if (movement == Vector2.zero)
             walking = false;
     }
+    private void HandleGravity()
+    {
+        if(!GetComponent<WallRunning>().onWall && !OnSlope())
+            rb.AddForce(Physics.gravity * (currentGravityScale - 1) * rb.mass);
+    }
     private void HandleJump()
     {
         //movement= Vector2.zero;
@@ -353,27 +379,29 @@ public class PlayerController : MonoBehaviour
         if (inputManager.GetJump() && coyoteTimeCounter > 0f && canJump)
         {
             canJump = false;
-            
             //Reset velocity
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-
+            rb.drag = 0f;
             jumping = true;
-            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+
+            float jumpForce = Mathf.Sqrt(jumpHeight * (Physics.gravity.y * gravityScale) * - 2) * rb.mass;
+
+            rb.AddForce(transform.up * jumpForce, ForceMode.VelocityChange);
 
 
-            //Add air gravity
-            //rb.AddForce(transform.up * airGravity, ForceMode.Force);
 
             coyoteTimeCounter = 0f;
-
             Invoke(nameof(ResetJump), jumpCooldown);
         }
+        if (rb.velocity.y >= 0)
+            currentGravityScale = gravityScale;
+        else if (rb.velocity.y < 0)
+            currentGravityScale = fallingGravityScale;
     }
     private void ResetJump()
     {
         canJump = true;
     }
-
     private void CoyoteTime()
     {
         if (GroundedPlayer() && canJump)
@@ -387,13 +415,21 @@ public class PlayerController : MonoBehaviour
     }
     private void SpeedControl()
     {
-        Vector3 flatVelocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
-        //limit velocity if needed
-        if (flatVelocity.magnitude > curSpeed)
+        if (OnSlope())
         {
-            Vector3 limitedVelocity = flatVelocity.normalized * curSpeed;
-            rb.velocity = new Vector3(limitedVelocity.x, rb.velocity.y, limitedVelocity.z);
+            if (rb.velocity.magnitude > curSpeed)
+                rb.velocity = rb.velocity.normalized * curSpeed;
+        }
+        else
+        {
+            Vector3 flatVelocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+            //limit velocity if needed
+            if (flatVelocity.magnitude > curSpeed)
+            {
+                Vector3 limitedVelocity = flatVelocity.normalized * curSpeed;
+                rb.velocity = new Vector3(limitedVelocity.x, rb.velocity.y, limitedVelocity.z);
+            }
         }
     }
     private void HandleSprint()
@@ -442,19 +478,23 @@ public class PlayerController : MonoBehaviour
     }
     private Vector3 AdjustVelocityForSlope(Vector3 velocity)
     {
-        Ray ray = new Ray(transform.position + (Vector3.up /2), Vector3.down);
+        Ray ray = new Ray(transform.position, Vector3.down);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, 0.5f + slopeDetectionDistance))
+        if (Physics.Raycast(ray, out RaycastHit hit, slopeDetectionDistance))
         {
+            //Get rotation of objects normal
             Quaternion slopeRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+            //Change velovity to align with objects normal
             Vector3 adjustedVelocity = slopeRotation * velocity;
+            Debug.DrawRay(transform.position, adjustedVelocity, Color.yellow);
 
-            if (adjustedVelocity.y < 0)
+            if (OnSlope())
             {
+                Debug.Log("Adjusted velocity");
                 return adjustedVelocity;
             }
-        }
-        
+        }       
+        Debug.Log("Did not adjust velocity");
         return velocity;
     }
 
@@ -464,9 +504,11 @@ public class PlayerController : MonoBehaviour
         if (jumping)
             return false;
 
-        if(Physics.Raycast(transform.position + (Vector3.up / 2), Vector3.down, out RaycastHit hit, slopeDetectionDistance))
-            if (hit.normal != Vector3.up)
+        //if (Physics.CheckSphere(transform.position, slopeDetectionDistance, ~LayerMask.GetMask("Player")))
+        if(Physics.Raycast(transform.position, -transform.up, out slopeHit, slopeDetectionDistance, ~LayerMask.GetMask("Player")))
+            if (slopeHit.normal != Vector3.up)
                 return true;
+
         return false;
         
     }

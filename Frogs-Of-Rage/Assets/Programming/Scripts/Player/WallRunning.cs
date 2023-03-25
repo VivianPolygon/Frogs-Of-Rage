@@ -26,6 +26,9 @@ public class WallRunning : MonoBehaviour
     private bool wallLeft;
     private bool wallRight;
 
+    [HideInInspector]
+    public bool onWall;
+
     [Header("Exiting")]
     private bool exitingWall;
     [SerializeField]
@@ -66,6 +69,11 @@ public class WallRunning : MonoBehaviour
 
         Debug.DrawRay(transform.position + Vector3.up, transform.right, Color.red);
         Debug.DrawRay(transform.position + Vector3.up, -transform.right, Color.blue);
+
+        if (wallLeft || wallRight)
+            onWall = true;
+        else
+            onWall = false;
     }
 
     private bool AboveGround()

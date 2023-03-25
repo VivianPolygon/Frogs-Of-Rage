@@ -35,8 +35,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -212.6, y: -110.6}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: -234.2, y: -110.6}
+  m_SizeDelta: {x: 123.44, y: 100}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &1936035964
 CanvasRenderer:
@@ -81,6 +81,8 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Mission:
 
+    - Burn and destroy poster
+
     - Exit behind poster!'
 --- !u!114 &1936035962
 MonoBehaviour:
@@ -89,7 +91,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1936035960}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
   m_Name: 
@@ -132,8 +134,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -234.3, y: -110.6}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: -234.2, y: -110.6}
+  m_SizeDelta: {x: 123.44, y: 100}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &1938576594
 CanvasRenderer:
@@ -178,6 +180,8 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Mission:
 
+    - Stop power to outlet
+
     - Exit through the Outlet!'
 --- !u!114 &1938576592
 MonoBehaviour:
@@ -186,7 +190,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1938576590}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
   m_Name: 
@@ -721,8 +725,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -252.7, y: -110.6}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: -234.2, y: -110.6}
+  m_SizeDelta: {x: 123.44, y: 100}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &7963473628730667755
 CanvasRenderer:
@@ -767,6 +771,8 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Mission:
 
+    - Blow up air vent
+
     - Exit through the air vent!'
 --- !u!114 &1796746660693557597
 MonoBehaviour:
@@ -775,7 +781,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2569870993281829976}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
   m_Name: 
@@ -3110,7 +3116,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5971676874919437310
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4422,11 +4428,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3496261861764019633, guid: c39a3631560e84e419c273c570ee048c, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3496261861764019633, guid: c39a3631560e84e419c273c570ee048c, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3496261862405059837, guid: c39a3631560e84e419c273c570ee048c, type: 3}
       propertyPath: m_Value
@@ -4526,7 +4532,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3496261862412536613, guid: c39a3631560e84e419c273c570ee048c, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3496261862752618958, guid: c39a3631560e84e419c273c570ee048c, type: 3}
       propertyPath: m_FillAmount
@@ -4534,11 +4540,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3496261862752618959, guid: c39a3631560e84e419c273c570ee048c, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3496261862752618959, guid: c39a3631560e84e419c273c570ee048c, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c39a3631560e84e419c273c570ee048c, type: 3}

@@ -50,6 +50,8 @@ public class ObjectParticleEmmiter : MonoBehaviour
 
             newParticle.AddComponent<MeshFilter>().mesh = particleMesh;
 
+
+
             MeshRenderer newRenderer = newParticle.AddComponent<MeshRenderer>();
             newRenderer.material = particleMaterial;
             newRenderer.shadowCastingMode = shadowMode;

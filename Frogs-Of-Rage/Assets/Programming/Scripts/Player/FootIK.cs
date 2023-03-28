@@ -20,7 +20,8 @@ public class FootIK : MonoBehaviour
     private FootIK otherFoot = default;
 
     private float lerp;
-    private Vector3 floorToAnkle = new Vector3(0, 0.1f, 0);
+    public Vector3 floorToAnkle;
+    public Vector3 normalModifier;
     private Vector3 currentPosition, newPosition, oldPosition;
     private Vector3 oldNormal, currentNormal, newNormal;
 

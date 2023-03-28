@@ -364,7 +364,7 @@ public class PlayerController : MonoBehaviour
 
 
         //Rotates player to face direction based on input
-        if (movement != Vector2.zero && state !=MovementState.WallRunning)
+        if (movement != Vector2.zero && state != MovementState.WallRunning)
         {
             walking = true;
             float targetAngle = Mathf.Atan2(movement.x, movement.y) * Mathf.Rad2Deg + mainCamTransform.eulerAngles.y;

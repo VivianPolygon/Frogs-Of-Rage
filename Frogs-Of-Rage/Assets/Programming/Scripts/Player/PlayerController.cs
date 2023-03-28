@@ -44,6 +44,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField, Tooltip("The detection distance from bottom of player down if they are on a slope")]
     private float slopeDetectionDistance = 0.2f;
+    [SerializeField, Tooltip("Minimum slope angle (any slope with less of an angle than this will be treated as flat ground)")]
+    private float minSlopeAngle = 20f;
 
     [SerializeField]
     private float groundCheckDistance = 0.05f;
@@ -210,7 +212,7 @@ public class PlayerController : MonoBehaviour
         #endregion
         HandlePauseMenu();
 
-        rb.useGravity = !OnSlope();
+        //rb.useGravity = !OnSlope();
         onslope = OnSlope();
         OnPlayerCanvas?.Invoke(new PlayerCanvasEventArgs(GameManager.Instance.gameTimer, GameManager.Instance));
     }
@@ -318,6 +320,8 @@ public class PlayerController : MonoBehaviour
     //Controls player movement (WASD)
     private void HandleNormalMove()
     {
+        OnSlope();
+
         //Gets input from input manager
         movement = inputManager.GetMovement();
         //Turns input into Vector3
@@ -328,7 +332,8 @@ public class PlayerController : MonoBehaviour
 
         //Debug.DrawRay(transform.position, slopeHit.normal * 10, Color.blue);
         //Get slope move direction
-        slopeMoveDirection = Vector3.Project( moveDirection, slopeHit.normal);
+        //slopeMoveDirection = Vector3.Project(moveDirection, slopeHit.normal);
+        slopeMoveDirection = Vector3.ProjectOnPlane(moveDirection, slopeHit.normal);
 
 
         //Moves the actual player
@@ -341,10 +346,12 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Using slope move");
             rb.AddForce(slopeMoveDirection.normalized * curSpeed * 10, ForceMode.Force);
+            
         }
         else if (!GroundedPlayer() && !OnSlope())
         {
             Debug.Log("Using not grounded move");
+
             rb.AddForce(moveDirection.normalized * curSpeed * airMultiplier, ForceMode.Force);
         }
 
@@ -506,8 +513,10 @@ public class PlayerController : MonoBehaviour
 
         //if (Physics.CheckSphere(transform.position, slopeDetectionDistance, ~LayerMask.GetMask("Player")))
         if(Physics.Raycast(transform.position, -transform.up, out slopeHit, slopeDetectionDistance, ~LayerMask.GetMask("Player")))
-            if (slopeHit.normal != Vector3.up)
+        {
+            if (Vector3.Angle(slopeHit.normal, Vector3.up) >= minSlopeAngle)
                 return true;
+        }
 
         return false;
         

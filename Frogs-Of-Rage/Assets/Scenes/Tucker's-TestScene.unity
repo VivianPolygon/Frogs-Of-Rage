@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571336, b: 0.3069219, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -500,9 +500,9 @@ MonoBehaviour:
     m_TargetRotationWeight: 1
     m_HintWeight: 1
     m_MaintainTargetPositionOffset: 0
-    m_MaintainTargetRotationOffset: 0
-  m_SourceObjectsGUIToggle: 0
-  m_SettingsGUIToggle: 0
+    m_MaintainTargetRotationOffset: 1
+  m_SourceObjectsGUIToggle: 1
+  m_SettingsGUIToggle: 1
 --- !u!114 &714297001 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7314940686313609723, guid: a53354e86d5792f4eab0bcea17ca01c9, type: 3}
@@ -570,9 +570,9 @@ MonoBehaviour:
     m_TargetRotationWeight: 1
     m_HintWeight: 1
     m_MaintainTargetPositionOffset: 0
-    m_MaintainTargetRotationOffset: 0
+    m_MaintainTargetRotationOffset: 1
   m_SourceObjectsGUIToggle: 0
-  m_SettingsGUIToggle: 0
+  m_SettingsGUIToggle: 1
 --- !u!1001 &724309763
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2104,9 +2104,11 @@ MonoBehaviour:
   footSpacing: -0.1
   stepDistance: 0.5
   stepHeight: 0.5
-  stepLength: 4
+  stepLength: 0.2
   speed: 1
   otherFoot: {fileID: 2123277434}
+  floorToAnkle: {x: 0, y: 0.35, z: 0}
+  normalModifier: {x: -176, y: 20, z: 31}
 --- !u!1001 &1482856563
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2519,9 +2521,11 @@ MonoBehaviour:
   footSpacing: 0.1
   stepDistance: 0.5
   stepHeight: 0.5
-  stepLength: 4
+  stepLength: 0.2
   speed: 1
   otherFoot: {fileID: 1479077055}
+  floorToAnkle: {x: 0, y: 0.35, z: 0}
+  normalModifier: {x: 176, y: 20, z: 31}
 --- !u!1001 &264708797151042314
 PrefabInstance:
   m_ObjectHideFlags: 0

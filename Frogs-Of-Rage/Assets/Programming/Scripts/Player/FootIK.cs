@@ -37,31 +37,14 @@ public class FootIK : MonoBehaviour
     void Update()
     {
         FindNextFootPos();
+        transform.rotation = transform.root.rotation;
     }
 
-    //private void PlaceFeetOnGround()
-    //{
-    //    Ray ray = new Ray(body.position + (body.right * footSpacing), Vector3.down);
-    //    if (Physics.Raycast(ray, out RaycastHit hit2, 10, LayerMask.GetMask("Ground")))
-    //    {
-    //        transform.position = hit2.point + new Vector3(0, floorToAnkle, 0);
-    //    }
-    //}
+    private void FixedUpdate()
+    {
+        //speed = GameManager.Instance.playerController.curSpeed * 8;
+    }
 
-    //public bool isDown()
-    //{
-    //    if (oldPosition == newPosition)
-    //        return true;
-    //    else
-    //        return false;
-    //}
-    //public bool OtherFootIsDown()
-    //{
-    //    if (otherFoot.isDown())
-    //        return true;
-    //    else
-    //        return false;
-    //}
     private void FindNextFootPos()
     {
         transform.position = currentPosition;

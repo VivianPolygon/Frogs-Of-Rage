@@ -105,13 +105,15 @@ public class PlayerController : MonoBehaviour
     private float staminaTimer;
     private InputManager inputManager;
     private Transform mainCamTransform;
-    private Rigidbody rb;
+    public Rigidbody rb;
     [HideInInspector]
     public float curSpeed;
     private GameManager gameManager;
     public bool isMoving = false;
     private Vector2 movement;
-    private Vector3 moveDirection, slopeMoveDirection;
+    [HideInInspector]
+    public Vector3 moveDirection;
+    private Vector3 slopeMoveDirection;
     private RaycastHit slopeHit;
     public bool onslope;
 

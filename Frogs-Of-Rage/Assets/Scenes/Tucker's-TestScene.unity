@@ -609,6 +609,10 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
+      propertyPath: walkSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
       propertyPath: airGravity
       value: 0
       objectReference: {fileID: 0}
@@ -2066,7 +2070,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1479077054}
-  - component: {fileID: 1479077055}
   m_Layer: 0
   m_Name: LeftLegIK_1_target
   m_TagString: Untagged
@@ -2088,27 +2091,6 @@ Transform:
   m_Father: {fileID: 579539126}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1479077055
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1479077053}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fcc55a53fac6f4cf3aea46a1d263c0d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  body: {fileID: 724309764}
-  footSpacing: -0.1
-  stepDistance: 0.5
-  stepHeight: 0.25
-  stepLength: 0.3
-  speed: 8
-  otherFoot: {fileID: 2123277434}
-  floorToAnkle: {x: 0, y: 0.3, z: 0}
-  normalModifier: {x: -176, y: 20, z: 31}
 --- !u!1001 &1482856563
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2483,7 +2465,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2123277433}
-  - component: {fileID: 2123277434}
   m_Layer: 0
   m_Name: Right_LegIK_1_target
   m_TagString: Untagged
@@ -2505,27 +2486,6 @@ Transform:
   m_Father: {fileID: 723357204}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2123277434
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2123277432}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fcc55a53fac6f4cf3aea46a1d263c0d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  body: {fileID: 724309764}
-  footSpacing: 0.1
-  stepDistance: 0.5
-  stepHeight: 0.25
-  stepLength: 0.3
-  speed: 8
-  otherFoot: {fileID: 1479077055}
-  floorToAnkle: {x: 0, y: 0.3, z: 0}
-  normalModifier: {x: 176, y: 20, z: 31}
 --- !u!1001 &264708797151042314
 PrefabInstance:
   m_ObjectHideFlags: 0

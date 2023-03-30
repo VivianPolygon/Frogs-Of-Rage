@@ -106,7 +106,8 @@ public class PlayerController : MonoBehaviour
     private InputManager inputManager;
     private Transform mainCamTransform;
     private Rigidbody rb;
-    private float curSpeed;
+    [HideInInspector]
+    public float curSpeed;
     private GameManager gameManager;
     public bool isMoving = false;
     private Vector2 movement;

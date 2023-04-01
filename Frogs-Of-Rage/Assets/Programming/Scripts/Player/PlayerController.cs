@@ -361,6 +361,7 @@ public class PlayerController : MonoBehaviour
         }
 
         animator.SetFloat("Speed", rb.velocity.magnitude);
+        animator.SetFloat("VerticalSpeed", rb.velocity.y);
 
         Debug.DrawRay(transform.position, slopeMoveDirection.normalized, Color.yellow);
 
@@ -392,6 +393,7 @@ public class PlayerController : MonoBehaviour
         //Jump
         if (inputManager.GetJump() && coyoteTimeCounter > 0f && canJump)
         {
+            animator.SetTrigger("Jump");
             canJump = false;
             //Reset velocity
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);

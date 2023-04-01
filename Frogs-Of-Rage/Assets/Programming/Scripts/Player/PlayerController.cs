@@ -126,6 +126,7 @@ public class PlayerController : MonoBehaviour
     private float coyoteTimeCounter;
     private float currentGravityScale;
 
+    private Animator animator;
 
 
     [HideInInspector]
@@ -184,6 +185,7 @@ public class PlayerController : MonoBehaviour
         curSpeed = walkSpeed;
         curStamina = curStaminaMax;
         curHealth = curHealthMax;
+        animator = GetComponentInChildren<Animator>();
 
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
@@ -357,6 +359,8 @@ public class PlayerController : MonoBehaviour
 
             rb.AddForce(moveDirection.normalized * curSpeed * airMultiplier, ForceMode.Force);
         }
+
+        animator.SetFloat("Speed", rb.velocity.magnitude);
 
         Debug.DrawRay(transform.position, slopeMoveDirection.normalized, Color.yellow);
 

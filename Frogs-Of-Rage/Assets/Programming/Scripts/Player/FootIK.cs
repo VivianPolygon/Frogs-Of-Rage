@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class FootIK : MonoBehaviour
@@ -8,19 +9,20 @@ public class FootIK : MonoBehaviour
     private Transform body;
     [SerializeField]
     private float footSpacing;
-    [SerializeField]
+    [SerializeField, Tooltip("How far the feet can be before moving")]
     private float stepDistance = 0.5f;
-    [SerializeField]
+    [SerializeField, Tooltip("How far the feet go up when moving")]
     private float stepHeight = 0.5f;
-    [SerializeField]
+    [SerializeField, Tooltip("How far the feet moves forward when moving")]
     private float stepLength = 4;
     [SerializeField]
     private float speed = 1f;
     [SerializeField]
     private FootIK otherFoot = default;
 
+    public float testPos;
     private float lerp;
-    private Vector3 floorToAnkle = new Vector3(0, 0.1f, 0);
+    public Vector3 floorToAnkle;
     private Vector3 currentPosition, newPosition, oldPosition;
     private Vector3 oldNormal, currentNormal, newNormal;
 
@@ -36,31 +38,10 @@ public class FootIK : MonoBehaviour
     void Update()
     {
         FindNextFootPos();
+        transform.rotation = transform.root.rotation;
     }
 
-    //private void PlaceFeetOnGround()
-    //{
-    //    Ray ray = new Ray(body.position + (body.right * footSpacing), Vector3.down);
-    //    if (Physics.Raycast(ray, out RaycastHit hit2, 10, LayerMask.GetMask("Ground")))
-    //    {
-    //        transform.position = hit2.point + new Vector3(0, floorToAnkle, 0);
-    //    }
-    //}
 
-    //public bool isDown()
-    //{
-    //    if (oldPosition == newPosition)
-    //        return true;
-    //    else
-    //        return false;
-    //}
-    //public bool OtherFootIsDown()
-    //{
-    //    if (otherFoot.isDown())
-    //        return true;
-    //    else
-    //        return false;
-    //}
     private void FindNextFootPos()
     {
         transform.position = currentPosition;
@@ -69,10 +50,11 @@ public class FootIK : MonoBehaviour
         Ray ray = new Ray(body.position + (body.right * footSpacing), Vector3.down);
         if (Physics.Raycast(ray, out RaycastHit hit, 10, LayerMask.GetMask("Ground")))
         {
+            
             if (Vector3.Distance(newPosition, hit.point) > stepDistance && !otherFoot.IsMoving() && lerp >= 1)
             {
                 lerp = 0;
-                int direction = body.InverseTransformPoint(hit.point).z > body.InverseTransformPoint(newPosition).z ? 1 : -1;
+                int direction = /*body.InverseTransformPoint(hit.point).z > body.InverseTransformPoint(newPosition).z*/  1;
                 newPosition = hit.point + (body.forward * stepLength * direction) + floorToAnkle;
                 //newPosition = hit.point + new Vector3(0, floorToAnkle, 0);
             }
@@ -84,7 +66,7 @@ public class FootIK : MonoBehaviour
 
             currentPosition = footPosition;
             currentNormal = Vector3.Lerp(oldNormal, newNormal, lerp);
-            lerp += Time.deltaTime * speed;
+            lerp += Time.deltaTime * speed * (GameManager.Instance.playerController.rb.velocity.magnitude + 1);
         }
         else
         {

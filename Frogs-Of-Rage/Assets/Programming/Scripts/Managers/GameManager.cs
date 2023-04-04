@@ -63,9 +63,17 @@ public class GameManager : Singleton<GameManager>
         else if (playerController.curHealth <= 0)
         {
             playerController.curHealth = playerController.curHealthMax;
-            OnPlayerDeath?.Invoke(new PlayerDeathEventArgs(lastCheckpointPos));
-
+            StartCoroutine(WaitForFadeScreen());
         }
+    }
+
+    private IEnumerator WaitForFadeScreen()
+    {
+        UIManager.Instance.ChangeState(CanvasState.Death);
+        UIManager.Instance.GetComponent<Animator>().SetTrigger("FadeIn");
+        yield return new WaitForSeconds(3.2f);
+        OnPlayerDeath?.Invoke(new PlayerDeathEventArgs(lastCheckpointPos));
+
     }
 
 

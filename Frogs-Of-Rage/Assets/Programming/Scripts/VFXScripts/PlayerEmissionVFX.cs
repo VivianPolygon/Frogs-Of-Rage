@@ -54,6 +54,24 @@ public class PlayerEmissionVFX : MonoBehaviour
         SetUpParticles();
     }
 
+    /* for debugging/examples
+    private void Update()
+    {
+        if(Input.GetKeyDown("1"))
+        {
+            EmitPlayerParticles(EmitPlayerParticlesMode.Damage);
+        }
+        if (Input.GetKeyDown("2"))
+        {
+            EmitPlayerParticles(EmitPlayerParticlesMode.Electrocuted);
+        }
+        if (Input.GetKeyDown("3"))
+        {
+            EmitPlayerParticles(EmitPlayerParticlesMode.Heal);
+        }
+    }
+    */
+
     public void EmitPlayerParticles(EmitPlayerParticlesMode mode)
     {
         switch (mode)
@@ -86,6 +104,7 @@ public class PlayerEmissionVFX : MonoBehaviour
         if(_meshRenderer as SkinnedMeshRenderer) // gets skinned renderer if the render is that type so it can use a baked mesh for proper information
         {
             SkinnedMeshRenderer skinnedRenderer = _meshRenderer as SkinnedMeshRenderer;
+            objectMesh = skinnedRenderer.sharedMesh;
 
             skinnedRenderer.BakeMesh(objectMesh, true);
             objectMesh.GetVertices(vertexPositions);

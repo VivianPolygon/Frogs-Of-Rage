@@ -3,6 +3,10 @@ using UnityEngine;
 public static class LeaderboardData //used to manage and save out leaderboard time data
 {
     #region "Private Variables/Functions"
+
+    //private static Dictionary<PlayerPath>
+
+
     private static List<LeaderboardScoreData> _scores;
     //tracks the scores data. also used for efficiency in the create leaderboard data function
 

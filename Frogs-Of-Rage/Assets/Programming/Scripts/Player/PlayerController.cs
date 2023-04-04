@@ -126,7 +126,9 @@ public class PlayerController : MonoBehaviour
     private float coyoteTimeCounter;
     private float currentGravityScale;
 
-
+    public Animator playerAnimator;
+    [HideInInspector]
+    public PlayerPath currentPath;
 
     [HideInInspector]
     public MovementState state;
@@ -358,7 +360,10 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(moveDirection.normalized * curSpeed * airMultiplier, ForceMode.Force);
         }
 
-        Debug.DrawRay(transform.position, slopeMoveDirection.normalized, Color.yellow);
+        //Debug.DrawRay(transform.position, slopeMoveDirection.normalized, Color.yellow);
+
+        playerAnimator.SetFloat("Speed", rb.velocity.magnitude);
+        playerAnimator.SetFloat("VerticalSpeed", rb.velocity.y);
 
         if (moveDirection != Vector3.zero)
             isMoving = true;
@@ -389,6 +394,7 @@ public class PlayerController : MonoBehaviour
         if (inputManager.GetJump() && coyoteTimeCounter > 0f && canJump)
         {
             canJump = false;
+            playerAnimator.SetTrigger("Jump");
             //Reset velocity
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             rb.drag = 0f;
@@ -603,7 +609,7 @@ public class PlayerController : MonoBehaviour
         if (other.tag == "Exit")
         {
             //Invoke on player win event
-            OnPlayerWin?.Invoke(new PlayerWinEventArgs(gameManager.gameTimer, playerData));
+            OnPlayerWin?.Invoke(new PlayerWinEventArgs(gameManager.gameTimer, playerData, currentPath));
             Debug.Log("You exited");
         }
     }
@@ -653,9 +659,11 @@ public class PlayerWinEventArgs
 {
     public GameTimer gameTimer;
     public PlayerData playerData;
+    public PlayerPath playerPath;
 
-    public PlayerWinEventArgs(GameTimer gameTimer, PlayerData playerData)
+    public PlayerWinEventArgs(GameTimer gameTimer, PlayerData playerData, PlayerPath path)
     {
+        this.playerPath = path;
         this.gameTimer = gameTimer;
         this.playerData = playerData;
     }

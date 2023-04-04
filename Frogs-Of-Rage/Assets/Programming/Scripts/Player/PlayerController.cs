@@ -206,7 +206,7 @@ public class PlayerController : MonoBehaviour
 
         #region Movemnt
         HandleDrag();
-        SpeedControl();
+        //SpeedControl();
         HandleSprint();
         HandleAirTime();
         curSpeed = IncreaseMaxSpeed();
@@ -224,6 +224,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        SpeedControl();
         HandleNormalMove();
         HandleGravity();
     }

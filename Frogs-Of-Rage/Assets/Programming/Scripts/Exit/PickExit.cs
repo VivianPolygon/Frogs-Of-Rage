@@ -21,8 +21,18 @@ public class PickExit : MonoBehaviour
         if (exitPrefabs.Count > 0)
         {
             int randomIndex = Random.Range(0, exitPrefabs.Count);
-            chosenExitPrefab = exitPrefabs[randomIndex];
-            chosenExitPrefab.SetActive(true);
+
+            if(exitPrefabs != null)
+            {
+                chosenExitPrefab = exitPrefabs[randomIndex];
+
+                if(chosenExitPrefab != null)
+                    chosenExitPrefab.SetActive(true);
+                else
+                    return;
+            }
+
+
 
             Debug.Log("Chosen exit prefab: " + chosenExitPrefab.name);
 

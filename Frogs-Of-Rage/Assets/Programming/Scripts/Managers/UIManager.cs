@@ -14,7 +14,8 @@ public enum CanvasState
     Paused,
     Win,
     Credits,
-    Options
+    Options,
+    Death
 }
 
 public class UIManager : Singleton<UIManager>
@@ -75,6 +76,10 @@ public class UIManager : Singleton<UIManager>
     [Space(10)]
     public Canvas optionsCanvas;
 
+    [Header("Death Canvas")]
+    [Space(10)]
+    public Canvas deathCanvas;
+
 
     private List<Canvas> canvasList = new List<Canvas>();
     private List<bool> boolCanvasList = new List<bool>();
@@ -87,6 +92,7 @@ public class UIManager : Singleton<UIManager>
     private bool isWinState = false;
     private bool isCreditsState = false;
     private bool isOptionsState = false;
+    private bool isDeathState = false;
 
 
     private void OnEnable()
@@ -102,6 +108,7 @@ public class UIManager : Singleton<UIManager>
         PlayerController.OnPlayerWin -= HandleWinScreen;
         PlayerController.OnPlayerPause -= DisplayPauseScreen;
         PlayerController.OnPlayerCanvas -= DisplayTimer;
+        
     }
 
     private void Start()
@@ -116,6 +123,7 @@ public class UIManager : Singleton<UIManager>
         canvasList.Add(youWinCanvas);
         canvasList.Add(creditsCanvas);
         canvasList.Add(optionsCanvas);
+        canvasList.Add(deathCanvas);
 
         boolCanvasList.Add(isStartState);
         boolCanvasList.Add(isPlayerState);
@@ -123,6 +131,7 @@ public class UIManager : Singleton<UIManager>
         boolCanvasList.Add(isWinState);
         boolCanvasList.Add(isCreditsState);
         boolCanvasList.Add(isOptionsState);
+        boolCanvasList.Add(isDeathState);
     }
 
     private void Update()
@@ -184,6 +193,13 @@ public class UIManager : Singleton<UIManager>
                 inputManager.playerControls.Disable();
 
                 break;
+            case CanvasState.Death:
+                TurnOnCanvasIndex(6);
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                inputManager.playerControls.Disable();
+
+                break;
             default:
                 break;
         }
@@ -192,7 +208,10 @@ public class UIManager : Singleton<UIManager>
             
     }
 
-
+    public void ChangeState(CanvasState _state)
+    {
+        state = _state;
+    }
    
     private void TurnOnCanvasIndex(int turnOn)
     {

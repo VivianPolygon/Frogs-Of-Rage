@@ -589,6 +589,7 @@ public class PlayerController : MonoBehaviour
         transform.position = e.respawnPos;
         curHealth = curHealthMax;
         curStamina = curStaminaMax;
+        //UIManager.Instance.deathCanvas.gameObject.GetComponent<Animator>().SetTrigger("FadeIn");
     }
 
     private void VacuumInstaKill()

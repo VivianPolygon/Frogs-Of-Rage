@@ -67,6 +67,9 @@ public class WallRunning : MonoBehaviour
         wallRight = Physics.Raycast(transform.position + Vector3.up, transform.right, out rightWallHit, wallCheckDistance, wallRunLayers, QueryTriggerInteraction.Ignore);
         wallLeft = Physics.Raycast(transform.position + Vector3.up , -transform.right, out leftWallHit, wallCheckDistance, wallRunLayers, QueryTriggerInteraction.Ignore);
 
+        playerController.playerAnimator.SetBool("OnLeftWall", wallLeft && playerController.wallRunning);
+        playerController.playerAnimator.SetBool("OnRightWall", wallRight && playerController.wallRunning);
+
         Debug.DrawRay(transform.position + Vector3.up, transform.right, Color.red);
         Debug.DrawRay(transform.position + Vector3.up, -transform.right, Color.blue);
 

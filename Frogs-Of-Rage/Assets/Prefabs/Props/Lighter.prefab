@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 4243990083982631576}
   - component: {fileID: 957707525835173181}
   - component: {fileID: 3075539229012351479}
-  - component: {fileID: 3745852649175598842}
+  - component: {fileID: 5020342849193252966}
+  - component: {fileID: 4678655540143523822}
   m_Layer: 0
   m_Name: Lighter
   m_TagString: Untagged
@@ -28,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 3579938196103952418}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 2.241, y: 0.9506725, z: 0}
-  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -82,8 +83,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &3745852649175598842
-SphereCollider:
+--- !u!136 &5020342849193252966
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -92,6 +93,22 @@ SphereCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 249
-  m_Center: {x: 0, y: -0.0000076293945, z: 0}
+  m_Radius: 0.87
+  m_Height: 3.96
+  m_Direction: 1
+  m_Center: {x: 0, y: -0.000000059604645, z: 0}
+--- !u!114 &4678655540143523822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3579938196103952418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dad4854a02214d49bc9d15c90af9354, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zOffset: -0.2
+  yOffset: 1.5
+  rotationOffset: {x: 0, y: 0, z: 0}

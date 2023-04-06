@@ -13,7 +13,7 @@ public class ScoreboardDebugging : MonoBehaviour
         {
             if(GUILayout.Button("PlayerWinTrigger"))
             {
-                PlayerController.OnPlayerWin(new PlayerWinEventArgs(GameManager.Instance.gameTimer, _playerController.playerData));
+                PlayerController.OnPlayerWin(new PlayerWinEventArgs(GameManager.Instance.gameTimer, _playerController.playerData, PlayerPath.VENT));
             }
         }
 

@@ -4,10 +4,9 @@ public static class LeaderboardData //used to manage and save out leaderboard ti
 {
     #region "Private Variables/Functions"
 
-    //private static Dictionary<PlayerPath>
+    private static Dictionary<PlayerPath, List<LeaderboardScoreData>> _scores;
 
 
-    private static List<LeaderboardScoreData> _scores;
     //tracks the scores data. also used for efficiency in the create leaderboard data function
 
     private static LeaderboardScoreData ConvertScoreAndNameToScoreData(float time, string name)
@@ -27,6 +26,19 @@ public static class LeaderboardData //used to manage and save out leaderboard ti
         return scoreData;
     }
     //Sorts a list of score data lowest time first.
+
+    private static List<LeaderboardScoreData> GetPathScores(PlayerPath playerPath)
+    {
+        if(_scores == null)
+        {
+            _scores = new Dictionary<PlayerPath, List<LeaderboardScoreData>>();
+        }
+
+
+
+    }
+
+
     #endregion
 
     #region "Public Functions"
@@ -97,9 +109,7 @@ public static class LeaderboardData //used to manage and save out leaderboard ti
             scoreDataList = UtilityFunctions.SortScoreDataByLowestScore(scoreDataList);
         }
 
-        _scores = scoreDataList;
-
-        return _scores;
+        return scoreDataList;
     }
     //creates a set of up to 10 leader board data, utilizes _scores for efficnency, and sorts using SortScoreDataList. sets it to _scores to save it, returns it as well. takes a list of floats and strings to create the score data
     /// <summary>
@@ -133,7 +143,7 @@ public static class LeaderboardData //used to manage and save out leaderboard ti
     /// <param name="time"> the time for the Score data</param>
     /// <param name="name"> the 3 letter name for the score data</param>
     /// <returns></returns>
-    public static List<LeaderboardScoreData> AppendLeaderboardData(float time, string name)
+    public static List<LeaderboardScoreData> AppendLeaderboardData(float time, string name, PlayerPath playerPath)
     {
         if(_scores == null)
         {
@@ -157,7 +167,7 @@ public static class LeaderboardData //used to manage and save out leaderboard ti
     /// </summary>
     /// <param name="scoreData"> the score data to append </param>
     /// <returns></returns>
-    public static List<LeaderboardScoreData> AppendLeaderboardData(LeaderboardScoreData scoreData)
+    public static List<LeaderboardScoreData> AppendLeaderboardData(LeaderboardScoreData scoreData, PlayerPath playerPath)
     {
         if (_scores == null)
         {
@@ -178,7 +188,7 @@ public static class LeaderboardData //used to manage and save out leaderboard ti
     /// Returns the saved leaderboard data from LeaderboardData. make sure to save to it first if there is a change using LeaderboardData.CreateLeaderboardData() or LeaderboardData.AppendLeaderboardData()
     /// </summary>
     /// <returns></returns>
-    public static List<LeaderboardScoreData> GetSavedScoreData()
+    public static List<LeaderboardScoreData> GetSavedScoreData(PlayerPath playerPath)
     {
         return _scores;
     }
@@ -189,7 +199,7 @@ public static class LeaderboardData //used to manage and save out leaderboard ti
     /// </summary>
     /// <param name="timeScore"> the score to check </param>
     /// <returns></returns>
-    public static bool CheckIfScorePlaces(float timeScore)
+    public static bool CheckIfScorePlaces(float timeScore, PlayerPath playerPath)
     {
         if(_scores == null)
         {

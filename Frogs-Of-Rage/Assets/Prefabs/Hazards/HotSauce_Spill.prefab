@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5701503990810980248}
   - component: {fileID: 8696473140190879805}
   - component: {fileID: 6869365433328030967}
+  - component: {fileID: 1458335129649101621}
   m_Layer: 0
   m_Name: HotSauce_Spill
   m_TagString: Untagged
@@ -81,3 +82,18 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1458335129649101621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4923594409216505122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7ec4b96121f04a7193c3a0590f8d1b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: 6.36
+  damage: 1
+  waitTime: 1

@@ -19,7 +19,6 @@ public class ContactDamageHazard : Hazard
         if (other.gameObject.CompareTag("Player"))
         {
             playerTouching = true;
-            InvokeDamage();
             StartCoroutine(DamagePlayer());
         }
     }
@@ -32,6 +31,7 @@ public class ContactDamageHazard : Hazard
 
     private IEnumerator DamagePlayer()
     {
+        InvokeDamage();
         gameManager.playerController.curHealth -= damagePerSecond;
         yield return new WaitForSeconds(1f);
         if(playerTouching)

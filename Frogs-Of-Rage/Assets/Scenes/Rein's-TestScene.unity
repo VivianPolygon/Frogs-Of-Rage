@@ -2862,6 +2862,7 @@ MonoBehaviour:
   spiderCountYouWin: {fileID: 0}
   creditsCanvas: {fileID: 0}
   optionsCanvas: {fileID: 0}
+  deathCanvas: {fileID: 0}
 --- !u!1 &793485798
 GameObject:
   m_ObjectHideFlags: 0
@@ -3350,6 +3351,8 @@ MonoBehaviour:
   moveDirection: {x: 0, y: 0, z: 0}
   onslope: 0
   canJump: 1
+  playerAnimator: {fileID: 0}
+  currentPath: 0
   state: 0
   walking: 0
   sprinting: 0
@@ -18342,19 +18345,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.2767356
+      value: 0.65016615
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.15730086
+      value: 0.36956456
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.8241482
+      value: 0.5771368
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.4684588
+      value: -0.32805356
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296575147496, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_RootOrder

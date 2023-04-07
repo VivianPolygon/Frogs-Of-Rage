@@ -160,6 +160,8 @@ public class WallRunning : MonoBehaviour
         exitingWall = true;
         exitWallTimer = exitWallTime;
 
+        playerController.playerAnimator.SetTrigger("WallJump");
+
         Vector3 wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal;
 
         Vector3 forceToApply = transform.up * wallJumpForce + wallNormal * wallJumpSideForce;

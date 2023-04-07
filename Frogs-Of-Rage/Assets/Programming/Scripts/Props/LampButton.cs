@@ -7,7 +7,7 @@ public class LampButton : MonoBehaviour
     public Animator animator;
     public Light lightSource;
 
-    private bool isPressed = false;
+    //private bool isPressed = false;
 
     public float emissionIntensity = 6.0f;
     public float pressedEmissionIntensity = -6.0f;
@@ -42,7 +42,7 @@ public class LampButton : MonoBehaviour
             if (lightSource.enabled)
             {
                 lightSource.enabled = false;
-                isPressed = false;
+                //isPressed = false;
 
                 // Restore the original color of the material
                 GetComponent<Renderer>().material.color = pressedColor;
@@ -53,7 +53,7 @@ public class LampButton : MonoBehaviour
             else
             {
                 lightSource.enabled = true;
-                isPressed = true;
+                //isPressed = true;
 
                 // Change the color of the material to pressed color
                 GetComponent<Renderer>().material.color = originalColor;

@@ -22,52 +22,43 @@ public class PickExit : MonoBehaviour
         {
             int randomIndex = Random.Range(0, exitPrefabs.Count);
 
-            if(exitPrefabs != null)
+            if (exitPrefabs != null)
             {
                 chosenExitPrefab = exitPrefabs[randomIndex];
 
-                if(chosenExitPrefab != null)
+                if (chosenExitPrefab != null)
                     chosenExitPrefab.SetActive(true);
                 else
                     return;
             }
 
-
-
             Debug.Log("Chosen exit prefab: " + chosenExitPrefab.name);
 
-            for (int i = 0; i < exitPrefabs.Count; i++)
+            // Disable all canvas elements at start
+            foreach (GameObject canvasElement in exitCanvasElements)
             {
-                GameObject exit = exitPrefabs[i];
-                GameObject canvasElement = exitCanvasElements[i];
-
-                if (exit == chosenExitPrefab)
-                {
-                   
-                    canvasElement.SetActive(true);
-                }
-                else
-                {
-                    exit.SetActive(false);
-                    canvasElement.SetActive(false);
-                }
-
-                Text exitText = canvasElement.GetComponent<Text>();
-
-                //if (exitText != null)
-                //{
-                //    Debug.Log("Is this working?");
-                //    exitText.text = exit.name;
-                //}
-                //else
-                //{
-                //    Debug.LogError("No Text component found on the canvas element for exit " + exit.name);
-                //}
+                canvasElement.SetActive(false);
             }
         }
         else
         {
             Debug.Log("No exit prefabs found in the scene!");
+        }
+    }
+
+    public void ShowExitCanvas()
+    {
+        // Enable only the canvas element that corresponds to the chosen exit prefab
+        for (int i = 0; i < exitCanvasElements.Count; i++)
+        {
+            if (exitPrefabs[i] == chosenExitPrefab)
+            {
+                exitCanvasElements[i].SetActive(true);
+            }
+            else
+            {
+                exitCanvasElements[i].SetActive(false);
+            }
         }
     }
 }

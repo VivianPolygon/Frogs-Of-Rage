@@ -24,6 +24,9 @@ public class Transporter : MonoBehaviour
             {
                 other.gameObject.transform.position = destination.position;
 
+                // Hide all exit canvas elements before showing the chosen one
+                pickExit.HideAllExitCanvas();
+
                 // Enable the chosen exit canvas element
                 pickExit.ShowExitCanvas();
             }

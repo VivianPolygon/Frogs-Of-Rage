@@ -39,10 +39,35 @@ public class PickExit : MonoBehaviour
             {
                 canvasElement.SetActive(false);
             }
+
+            // Find the index of the chosen exit prefab
+            int chosenExitIndex = exitPrefabs.IndexOf(chosenExitPrefab);
+
+            // Disable all other exit prefabs and canvas elements
+            for (int i = 0; i < exitPrefabs.Count; i++)
+            {
+                if (i != chosenExitIndex)
+                {
+                    exitPrefabs[i].SetActive(false);
+                    exitCanvasElements[i].SetActive(false);
+                }
+            }
+
+            // Enable the canvas element for the chosen exit
+            exitCanvasElements[chosenExitIndex].SetActive(true);
         }
         else
         {
             Debug.Log("No exit prefabs found in the scene!");
+        }
+    }
+
+    public void HideAllExitCanvas()
+    {
+        // Disable all canvas elements
+        foreach (GameObject canvasElement in exitCanvasElements)
+        {
+            canvasElement.SetActive(false);
         }
     }
 

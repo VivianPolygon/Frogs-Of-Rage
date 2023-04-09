@@ -3,12 +3,15 @@ using UnityEngine;
 public class Transporter : MonoBehaviour
 {
     public Transform destination;
+    public GameObject TutRoom;
 
     public PickExit pickExit;
 
     private void Start()
     {
-        pickExit = GameObject.FindGameObjectWithTag("GameManager").GetComponent<PickExit>();
+        //pickExit = GameObject.FindGameObjectWithTag("GameManager").GetComponent<PickExit>();
+        pickExit = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<PickExit>();
+
         if (destination == null)
         {
             Debug.LogWarning("Transporter: No destination assigned!");
@@ -38,6 +41,7 @@ public class Transporter : MonoBehaviour
 
             // Disable this game object after teleporting the player
             gameObject.SetActive(false);
+            TutRoom.SetActive(false);
         }
     }
 }

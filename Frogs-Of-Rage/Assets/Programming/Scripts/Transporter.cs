@@ -1,4 +1,8 @@
 using UnityEngine;
+using Unity.Collections;
+using static GameManager;
+using System.Collections.Generic;
+using System.Collections;
 
 public class Transporter : MonoBehaviour
 {
@@ -27,6 +31,13 @@ public class Transporter : MonoBehaviour
             {
                 other.gameObject.transform.position = destination.position;
 
+
+
+
+
+
+
+
                 // Hide all exit canvas elements before showing the chosen one
                 pickExit.HideAllExitCanvas();
 
@@ -43,5 +54,16 @@ public class Transporter : MonoBehaviour
             gameObject.SetActive(false);
             TutRoom.SetActive(false);
         }
+    }
+
+
+
+    private IEnumerator WaitForFadeScreen()
+    {
+        UIManager.Instance.ChangeState(CanvasState.Death);
+        UIManager.Instance.GetComponent<Animator>().SetTrigger("FadeIn");
+        yield return new WaitForSeconds(3.2f);
+        OnPlayerDeath?.Invoke(new PlayerDeathEventArgs(lastCheckpointPos));
+
     }
 }

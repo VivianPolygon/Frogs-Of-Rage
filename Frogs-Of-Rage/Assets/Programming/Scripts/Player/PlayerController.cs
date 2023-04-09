@@ -601,6 +601,7 @@ public class PlayerController : MonoBehaviour
 
     private void VacuumInstaKill()
     {
+        curHealth = 0f;
         Respawn(new PlayerDeathEventArgs(gameManager.lastCheckpointPos));
     }
     #endregion

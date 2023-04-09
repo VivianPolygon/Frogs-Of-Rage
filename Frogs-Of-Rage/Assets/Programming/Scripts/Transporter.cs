@@ -29,9 +29,9 @@ public class Transporter : MonoBehaviour
             // Check if the destination is assigned
             if (destination != null)
             {
-                other.gameObject.transform.position = destination.position;
+                //other.gameObject.transform.position = destination.position;
 
-
+                StartCoroutine(GameManager.Instance.WaitForFadeScreen(destination.position));
 
 
 
@@ -58,12 +58,5 @@ public class Transporter : MonoBehaviour
 
 
 
-    private IEnumerator WaitForFadeScreen()
-    {
-        UIManager.Instance.ChangeState(CanvasState.Death);
-        UIManager.Instance.GetComponent<Animator>().SetTrigger("FadeIn");
-        yield return new WaitForSeconds(3.2f);
-        OnPlayerDeath?.Invoke(new PlayerDeathEventArgs(lastCheckpointPos));
-
-    }
+    
 }

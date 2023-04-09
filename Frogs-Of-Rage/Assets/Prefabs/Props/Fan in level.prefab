@@ -237,6 +237,9 @@ GameObject:
   - component: {fileID: 3793205520216053663}
   - component: {fileID: 8310719933552943648}
   - component: {fileID: 3879075593446609666}
+  - component: {fileID: 214768693}
+  - component: {fileID: 214768697}
+  - component: {fileID: 214768694}
   m_Layer: 0
   m_Name: Fan_Blades
   m_TagString: Untagged
@@ -340,6 +343,48 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!65 &214768693
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2777448525052410311}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 958.7606, y: 531.5058, z: 182.2998}
+  m_Center: {x: -11.041306, y: 21.322847, z: 0.0004816212}
+--- !u!65 &214768697
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2777448525052410311}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 469.6793, y: 979.17615, z: 182.2998}
+  m_Center: {x: 0.15704216, y: -0.000043799235, z: 0.0005036932}
+--- !u!114 &214768694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2777448525052410311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4806f5400bf3a504a9d2634975a16219, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: 0
+  damage: 100
+  waitTime: 1
+  damagePerSecond: 100
 --- !u!1 &2789960171603750967
 GameObject:
   m_ObjectHideFlags: 0
@@ -541,7 +586,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4866849427761300004}
-  - component: {fileID: 3093822664706246167}
   m_Layer: 0
   m_Name: Fan in level
   m_TagString: Untagged
@@ -556,7 +600,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4475534510904688566}
-  m_LocalRotation: {x: -0, y: -0.5753669, z: -0, w: 0.8178954}
+  m_LocalRotation: {x: 0, y: -0.57536936, z: 0, w: 0.8178937}
   m_LocalPosition: {x: -90.95, y: -22.903025, z: 2.81}
   m_LocalScale: {x: 0.010886883, y: 0.010886883, z: 0.010886883}
   m_Children:
@@ -567,23 +611,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -70.251, z: 0}
---- !u!320 &3093822664706246167
-PlayableDirector:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4475534510904688566}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_PlayableAsset: {fileID: 11400000, guid: 039109fe718597b44902c97fe2320581, type: 2}
-  m_InitialState: 1
-  m_WrapMode: 2
-  m_DirectorUpdateMode: 1
-  m_InitialTime: 0
-  m_SceneBindings: []
-  m_ExposedReferences:
-    m_References: []
 --- !u!1 &6858504213372881950
 GameObject:
   m_ObjectHideFlags: 0

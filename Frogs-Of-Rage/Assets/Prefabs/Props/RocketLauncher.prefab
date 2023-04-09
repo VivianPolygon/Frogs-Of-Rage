@@ -203,6 +203,39 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: cebc0d7c73dd66b42ba71b31beb3c421, type: 3}
   m_PrefabInstance: {fileID: 1392453506067644208}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1734265426609761188 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -8411699214803250028, guid: cebc0d7c73dd66b42ba71b31beb3c421, type: 3}
+  m_PrefabInstance: {fileID: 1392453506067644208}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1985209661769695603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1734265426609761188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4108a70e2f235b47bdbddd6bc194fec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 0}
+  animationName: Pump
+--- !u!114 &4108063371156934549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1734265426609761188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2a3c2b1fc5bef41952c01d5a91e65d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 0}
+  colliderObject: {fileID: 0}
 --- !u!65 &3738970445424076978
 BoxCollider:
   m_ObjectHideFlags: 0

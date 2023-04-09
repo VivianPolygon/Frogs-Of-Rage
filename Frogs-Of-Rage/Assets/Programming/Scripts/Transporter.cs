@@ -1,14 +1,21 @@
 using UnityEngine;
+using Unity.Collections;
+using static GameManager;
+using System.Collections.Generic;
+using System.Collections;
 
 public class Transporter : MonoBehaviour
 {
     public Transform destination;
+    public GameObject TutRoom;
 
     public PickExit pickExit;
 
     private void Start()
     {
-        pickExit = GameObject.FindGameObjectWithTag("GameManager").GetComponent<PickExit>();
+        //pickExit = GameObject.FindGameObjectWithTag("GameManager").GetComponent<PickExit>();
+        pickExit = GameObject.FindGameObjectWithTag("GameManager")?.GetComponent<PickExit>();
+
         if (destination == null)
         {
             Debug.LogWarning("Transporter: No destination assigned!");
@@ -22,7 +29,14 @@ public class Transporter : MonoBehaviour
             // Check if the destination is assigned
             if (destination != null)
             {
-                other.gameObject.transform.position = destination.position;
+                //other.gameObject.transform.position = destination.position;
+
+                StartCoroutine(GameManager.Instance.WaitForFadeScreen(destination.position));
+
+
+
+
+
 
                 // Hide all exit canvas elements before showing the chosen one
                 pickExit.HideAllExitCanvas();
@@ -38,6 +52,11 @@ public class Transporter : MonoBehaviour
 
             // Disable this game object after teleporting the player
             gameObject.SetActive(false);
+            TutRoom.SetActive(false);
         }
     }
+
+
+
+    
 }

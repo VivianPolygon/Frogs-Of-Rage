@@ -60,7 +60,7 @@ public class InputManager : Singleton<InputManager>
 
     public bool GetJump()
     {
-        return (playerControls.Player.Jump.activeControl != null) ? true : false;
+        return playerControls.Player.Jump.triggered;
     }
 
     public bool GetGrapple()

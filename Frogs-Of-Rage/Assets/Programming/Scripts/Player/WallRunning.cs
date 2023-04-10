@@ -122,6 +122,8 @@ public class WallRunning : MonoBehaviour
         playerController.wallRunning = true;
 
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        playerController.playerAnimator.ResetTrigger("WallJump");
+
 
     }
     private void WallRunningMovement()

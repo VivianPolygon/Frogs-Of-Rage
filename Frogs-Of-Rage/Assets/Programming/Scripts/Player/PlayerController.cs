@@ -96,6 +96,12 @@ public class PlayerController : MonoBehaviour
 
     [Space(5)]
     public PlayerData playerData;
+    [Space(5)]
+
+    [SerializeField]
+    private float healthPoolIncrement = 2f;
+    [SerializeField]
+    private float healthPoolWaitTime = 1.5f;
     
     #endregion
 
@@ -146,6 +152,8 @@ public class PlayerController : MonoBehaviour
     public float curHealth;
     [HideInInspector]
     public float curStamina;
+
+    private Coroutine healthPool;
     #endregion
    
     #region OnEnable/OnDisable
@@ -418,6 +426,8 @@ public class PlayerController : MonoBehaviour
     private void ResetJump()
     {
         canJump = true;
+        playerAnimator.ResetTrigger("Jump");
+
     }
     private void CoyoteTime()
     {
@@ -587,6 +597,19 @@ public class PlayerController : MonoBehaviour
         curHealthMax = newHealthMax;
         curHealth = curHealth + (playerData.FlyCount * healthModifier);
     }
+
+    private IEnumerator HealthPool()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(healthPoolWaitTime / 2);
+            if ((curHealth + healthPoolIncrement) <= curHealthMax)
+                curHealth += healthPoolIncrement;
+            else
+                break;
+            yield return new WaitForSeconds(healthPoolWaitTime / 2);
+        }
+    }
     #endregion
 
     #region Respawn
@@ -613,6 +636,22 @@ public class PlayerController : MonoBehaviour
             //Invoke on player win event
             OnPlayerWin?.Invoke(new PlayerWinEventArgs(gameManager.gameTimer, playerData, currentPath));
             Debug.Log("You exited");
+        }
+        if(other.tag == "HealthPool")
+        {
+            if(healthPool == null)
+                healthPool = StartCoroutine(HealthPool());
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "HealthPool")
+        {
+            if (healthPool != null)
+            {
+                StopCoroutine(healthPool);
+                healthPool = null;
+            }
         }
     }
 

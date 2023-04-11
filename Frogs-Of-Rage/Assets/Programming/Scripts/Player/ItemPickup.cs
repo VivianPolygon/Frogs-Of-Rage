@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class ItemPickup : MonoBehaviour
 {
-    public float zOffset = 0.2f;
+    public float xOffset = 1.0f;
     public float yOffset = 1.0f;
+    public float zOffset = 0.2f;
 
     public Vector3 rotationOffset = Vector3.zero;
 
@@ -19,7 +20,10 @@ public class ItemPickup : MonoBehaviour
             Vector3 temp = transform.localPosition;
             temp.z += zOffset;
             temp.y += yOffset;
+            temp.x += xOffset;
             transform.localPosition = temp;
+
+            GetComponent<Collider>().enabled = false;
         }
     }
 }

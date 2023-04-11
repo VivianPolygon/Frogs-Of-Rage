@@ -140,6 +140,33 @@ public class UtilityFunctions
         return null;
     }
 
+    public static string FormatStringFirstLetterCapitalized(string inputString)
+    {
+        char[] characters = new char[inputString.Length];
+        string returnString = "";
+
+        for (int i = 0; i < characters.Length; i++)
+        {
+            characters[i] = inputString[i];
+
+            if(char.IsLetter(characters[i]))
+            {
+                if(i == 0)
+                {
+                    characters[i] = char.ToUpper(characters[i]);
+                }
+                else
+                {
+                    characters[i] = char.ToLower(characters[i]);
+                }
+            }
+            returnString += characters[i];
+        }
+
+        return returnString;
+    }
+
+
     public class SortFunctions : IComparer
     {
         public int Compare(object x, object y)
@@ -177,5 +204,26 @@ public class UtilityFunctions
         }
     }
 
+    //clones a new refrence type of a scores dictionary
+    public static void CloneScoresDictionary(Dictionary<PlayerPath, List<LeaderboardScoreData>> dictionary, out Dictionary<PlayerPath, List<LeaderboardScoreData>> copy)
+    {
+        copy = new Dictionary<PlayerPath, List<LeaderboardScoreData>>();
 
+        foreach(int value in Enum.GetValues(typeof(PlayerPath)))
+        {
+            List<LeaderboardScoreData> currentList;
+            List<LeaderboardScoreData> clonedList;
+            if(dictionary.TryGetValue((PlayerPath)value, out currentList))
+            {
+                clonedList = new List<LeaderboardScoreData>();
+                for (int i = 0; i < currentList.Count; i++)
+                {
+                    clonedList.Add(currentList[i]);
+                }
+
+                clonedList = SortScoreDataByLowestScore(clonedList);
+                copy.Add((PlayerPath)value, clonedList);
+            }
+        }
+    }
 }

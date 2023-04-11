@@ -12,8 +12,8 @@ public class Hazard : MonoBehaviour
     public static event Action OnDamage;
     public static void InvokeDamage() { OnDamage?.Invoke(); }
 
-
-    private bool canDamage = true;
+    [HideInInspector]
+    public bool canDamage = true;
     private GameManager gameManager;
 
     private void Start()

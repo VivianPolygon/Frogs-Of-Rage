@@ -107,7 +107,8 @@ public class PlayerController : MonoBehaviour
     private float healthPoolWaitTime = 1.5f;
     [Space(5)]
     [SerializeField] private int maxLives = 3;
-    private int curLives;
+    [HideInInspector]
+    public int curLives;
 
 
     #endregion
@@ -592,6 +593,8 @@ public class PlayerController : MonoBehaviour
     {
         //Debug.Log("Player lost health and is now at " + curHealth);
     }
+
+    
 
     //Changes speed for amount of spiders
     public void IncreaseMaxHealth()

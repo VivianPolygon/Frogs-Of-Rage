@@ -40,6 +40,9 @@ public class UIManager : Singleton<UIManager>
     public CollectableData collectedData;
     public GameObject checkpointIcon;
     public Text inGameTimer;
+    public GameObject UILife;
+
+
 
     [Header("Pause Canvas")]
     [Space(10)]
@@ -272,7 +275,13 @@ public class UIManager : Singleton<UIManager>
     }
     #endregion
 
+    public void HandleUILives()
+    {
+        UILife.GetComponentInChildren<Canvas>().gameObject.GetComponentInChildren<Text>().text = GameManager.Instance.playerController.curLives.ToString();
 
+        UILife.GetComponentInChildren<Animator>().SetTrigger("ShowLives");
+        
+    }
 
     private void DisplayCollectedItem(CollectableData collectableData)
     {

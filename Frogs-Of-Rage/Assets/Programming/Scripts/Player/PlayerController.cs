@@ -83,6 +83,8 @@ public class PlayerController : MonoBehaviour
     private float maxJumpHeight = 10f;
     #endregion
 
+    [Space(10)]
+    public bool secondaryObjectiveComplete = false;
 
     [Space(10)]
     [SerializeField]

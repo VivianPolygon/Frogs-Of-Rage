@@ -13,6 +13,7 @@ public class ContactDamageHazard : Hazard
     void Start()
     {
         gameManager = GameManager.Instance;
+        canDamage = false;
     }
 
     private void OnCollisionEnter(Collision other)

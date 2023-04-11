@@ -802,32 +802,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   curHealthMax: 100
   curStaminaMax: 100
-  walkSpeed: 15
-  sprintSpeed: 20
-  groundDrag: 10
-  airMultiplier: 0.5
-  jumpHeight: 7
-  gravityScale: 5
-  fallingGravityScale: 8
+  walkSpeed: 8
+  sprintSpeed: 11
+  groundDrag: 8
+  airMultiplier: 2.5
+  jumpHeight: 5
+  gravityScale: 3
+  fallingGravityScale: 4
   coyoteTime: 0.2
-  slopeDetectionDistance: 0.25
+  slopeDetectionDistance: 0.15
   minSlopeAngle: 20
   groundCheckDistance: 0.2
-  jumpCooldown: 0.5
+  jumpCooldown: 1
   speedModifier: 3
   maxSpeed: 40
   staminaModifier: 0.5
   maxStamina: 200
   healthModifier: 8
   clampedMaxHealth: 200
-  jumpModifier: 2
+  jumpModifier: 1
   maxJumpHeight: 10
+  secondaryObjectiveComplete: 0
   rotationSpeed: 4
   staminaGauge: {fileID: 0}
   healthGauge: {fileID: 0}
   playerData: {fileID: 11400000, guid: 9c416c4ee9bf4924596ef9d62f06f8ff, type: 2}
   healthPoolIncrement: 7
   healthPoolWaitTime: 0.75
+  maxLives: 3
+  curLives: 0
   rb: {fileID: 0}
   curSpeed: 0
   isMoving: 0

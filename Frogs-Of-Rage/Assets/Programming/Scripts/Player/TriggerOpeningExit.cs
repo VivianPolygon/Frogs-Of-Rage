@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class TriggerOpeningExit : MonoBehaviour
 {
-    public bool openingExit = false;
+    public float waitTimeBeforeAnimation = 3f;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player") && GameManager.Instance.playerController.secondaryObjectiveComplete)
-        {
-            GameObject.FindGameObjectWithTag("Exit").GetComponent<Collider>().enabled = true;
-            openingExit = true;
-            GetComponent<Animator>().SetTrigger("ObjectiveComplete");
-        }
+            StartCoroutine(TriggerObjectiveAnimation(other));
+    }
+
+    private IEnumerator TriggerObjectiveAnimation(Collider other)
+    {
+        yield return new WaitForSeconds(waitTimeBeforeAnimation);
+
+        GameObject.FindGameObjectWithTag("Exit").GetComponent<Collider>().enabled = true;
+        GetComponent<Animator>().SetTrigger("ObjectiveComplete");
+
+        yield return new WaitForSeconds(.3f);
     }
 }

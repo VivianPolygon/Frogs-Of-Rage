@@ -1,9 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+
 public static class LeaderboardData //used to manage and save out leaderboard time data
 {
     #region "Private Variables/Functions"
-    private static List<LeaderboardScoreData> _scores;
+
+    private static Dictionary<PlayerPath, List<LeaderboardScoreData>> _scores; 
+
+
     //tracks the scores data. also used for efficiency in the create leaderboard data function
 
     private static LeaderboardScoreData ConvertScoreAndNameToScoreData(float time, string name)
@@ -23,6 +28,23 @@ public static class LeaderboardData //used to manage and save out leaderboard ti
         return scoreData;
     }
     //Sorts a list of score data lowest time first.
+
+    private static List<LeaderboardScoreData> GetPathScores(PlayerPath playerPath)
+    {
+        if(_scores == null)
+        {
+            _scores = new Dictionary<PlayerPath, List<LeaderboardScoreData>>();
+        }
+        if(!_scores.TryGetValue(playerPath, out List<LeaderboardScoreData> scoreData))
+        {
+            scoreData = new List<LeaderboardScoreData>();
+            _scores.Add(playerPath, scoreData);
+        }
+
+        return scoreData;
+    }
+
+
     #endregion
 
     #region "Public Functions"
@@ -32,7 +54,7 @@ public static class LeaderboardData //used to manage and save out leaderboard ti
     /// <param name="times"> list of times </param>
     /// <param name="names"> list of names </param>
     /// <returns></returns>
-    public static List<LeaderboardScoreData> CreateLeaderboardData(List<float> times, List<string> names)
+    public static List<LeaderboardScoreData> CreateLeaderboardData(List<float> times, List<string> names, PlayerPath playerPath)
     {
         if(times == null)
         {
@@ -47,17 +69,23 @@ public static class LeaderboardData //used to manage and save out leaderboard ti
 
         times = UtilityFunctions.ClampListLength(times, 10);
 
+        if (!_scores.TryGetValue(playerPath, out List<LeaderboardScoreData> scoreData))
+        {
+            scoreData = new List<LeaderboardScoreData>();
+            _scores.Add(playerPath, scoreData);
+        }
+
 
         List<LeaderboardScoreData> scoreDataList = new List<LeaderboardScoreData>();
 
-        if (_scores != null)
+        if (scoreData != null)
         {
             for (int i = 0; i < times.Count; i++)
             {
                 LeaderboardScoreData currentData;
-                if (_scores.Count > i)
+                if (scoreData.Count > i)
                 {
-                    currentData = _scores[i];
+                    currentData = scoreData[i];
                 }
                 else
                 {
@@ -93,9 +121,7 @@ public static class LeaderboardData //used to manage and save out leaderboard ti
             scoreDataList = UtilityFunctions.SortScoreDataByLowestScore(scoreDataList);
         }
 
-        _scores = scoreDataList;
-
-        return _scores;
+        return scoreDataList;
     }
     //creates a set of up to 10 leader board data, utilizes _scores for efficnency, and sorts using SortScoreDataList. sets it to _scores to save it, returns it as well. takes a list of floats and strings to create the score data
     /// <summary>
@@ -122,30 +148,35 @@ public static class LeaderboardData //used to manage and save out leaderboard ti
     }
     //does the same opperation of the float string counterpart, but without the conversions. basicaly just sorts and clamps whats inputed.
 
-
     /// <summary>
     /// Appends a single specified scoredata to the list. sorts and clamps after adding the data. saves the sorted list on LeaderboardData and returns it.
     /// </summary>
     /// <param name="time"> the time for the Score data</param>
     /// <param name="name"> the 3 letter name for the score data</param>
     /// <returns></returns>
-    public static List<LeaderboardScoreData> AppendLeaderboardData(float time, string name)
+    public static List<LeaderboardScoreData> AppendLeaderboardData(float time, string name, PlayerPath playerPath)
     {
         if(_scores == null)
         {
-            _scores = new List<LeaderboardScoreData>();
+            _scores = new Dictionary<PlayerPath, List<LeaderboardScoreData>>();
         }
 
         LeaderboardScoreData newData;
         newData.time = time;
         newData.name = name;
 
-        _scores.Add(newData);
+        if(!_scores.TryGetValue(playerPath, out List<LeaderboardScoreData> scoreData))
+        {
+            scoreData = new List<LeaderboardScoreData>();
+            _scores.Add(playerPath, scoreData);
+        }
 
-        _scores = UtilityFunctions.SortScoreDataByLowestScore(_scores);
-        _scores = UtilityFunctions.ClampListLength(_scores, 10);
+        scoreData.Add(newData);
 
-        return _scores;
+        scoreData = UtilityFunctions.SortScoreDataByLowestScore(scoreData);
+        scoreData = UtilityFunctions.ClampListLength(scoreData, 10);
+
+        return scoreData;
     }
     //appends a single leaderboard data to the current scores. sorts and clams the list. sets it and returns it. takes a float and a string and creates a score data
     /// <summary>
@@ -153,19 +184,25 @@ public static class LeaderboardData //used to manage and save out leaderboard ti
     /// </summary>
     /// <param name="scoreData"> the score data to append </param>
     /// <returns></returns>
-    public static List<LeaderboardScoreData> AppendLeaderboardData(LeaderboardScoreData scoreData)
+    public static List<LeaderboardScoreData> AppendLeaderboardData(LeaderboardScoreData newScoreData, PlayerPath playerPath)
     {
         if (_scores == null)
         {
-            _scores = new List<LeaderboardScoreData>();
+            _scores = new Dictionary<PlayerPath, List<LeaderboardScoreData>>();
         }
 
-        _scores.Add(scoreData);
+        if (!_scores.TryGetValue(playerPath, out List<LeaderboardScoreData> scoreData))
+        {
+            scoreData = new List<LeaderboardScoreData>();
+            _scores.Add(playerPath, scoreData);
+        }
 
-        _scores = UtilityFunctions.SortScoreDataByLowestScore(_scores);
-        _scores = UtilityFunctions.ClampListLength(_scores, 10);
+        scoreData.Add(newScoreData);
 
-        return _scores;
+        scoreData = UtilityFunctions.SortScoreDataByLowestScore(scoreData);
+        scoreData = UtilityFunctions.ClampListLength(scoreData, 10);
+
+        return scoreData;
     }
     //appends a single leaderboard data to the current scores. sorts and clams the list. sets it and returns it. takes a score data
 
@@ -174,9 +211,19 @@ public static class LeaderboardData //used to manage and save out leaderboard ti
     /// Returns the saved leaderboard data from LeaderboardData. make sure to save to it first if there is a change using LeaderboardData.CreateLeaderboardData() or LeaderboardData.AppendLeaderboardData()
     /// </summary>
     /// <returns></returns>
-    public static List<LeaderboardScoreData> GetSavedScoreData()
+    public static List<LeaderboardScoreData> GetSavedScoreData(PlayerPath playerPath)
     {
-        return _scores;
+        if (_scores == null)
+        {
+            _scores = new Dictionary<PlayerPath, List<LeaderboardScoreData>>();
+        }
+        if (!_scores.TryGetValue(playerPath, out List<LeaderboardScoreData> scoreData))
+        {
+            scoreData = new List<LeaderboardScoreData>();
+            _scores.Add(playerPath, scoreData);
+        }
+
+        return scoreData;
     }
 
 
@@ -185,16 +232,21 @@ public static class LeaderboardData //used to manage and save out leaderboard ti
     /// </summary>
     /// <param name="timeScore"> the score to check </param>
     /// <returns></returns>
-    public static bool CheckIfScorePlaces(float timeScore)
+    public static bool CheckIfScorePlaces(float timeScore, PlayerPath playerPath)
     {
-        if(_scores == null)
+        if (_scores == null)
         {
-            _scores = new List<LeaderboardScoreData>();
+            _scores = new Dictionary<PlayerPath, List<LeaderboardScoreData>>();
+        }
+        if (!_scores.TryGetValue(playerPath, out List<LeaderboardScoreData> scoreData))
+        {
+            scoreData = new List<LeaderboardScoreData>();
+            _scores.Add(playerPath, scoreData);
         }
 
-        if(_scores.Count >= 10)//there are 10 or more times on the board, so its competitive
+        if (_scores.Count >= 10)//there are 10 or more times on the board, so its competitive
         {
-            if (_scores[_scores.Count - 1].time < timeScore) //time is slower than 10th place (or the last place avaiable) dosen't place
+            if (scoreData[_scores.Count - 1].time < timeScore) //time is slower than 10th place (or the last place avaiable) dosen't place
             {
                 return false;
             }
@@ -211,95 +263,23 @@ public static class LeaderboardData //used to manage and save out leaderboard ti
     #endregion
 
     #region "Saving/Loading Functions"
-    /// <summary>
-    /// Converts a list of score data to a savable format
-    /// </summary>
-    /// <param name="scoreDataList"> the list of leaderboard data </param>
-    /// <returns></returns>
-    public static LeaderboardScoreSaveData ConvertLeaderboardDataToSaveData(List<LeaderboardScoreData> scoreDataList)
+    public static void SaveLeaderboard()
     {
-        LeaderboardScoreSaveData saveData;
-
-        if (scoreDataList == null || scoreDataList.Count == 0)
-        {
-            saveData.leaderboardTimes = null;
-            saveData.leaderboardNames = null;
-            return saveData;
-        }
-        else
-        {
-            scoreDataList = UtilityFunctions.SortScoreDataByLowestScore(scoreDataList);
-        }
-
-        scoreDataList = UtilityFunctions.ClampListLength(scoreDataList, 10);
-
-        saveData.leaderboardTimes = new float[scoreDataList.Count];
-        saveData.leaderboardNames = new string[scoreDataList.Count];
-
-        for (int i = 0; i < scoreDataList.Count; i++)
-        {
-            saveData.leaderboardTimes[i] = scoreDataList[i].time;
-            saveData.leaderboardNames[i] = scoreDataList[i].name;
-        }
-
-        return saveData;
+        SaveManager.SaveData();
     }
-    //converts leaderboard data list to a savable format
-    /// <summary>
-    /// Converts the savable format of leaderboard data back to the more easibly readable format LeaderboardScoreSaveData
-    /// </summary>
-    /// <param name="leaderboardSaveData"> save data to load </param>
-    /// <returns></returns>
-    public static List<LeaderboardScoreData> ConvertSaveDataToLeaderboardData(LeaderboardScoreSaveData leaderboardSaveData)
+
+    public static void LoadLeaderboard()
     {
-        if (leaderboardSaveData.leaderboardTimes != null)
-        {
-            if(leaderboardSaveData.leaderboardNames == null)
-            {
-                Debug.LogWarning("Could not load leaderboard names in ConvertSaveDataToLeaderboardData on LeaderboardData");
-                leaderboardSaveData.leaderboardNames = new string[0];
-            }
-
-            List<LeaderboardScoreData> loadedScoreData = new List<LeaderboardScoreData>();
-
-            for (int i = 0; i < leaderboardSaveData.leaderboardTimes.Length; i++)
-            {
-                LeaderboardScoreData currentScoreData;
-
-                currentScoreData.time = leaderboardSaveData.leaderboardTimes[i];
-
-                if(leaderboardSaveData.leaderboardNames.Length > i)
-                {
-                    currentScoreData.name = leaderboardSaveData.leaderboardNames[i];
-                }
-                else
-                {
-                    currentScoreData.name = "AAA";
-                }
-
-                loadedScoreData.Add(currentScoreData);
-            }
-
-            if(loadedScoreData.Count > 1)
-            {
-                loadedScoreData = UtilityFunctions.SortScoreDataByLowestScore(loadedScoreData);
-            }
-
-            return loadedScoreData;
-        }
-
-        Debug.LogWarning("could not convert score save data to score data, save data inputted has null times");
-        return null;
+        SaveManager.LoadSavedData();
+        UtilityFunctions.CloneScoresDictionary(SaveManager.ScoreData, out _scores);
     }
-    //converts the savable format of the leaderboard data list to a leeaderboard data list. sorts it too using SortScoreDataList
+
     #endregion
+
+
 }
 #region "Data Structs"
-public struct LeaderboardScoreSaveData
-{
-    public float[] leaderboardTimes;
-    public string[] leaderboardNames;
-}
+[System.Serializable]
 public struct LeaderboardScoreData
 {
     public float time;

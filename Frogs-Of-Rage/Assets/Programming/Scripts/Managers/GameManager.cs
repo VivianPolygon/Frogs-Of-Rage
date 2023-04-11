@@ -9,6 +9,7 @@ using Cinemachine;
 
 public class GameManager : Singleton<GameManager>
 {
+    
     [HideInInspector]
     public PlayerController playerController;
     [HideInInspector]
@@ -47,6 +48,8 @@ public class GameManager : Singleton<GameManager>
         gameTimer = GetComponent<GameTimer>();
         playerCam = GameObject.Find("3RD Person Cam").GetComponent<CinemachineVirtualCamera>();
         startPos = playerController.transform.position;
+
+       
     }
 
    

@@ -23,6 +23,8 @@ public class ItemPickup : MonoBehaviour
             temp.x += xOffset;
             transform.localPosition = temp;
 
+            GameManager.Instance.playerController.secondaryObjectiveComplete = true;
+
             GetComponent<Collider>().enabled = false;
         }
     }

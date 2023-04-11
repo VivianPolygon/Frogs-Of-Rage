@@ -96,13 +96,18 @@ public class PlayerController : MonoBehaviour
 
     [Space(5)]
     public PlayerData playerData;
-    [Space(5)]
 
+    [Space(10)]
+    [Header("Health & Lives")]
     [SerializeField]
     private float healthPoolIncrement = 2f;
     [SerializeField]
     private float healthPoolWaitTime = 1.5f;
-    
+    [Space(5)]
+    [SerializeField] private int maxLives = 3;
+    private int curLives;
+
+
     #endregion
 
     #region Private Variables
@@ -194,6 +199,7 @@ public class PlayerController : MonoBehaviour
         curSpeed = walkSpeed;
         curStamina = curStaminaMax;
         curHealth = curHealthMax;
+        curLives = maxLives;
 
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
@@ -610,12 +616,29 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(healthPoolWaitTime / 2);
         }
     }
+
+    private bool HandleLives(PlayerGameOverEventArgs e)
+    {
+        curLives--;
+        Debug.Log("Reduced lives");
+        if (curLives > 0)
+            return true;
+
+        else 
+            return false;
+    }
     #endregion
 
     #region Respawn
 
     private void Respawn(PlayerDeathEventArgs e)
     {
+        if (!HandleLives(new PlayerGameOverEventArgs(playerData)))
+        {
+            Debug.Log("Ran game over");
+            OnGameOver?.Invoke(new PlayerGameOverEventArgs(playerData));
+        }
+
         transform.position = e.respawnPos;
         curHealth = curHealthMax;
         curStamina = curStaminaMax;
@@ -671,6 +694,8 @@ public class PlayerController : MonoBehaviour
     public delegate void PlayerCanvasEvent(PlayerCanvasEventArgs e);
     public static PlayerCanvasEvent OnPlayerCanvas;
 
+    public delegate void PlayerGameOverEvent(PlayerGameOverEventArgs e);
+    public static PlayerGameOverEvent OnGameOver;
     #endregion
 
 
@@ -743,4 +768,17 @@ public class PlayerPauseEventArgs
 
 #endregion
 
+#region Player Game Over Event
+[System.Serializable]
+public class PlayerGameOverEvent : UnityEvent<PlayerGameOverEventArgs> { }
+public class PlayerGameOverEventArgs
+{
+    public PlayerData playerData;
+
+    public PlayerGameOverEventArgs(PlayerData playerData)
+    {
+        this.playerData = playerData;
+    }
+}
+#endregion
 

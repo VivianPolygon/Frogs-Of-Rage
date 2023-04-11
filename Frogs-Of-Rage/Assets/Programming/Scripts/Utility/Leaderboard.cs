@@ -2,16 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class Leaderboard : MonoBehaviour
 {
     [SerializeField] [Tooltip("Text elements in order of first to tenth for displaying scores")] private Text[] _scoreTexts;
     [SerializeField] [Tooltip("Text elements in order of first to tenth for displaying names")]  private Text[] _nameTexts;
 
+    [SerializeField] [Tooltip("Text Field that coresponds to the name of the escape route")] private Text _pathText;
+
     [SerializeField] [Tooltip("Input field UI element thats used for players to input their 3 letter name when getting a high score")] private InputField _nameInputField;
     [SerializeField] [Tooltip("The Button the Player Presses to enter their name")] private Button _nameInputConfirmationButton;
 
     private List<char> _characters = new List<char>(); //list used for storage when adjusting inputs to fit the format
+    public static PlayerPath CurrentLeaderboardPath
+    {
+        get;
+        set;
+    }
 
     //Order of operations notes:
 
@@ -26,14 +34,24 @@ public class Leaderboard : MonoBehaviour
     //If it does not: 
     //2. DisplauSavedScoreData X
 
-    private void OnEnable() //used to start the leaderboard flow, may be changed to be started elsewhere later
+    private void Awake()
     {
-        NewLeaderboardTime(ReceiveCurrentGameTimerTime());
+        PlayerController.OnPlayerWin += UpdatePath;
+    }
+    private void OnDestroy()
+    {
+        PlayerController.OnPlayerWin -= UpdatePath;
     }
 
-    private void NewLeaderboardTime(float newTime)
+    private void OnEnable() //used to start the leaderboard flow, may be changed to be started elsewhere later
     {
-        if (CheckScorePlaces(newTime))
+        DisplaySavedScoreData(CurrentLeaderboardPath);
+        NewLeaderboardTime(ReceiveCurrentGameTimerTime(), CurrentLeaderboardPath);
+    }
+
+    private void NewLeaderboardTime(float newTime, PlayerPath playerpath)
+    {
+        if (CheckScorePlaces(newTime, playerpath))
         {
             //time places, let player input name
             ToggleNameInputs(true);
@@ -43,26 +61,30 @@ public class Leaderboard : MonoBehaviour
             //time dosent place, simply display leaderboard
 
             ToggleNameInputs(false);
-            DisplaySavedScoreData();
+            DisplaySavedScoreData(playerpath);
         }
     } // ran in OnEnable. begins the flow of the leaderboard. checks if the time is valid, and begins the appropiate stems
 
-    private bool CheckScorePlaces(float time)
+    private bool CheckScorePlaces(float time, PlayerPath playerPath)
     {
-        if (LeaderboardData.CheckIfScorePlaces(time))
+        if (LeaderboardData.CheckIfScorePlaces(time, playerPath))
             return true;
         else
             return false;          
     } //checks if a score places on the leaderboard
 
-    private void SendScoreToLeaderboardData(float newTime, string newName)
+    private void SendScoreToLeaderboardData(float newTime, string newName, PlayerPath playerpath)
     {
-        LeaderboardData.AppendLeaderboardData(newTime, newName);
+        LeaderboardData.AppendLeaderboardData(newTime, newName, playerpath);
     }  //sends a score and to leaderboard data saved on LeaderboardData
 
-    private void DisplaySavedScoreData()
+    private void DisplaySavedScoreData(PlayerPath playerPath)
     {
-        List<LeaderboardScoreData> retreivedScoreData = LeaderboardData.GetSavedScoreData();
+        LeaderboardData.LoadLeaderboard();
+
+        List<LeaderboardScoreData> retreivedScoreData = LeaderboardData.GetSavedScoreData(playerPath);
+
+        UpdateLeaderboardPathText(playerPath);
 
         if(_scoreTexts == null || _nameTexts == null)
         {
@@ -85,10 +107,19 @@ public class Leaderboard : MonoBehaviour
         //after those checks, if the function is still being ran, the text element arrays cannot be shorter than the retreived data array from the checks. they will be longer than or equal in length to retreivedScoreData
 
         //updates the score texts
-        for (int i = 0; i < retreivedScoreData.Count; i++)
+        for (int i = 0; i < _scoreTexts.Length; i++)
         {
-            _scoreTexts[i].text = UtilityFunctions.ConvertSecondsToStandardTimeFormatString(retreivedScoreData[i].time);
-            _nameTexts[i].text = retreivedScoreData[i].name;
+            if(retreivedScoreData.Count > i)
+            {
+                _scoreTexts[i].text = UtilityFunctions.ConvertSecondsToStandardTimeFormatString(retreivedScoreData[i].time);
+                _nameTexts[i].text = retreivedScoreData[i].name;
+            }
+            else
+            {
+                _scoreTexts[i].text = "";
+                _nameTexts[i].text = "";
+            }
+
         }
     } //displays the scores saved on LeaderboardData on the leaderboard
 
@@ -125,7 +156,13 @@ public class Leaderboard : MonoBehaviour
         }
     } // Toggles the name input field and button based off an inputted state
 
-
+    private void UpdateLeaderboardPathText(PlayerPath path)
+    {
+        if (_pathText)
+        {
+            _pathText.text = UtilityFunctions.FormatStringFirstLetterCapitalized(Enum.GetName(typeof(PlayerPath), path) + " Path");
+        }
+    }
 
     public void AdjustInputs()
     {
@@ -165,14 +202,20 @@ public class Leaderboard : MonoBehaviour
         {
             if(_nameInputField.text.Length > 0)
             {
-                SendScoreToLeaderboardData(ReceiveCurrentGameTimerTime(), _nameInputField.text);
+                SendScoreToLeaderboardData(ReceiveCurrentGameTimerTime(), _nameInputField.text, CurrentLeaderboardPath);
                 ToggleNameInputs(false);
-                DisplaySavedScoreData();
+
+                LeaderboardData.SaveLeaderboard();
+                DisplaySavedScoreData(CurrentLeaderboardPath);
             }
         }
         else
         {
             Debug.LogWarning("No NameInputField assigend to Leaderboard on object: <b>" + gameObject.name + "</b> Please attatch one in the inspector");
         }
-    } //reveives the name inputed into the name input box. disables the input fields, sends it to LeaderboardData and Displays times if a valid name is inputted
+    } //reveives the name inputed into the name input box. disables the input fields, sends it to LeaderboardData and Displays times if a valid name is inputte
+    public static void UpdatePath(PlayerWinEventArgs winArgs)
+    {
+        CurrentLeaderboardPath = winArgs.playerPath;
+    }
 }

@@ -622,6 +622,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void IncreaseLives()
+    {
+        curLives++;
+        UIManager.Instance.HandleUILives();
+    }
+
     private bool HandleLives(PlayerGameOverEventArgs e)
     {
         curLives--;
@@ -669,6 +675,11 @@ public class PlayerController : MonoBehaviour
         {
             if(healthPool == null)
                 healthPool = StartCoroutine(HealthPool());
+        }
+        if (other.tag == "ExtraLife")
+        {
+            IncreaseLives();
+            Destroy(other.gameObject);
         }
     }
     private void OnTriggerExit(Collider other)

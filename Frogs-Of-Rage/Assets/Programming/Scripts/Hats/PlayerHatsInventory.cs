@@ -23,7 +23,7 @@ public class PlayerHatsInventory
     /// </summary>
     /// <param name="ID"> Hat ID </param>
     /// <returns></returns>
-    private HatData TryGetHat(int ID)
+    public HatData TryGetHat(int ID)
     {
         if(_databaseCopy == null)
         {
@@ -47,7 +47,7 @@ public class PlayerHatsInventory
     /// </summary>
     /// <param name="hatName"></param>
     /// <returns></returns>
-    private HatData TryGetHat(string hatName)
+    public HatData TryGetHat(string hatName)
     {
         if (_databaseCopy == null)
         {

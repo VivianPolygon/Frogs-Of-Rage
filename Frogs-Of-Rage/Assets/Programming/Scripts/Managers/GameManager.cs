@@ -6,6 +6,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using UnityEngine.Events;
 using Cinemachine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -96,6 +97,15 @@ public class GameManager : Singleton<GameManager>
         }
         else
             Debug.Log("Need to be in play mode to use this button");
+    }
+
+    public void ResetGame()
+    {
+        SceneManager.LoadScene(0);
+        //ResetCollectables();
+        //OnPlayerDeath?.Invoke(new PlayerDeathEventArgs(startPos));
+        playerController.curLives = playerController.maxLives;
+        playerController.curHealth = playerController.curHealthMax;
     }
 }
 #region Player Death Event

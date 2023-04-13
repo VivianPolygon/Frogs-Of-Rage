@@ -106,7 +106,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float healthPoolWaitTime = 1.5f;
     [Space(5)]
-    [SerializeField] private int maxLives = 3;
+    public int maxLives = 3;
     [HideInInspector]
     public int curLives;
 

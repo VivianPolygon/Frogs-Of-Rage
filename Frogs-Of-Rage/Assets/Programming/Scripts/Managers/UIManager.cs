@@ -15,7 +15,8 @@ public enum CanvasState
     Win,
     Credits,
     Options,
-    Death
+    Death,
+    GameOver
 }
 
 public class UIManager : Singleton<UIManager>
@@ -83,6 +84,10 @@ public class UIManager : Singleton<UIManager>
     [Space(10)]
     public Canvas deathCanvas;
 
+    [Header("Game Over Canvas")]
+    [Space(10)]
+    public Canvas gameOverCanvas;
+
 
     private List<Canvas> canvasList = new List<Canvas>();
     private List<bool> boolCanvasList = new List<bool>();
@@ -96,6 +101,7 @@ public class UIManager : Singleton<UIManager>
     private bool isCreditsState = false;
     private bool isOptionsState = false;
     private bool isDeathState = false;
+    private bool isGameOverState = false;
 
 
     private void OnEnable()
@@ -110,8 +116,7 @@ public class UIManager : Singleton<UIManager>
         Collectable.OnCollectable -= CollectCollectable;
         PlayerController.OnPlayerWin -= HandleWinScreen;
         PlayerController.OnPlayerPause -= DisplayPauseScreen;
-        PlayerController.OnPlayerCanvas -= DisplayTimer;
-        
+        PlayerController.OnPlayerCanvas -= DisplayTimer;        
     }
 
     private void Start()
@@ -127,6 +132,7 @@ public class UIManager : Singleton<UIManager>
         canvasList.Add(creditsCanvas);
         canvasList.Add(optionsCanvas);
         canvasList.Add(deathCanvas);
+        canvasList.Add(gameOverCanvas);
 
         boolCanvasList.Add(isStartState);
         boolCanvasList.Add(isPlayerState);
@@ -135,6 +141,7 @@ public class UIManager : Singleton<UIManager>
         boolCanvasList.Add(isCreditsState);
         boolCanvasList.Add(isOptionsState);
         boolCanvasList.Add(isDeathState);
+        boolCanvasList.Add(isGameOverState);
     }
 
     private void Update()
@@ -203,6 +210,13 @@ public class UIManager : Singleton<UIManager>
                 inputManager.playerControls.Disable();
 
                 break;
+            case CanvasState.GameOver:
+                TurnOnCanvasIndex(7);
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                inputManager.playerControls.Disable();
+
+                break;
             default:
                 break;
         }
@@ -236,7 +250,6 @@ public class UIManager : Singleton<UIManager>
                 boolCanvasList[turnOn] = true;
         }
     }
-
 
     #region Buttons
     public void StartGame()
@@ -280,7 +293,12 @@ public class UIManager : Singleton<UIManager>
         UILife.GetComponentInChildren<Canvas>().gameObject.GetComponentInChildren<Text>().text = GameManager.Instance.playerController.curLives.ToString();
 
         UILife.GetComponentInChildren<Animator>().SetTrigger("ShowLives");
-        
+
+        if (GameManager.Instance.playerController.curLives == 0)
+            state = CanvasState.GameOver;
+        else
+            state = CanvasState.Player;
+
     }
 
     private void DisplayCollectedItem(CollectableData collectableData)

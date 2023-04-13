@@ -10,6 +10,7 @@ public class Ventogic : MonoBehaviour
         {
             transform.GetChild(0).gameObject.SetActive(true);
             transform.GetChild(1).gameObject.SetActive(false);
+            RenderSettings.fog = true;
         }
     }
 }

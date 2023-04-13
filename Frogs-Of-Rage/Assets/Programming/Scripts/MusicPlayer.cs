@@ -5,6 +5,7 @@ public class MusicPlayer : MonoBehaviour
 {
     public List<AudioClip> musicClips;
     private AudioSource audioSource;
+    private int currentClipIndex;
 
     void Start()
     {
@@ -16,14 +17,20 @@ public class MusicPlayer : MonoBehaviour
     {
         if (!audioSource.isPlaying)
         {
-            PlayRandomClip();
+            currentClipIndex++;
+            if (currentClipIndex >= musicClips.Count)
+            {
+                currentClipIndex = 0;
+            }
+            audioSource.clip = musicClips[currentClipIndex];
+            audioSource.Play();
         }
     }
 
     void PlayRandomClip()
     {
-        int randomIndex = Random.Range(0, musicClips.Count);
-        audioSource.clip = musicClips[randomIndex];
+        currentClipIndex = Random.Range(0, musicClips.Count);
+        audioSource.clip = musicClips[currentClipIndex];
         audioSource.Play();
     }
 }

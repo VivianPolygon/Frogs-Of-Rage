@@ -249,7 +249,7 @@ public class UIManager : Singleton<UIManager>
     }
     public void Forum()
     {
-        Application.OpenURL("https://forms.gle/9UFB3gApZtU8cb9y9");
+        Application.OpenURL("https://docs.google.com/forms/d/e/1FAIpQLSdVrndT0r_g_4O77PF6T1I3WF9q52PxMi9R8X7_9kJoW4alag/viewform?usp=sf_link");
     }
     public void Continue()
     {

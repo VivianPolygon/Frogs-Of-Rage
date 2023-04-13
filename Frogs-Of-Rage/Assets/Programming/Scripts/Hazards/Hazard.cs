@@ -14,7 +14,7 @@ public class Hazard : MonoBehaviour
 
     [HideInInspector]
     public bool canDamage = true;
-    private GameManager gameManager;
+    protected GameManager gameManager;
 
     private void Start()
     {

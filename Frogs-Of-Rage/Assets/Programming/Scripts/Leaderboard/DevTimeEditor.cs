@@ -1,10 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
+
 using System;
 using System.IO;
 using System.Text;
 
+#if UNITY_EDITOR 
+using UnityEditor;
+#endif
 
 public class DevTimeEditor : EditorWindow
 {

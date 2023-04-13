@@ -7,12 +7,9 @@ using System.Text;
 
 #if UNITY_EDITOR 
 using UnityEditor;
-#endif
 
 public class DevTimeEditor : EditorWindow
 {
-#if UNITY_EDITOR 
-
     private static string filePath = "/Resources/DefaultScores.json";
 
     private static EditorWindow _editorInstance;
@@ -391,8 +388,10 @@ public class DevTimeEditor : EditorWindow
 
     #endregion
 
-#endif
+
 }
+
+#endif
 
 [System.Serializable]
 public class DefaultScoresJsonFormatted

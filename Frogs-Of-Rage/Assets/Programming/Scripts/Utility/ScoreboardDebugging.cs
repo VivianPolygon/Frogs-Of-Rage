@@ -51,7 +51,7 @@ public class ScoreboardDebugging : MonoBehaviour
         GUI.color = Color.red;
         if (GUILayout.Button("Erase Save Data"))
         {
-            SaveManager.EraseSaveData();
+            SaveManager.EraseLeaderboardSaveData();
         }
         GUILayout.EndHorizontal();
 

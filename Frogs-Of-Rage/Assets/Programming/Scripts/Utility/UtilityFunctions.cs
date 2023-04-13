@@ -166,6 +166,14 @@ public class UtilityFunctions
         return returnString;
     }
 
+    public static List<HatData> SortByHatID(List<HatData> input)
+    {
+        input.Sort(SortFunctions.SortByLowestHatID);
+        return input;
+    }
+
+
+
 
     public class SortFunctions : IComparer
     {
@@ -201,6 +209,20 @@ public class UtilityFunctions
             }
             return 0;
 
+        }
+
+        public static int SortByLowestHatID(HatData a, HatData b)
+        {
+            if (a.hatID > b.hatID)
+            {
+                return 1;
+            }
+
+            if (a.hatID < b.hatID)
+            {
+                return -1;
+            }
+            return 0;
         }
     }
 

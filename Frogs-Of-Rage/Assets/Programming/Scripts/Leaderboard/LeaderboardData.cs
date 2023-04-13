@@ -265,18 +265,16 @@ public static class LeaderboardData //used to manage and save out leaderboard ti
     #region "Saving/Loading Functions"
     public static void SaveLeaderboard()
     {
-        SaveManager.SaveData();
+        SaveManager.SaveLeaderboardData();
     }
 
     public static void LoadLeaderboard()
     {
-        SaveManager.LoadSavedData();
+        SaveManager.LoadLeaderboardSavedData();
         UtilityFunctions.CloneScoresDictionary(SaveManager.ScoreData, out _scores);
     }
 
     #endregion
-
-
 }
 #region "Data Structs"
 [System.Serializable]

@@ -20,6 +20,14 @@ public class HatsTester : MonoBehaviour
         {
             trackedManager.UnlockHat(_currentID);
         }
+        if (GUILayout.Button("Equipt Hat of ID"))
+        {
+            trackedManager.EquiptHat(_currentID);
+        }
+        if (GUILayout.Button("Clear Player Inventory"))
+        {
+            trackedManager.EmptyPlayerInventory();
+        }
 
 
         DisplayInventoryState();

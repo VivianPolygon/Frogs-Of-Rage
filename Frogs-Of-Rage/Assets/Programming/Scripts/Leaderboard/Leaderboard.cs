@@ -94,13 +94,11 @@ public class Leaderboard : MonoBehaviour
 
         if(_scoreTexts.Length < retreivedScoreData.Count)
         {
-            Debug.LogWarning("Score text array on LeaderBoard <b>" + gameObject.name + "</b> was to short to account for all of the leaderboard data, there is <b>" + retreivedScoreData.Count + "</b> trying to be displayed but only </b>" + _scoreTexts.Length + ("</b> available for display. <b>The list has been clamped to the current length of the available text elements</b>"));
             retreivedScoreData = UtilityFunctions.ClampListLength(retreivedScoreData, _scoreTexts.Length);
         } //saftey check for available score texts
 
         if(_nameTexts.Length < retreivedScoreData.Count)
         {
-            Debug.LogWarning("Name text array on LeaderBoard <b>" + gameObject.name + "</b> was to short to account for all of the leaderboard data, there is <b>" + retreivedScoreData.Count + "</b> trying to be displayed but only </b>" + _nameTexts.Length + ("</b> available for display. <b>The list has been clamped to the current length of the available text elements</b>"));
             retreivedScoreData = UtilityFunctions.ClampListLength(retreivedScoreData, _nameTexts.Length);
         } //saftey check for available name texts
 

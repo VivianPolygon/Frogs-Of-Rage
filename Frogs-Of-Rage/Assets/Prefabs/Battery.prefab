@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 4677792349795603168}
   - component: {fileID: 1806402449478716050}
   - component: {fileID: 866891403531253966}
-  - component: {fileID: 1122126767060119297}
   m_Layer: 0
   m_Name: Battery
   m_TagString: Battery
@@ -96,8 +95,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6dad4854a02214d49bc9d15c90af9354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  zOffset: 0.2
+  xOffset: 1
   yOffset: 1
+  zOffset: 0.2
   rotationOffset: {x: 0, y: 0, z: 0}
 --- !u!135 &866891403531253966
 SphereCollider:
@@ -111,17 +111,4 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 182.87
-  m_Center: {x: 0, y: 0.0000038146973, z: 0.0000038146973}
---- !u!65 &1122126767060119297
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6623149270192419637}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 52.086895, y: 154.85004, z: 78.87444}
   m_Center: {x: 0, y: 0.0000038146973, z: 0.0000038146973}

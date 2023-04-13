@@ -6,7 +6,7 @@ using System.IO;
 using System.Text;
 
 
-public class DefaultScores : EditorWindow
+public class DevTimeEditor : EditorWindow
 {
 #if UNITY_EDITOR 
 
@@ -22,13 +22,12 @@ public class DefaultScores : EditorWindow
     Color listColor1 = new Color(0.2f, 0.2f, 0.2f);
     Color listColor2 = new Color(0.35f, 0.35f, 0.35f);
 
-    [MenuItem("DefaultScoreboardEditor/EditDevTimes")]
+    [MenuItem("Frog Editors/Edit Dev Times", priority = 0)]
     public static void ShowDefaultScoreEditor() //creates editor window when tab is clicked
     {
-        _editorInstance = GetWindow<DefaultScores>("Edit Default Scoreboards");
+        _editorInstance = GetWindow<DevTimeEditor>("Edit Default Scoreboards");
         _editorInstance.minSize = new Vector2Int(500, 500);
         _editorInstance.maxSize = new Vector2Int(500, 500);
-
     }
 
     private void Awake()

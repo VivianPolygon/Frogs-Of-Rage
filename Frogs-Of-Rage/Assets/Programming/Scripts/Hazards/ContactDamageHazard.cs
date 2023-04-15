@@ -5,7 +5,6 @@ using UnityEngine;
 public class ContactDamageHazard : Hazard
 {
     public float damagePerSecond = 1f;
-    private GameManager gameManager;
     private bool playerTouching = false;
     private bool takingDamage = false;
 

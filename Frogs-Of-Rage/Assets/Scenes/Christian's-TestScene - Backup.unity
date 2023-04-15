@@ -973,6 +973,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5844038840247796642, guid: a53354e86d5792f4eab0bcea17ca01c9, type: 3}
   m_PrefabInstance: {fileID: 36842418}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &36842423 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8648235601608648111, guid: a53354e86d5792f4eab0bcea17ca01c9, type: 3}
+  m_PrefabInstance: {fileID: 36842418}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0dbc5a91a22f2e4bb035fcc46b3b433, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &38953296
 GameObject:
   m_ObjectHideFlags: 0
@@ -29091,19 +29102,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.8248656
+      value: 0.74989027
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.46886647
+      value: 0.42624936
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.27459
+      value: -0.43984944
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.15608126
+      value: 0.2500173
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296575147496, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_RootOrder
@@ -32372,9 +32383,61 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4325688361187536072, guid: 2c33d10604af22549a0aa6df9f754b50, type: 3}
+      propertyPath: uiManager
+      value: 
+      objectReference: {fileID: 36842423}
+    - target: {fileID: 4325688361187536072, guid: 2c33d10604af22549a0aa6df9f754b50, type: 3}
+      propertyPath: hatMenuMusic.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4325688361187536072, guid: 2c33d10604af22549a0aa6df9f754b50, type: 3}
+      propertyPath: winGameMusic.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4325688361187536072, guid: 2c33d10604af22549a0aa6df9f754b50, type: 3}
+      propertyPath: mainGameMusic.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4325688361187536072, guid: 2c33d10604af22549a0aa6df9f754b50, type: 3}
+      propertyPath: mainMenuMusic.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4325688361187536072, guid: 2c33d10604af22549a0aa6df9f754b50, type: 3}
+      propertyPath: hatMenuMusic.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 16c79b10b01cd4040a3645789242861a, type: 3}
+    - target: {fileID: 4325688361187536072, guid: 2c33d10604af22549a0aa6df9f754b50, type: 3}
+      propertyPath: winGameMusic.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: bf921a214f8f2f143ac88d6455459876, type: 3}
+    - target: {fileID: 4325688361187536072, guid: 2c33d10604af22549a0aa6df9f754b50, type: 3}
+      propertyPath: mainGameMusic.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 6fa7ee8c4644e63409593bb8e10f9897, type: 3}
+    - target: {fileID: 4325688361187536072, guid: 2c33d10604af22549a0aa6df9f754b50, type: 3}
+      propertyPath: mainGameMusic.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: 3813cb146a7c8e7438d3461e8e96727a, type: 3}
+    - target: {fileID: 4325688361187536072, guid: 2c33d10604af22549a0aa6df9f754b50, type: 3}
+      propertyPath: mainGameMusic.Array.data[2]
+      value: 
+      objectReference: {fileID: 8300000, guid: e428c7a74317ecd4da13768c2b89e342, type: 3}
+    - target: {fileID: 4325688361187536072, guid: 2c33d10604af22549a0aa6df9f754b50, type: 3}
+      propertyPath: mainGameMusic.Array.data[3]
+      value: 
+      objectReference: {fileID: 8300000, guid: ef3d729b18b529442aa50d7ad575df03, type: 3}
+    - target: {fileID: 4325688361187536072, guid: 2c33d10604af22549a0aa6df9f754b50, type: 3}
+      propertyPath: mainMenuMusic.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 3419df2e516be10409c0e274783c0944, type: 3}
     - target: {fileID: 4325688361187536073, guid: 2c33d10604af22549a0aa6df9f754b50, type: 3}
       propertyPath: m_Name
       value: Music
+      objectReference: {fileID: 0}
+    - target: {fileID: 4325688361187536078, guid: 2c33d10604af22549a0aa6df9f754b50, type: 3}
+      propertyPath: m_Volume
+      value: 0.323
       objectReference: {fileID: 0}
     - target: {fileID: 4325688361187536079, guid: 2c33d10604af22549a0aa6df9f754b50, type: 3}
       propertyPath: m_RootOrder

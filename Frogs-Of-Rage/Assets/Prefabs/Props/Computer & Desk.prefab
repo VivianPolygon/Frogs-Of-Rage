@@ -116,9 +116,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fde510f232b696546b8cbcf7d5aea1a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  KeyStrokes:
+  keyStrokes:
   - {fileID: 8300000, guid: 618f0ce841a894a42b06d727fb3c7acb, type: 3}
   - {fileID: 8300000, guid: b0ed304c4eeb5c24ca88cfebbde1d221, type: 3}
+  playerTag: Player
 --- !u!82 &8140626864638175014
 AudioSource:
   m_ObjectHideFlags: 0
@@ -128,9 +129,9 @@ AudioSource:
   m_GameObject: {fileID: 2502566682891689347}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -3921644026478166200, guid: 814bf29290695624b94f945964a9b014, type: 2}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -634,15 +635,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3189006c4fb45bd4d98b657c277de8ce, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3189006c4fb45bd4d98b657c277de8ce, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.5
+      value: -1.48
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3189006c4fb45bd4d98b657c277de8ce, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.16
+      value: 2.24
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3189006c4fb45bd4d98b657c277de8ce, type: 3}
       propertyPath: m_LocalRotation.w

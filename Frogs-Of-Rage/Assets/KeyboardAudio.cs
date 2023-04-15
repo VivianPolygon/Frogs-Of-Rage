@@ -6,58 +6,58 @@ public class KeyboardAudio : MonoBehaviour
 {
     public List<AudioClip> keyStrokes;
     private AudioSource audioSource;
+    public string playerTag = "Player";
     private bool isPlaying = false;
-    private PlayerState playerState;
-
-    public enum PlayerState
-    {
-        Idle,
-        Walking,
-        Sprinting
-    }
+    private GameObject player;
+    private Vector3 lastPlayerPosition;
+    private float movementThreshold = 0.1f;
 
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        player = GameObject.FindGameObjectWithTag(playerTag);
+        lastPlayerPosition = player.transform.position;
     }
 
     void Update()
     {
-        if (isPlaying && !audioSource.isPlaying)
+        if (PlayerIsMoving() && isPlaying)
         {
             PlayRandomKeyStroke();
         }
     }
 
-    public void SetPlayerState(PlayerState state)
+    void OnTriggerStay(Collider other)
     {
-        playerState = state;
-
-        if (playerState == PlayerState.Walking || playerState == PlayerState.Sprinting)
+        if (other.CompareTag(playerTag))
         {
             isPlaying = true;
-            if (!audioSource.isPlaying)
-            {
-                PlayRandomKeyStroke();
-            }
         }
-        else
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag(playerTag))
         {
             isPlaying = false;
         }
     }
 
-    private void PlayRandomKeyStroke()
+    private bool PlayerIsMoving()
     {
-        int randomIndex = Random.Range(0, keyStrokes.Count);
-        audioSource.clip = keyStrokes[randomIndex];
-        audioSource.Play();
+        Vector3 currentPlayerPosition = player.transform.position;
+        float distanceMoved = Vector3.Distance(lastPlayerPosition, currentPlayerPosition);
+
+        lastPlayerPosition = currentPlayerPosition;
+        return distanceMoved > movementThreshold;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void PlayRandomKeyStroke()
     {
-        if (other.CompareTag("Player"))
+        if (!audioSource.isPlaying)
         {
+            int randomIndex = Random.Range(0, keyStrokes.Count);
+            audioSource.clip = keyStrokes[randomIndex];
             audioSource.Play();
         }
     }

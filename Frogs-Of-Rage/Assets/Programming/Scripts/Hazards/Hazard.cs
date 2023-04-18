@@ -19,7 +19,6 @@ public class Hazard : MonoBehaviour
     private void Start()
     {
         gameManager = GameManager.Instance;
-
         //StartCoroutine(CheckDistance());
     }
 

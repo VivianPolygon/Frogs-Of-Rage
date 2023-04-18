@@ -111,6 +111,10 @@ public class PlayerController : MonoBehaviour
     public int curLives;
 
 
+
+    
+
+
     #endregion
 
     #region Private Variables
@@ -591,10 +595,10 @@ public class PlayerController : MonoBehaviour
     //This is set up for when we impliment playerfeedback when taking damage
     private void ReduceHealth()
     {
-        //Debug.Log("Player lost health and is now at " + curHealth);
+        
     }
 
-    
+
 
     //Changes speed for amount of spiders
     public void IncreaseMaxHealth()
@@ -638,6 +642,8 @@ public class PlayerController : MonoBehaviour
         else 
             return false;
     }
+
+    
     #endregion
 
     #region Respawn
@@ -649,7 +655,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Ran game over");
             OnGameOver?.Invoke(new PlayerGameOverEventArgs(playerData));
         }
-
+        GetComponent<RagdollManager>().ToggleRagdoll();
         transform.position = e.respawnPos;
         curHealth = curHealthMax;
         curStamina = curStaminaMax;
@@ -662,6 +668,8 @@ public class PlayerController : MonoBehaviour
         Respawn(new PlayerDeathEventArgs(gameManager.lastCheckpointPos));
     }
     #endregion
+
+    
 
     private void OnTriggerEnter(Collider other)
     {

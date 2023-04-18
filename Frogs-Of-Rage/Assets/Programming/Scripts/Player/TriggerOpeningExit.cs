@@ -5,6 +5,14 @@ using UnityEngine;
 public class TriggerOpeningExit : MonoBehaviour
 {
     public float waitTimeBeforeAnimation = 3f;
+    public GameObject sparksVFX;
+    public GameObject explosionVFX;
+
+    private void Start()
+    {
+        sparksVFX.SetActive(false);
+        explosionVFX.SetActive(false);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -14,6 +22,7 @@ public class TriggerOpeningExit : MonoBehaviour
 
     private IEnumerator TriggerObjectiveAnimation(Collider other)
     {
+        sparksVFX.SetActive(true);
         yield return new WaitForSeconds(waitTimeBeforeAnimation);
 
         GameObject.FindGameObjectWithTag("Exit").GetComponent<Collider>().enabled = true;

@@ -1,13 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+#if UNITY_EDITOR 
 using UnityEditor;
-using System;
-using System.IO;
+
 
 public class HatsEditor : EditorWindow
 {
-#if UNITY_EDITOR 
 
     private List<HatData> _loadedList;
 
@@ -475,9 +474,9 @@ public class HatsEditor : EditorWindow
         _windowOpen = false;
     }
 
-#endif
-}
 
+}
+#endif
 
 
 //single chunck of hat data, filled out when created using it's constructor.

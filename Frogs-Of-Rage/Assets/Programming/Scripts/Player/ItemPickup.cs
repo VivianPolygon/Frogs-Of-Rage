@@ -10,6 +10,13 @@ public class ItemPickup : MonoBehaviour
 
     public Vector3 rotationOffset = Vector3.zero;
 
+    private HatSpin hatSpinScript;
+
+    private void Start()
+    {
+        hatSpinScript = GetComponent<HatSpin>();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
@@ -25,7 +32,13 @@ public class ItemPickup : MonoBehaviour
 
             GameManager.Instance.playerController.secondaryObjectiveComplete = true;
 
-            GetComponent<Collider>().enabled = false;
+            // Disable HatSpin script if attached and not null
+            if (hatSpinScript != null)
+            {
+                hatSpinScript.enabled = false;
+            }
+
+            // GetComponent<Collider>().enabled = false;
         }
     }
 }

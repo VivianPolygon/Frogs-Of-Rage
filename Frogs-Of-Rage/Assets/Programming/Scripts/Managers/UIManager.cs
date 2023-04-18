@@ -110,6 +110,7 @@ public class UIManager : Singleton<UIManager>
         PlayerController.OnPlayerWin += HandleWinScreen;
         PlayerController.OnPlayerPause += DisplayPauseScreen;
         PlayerController.OnPlayerCanvas += DisplayTimer;
+        PlayerController.OnGameOver += DisplayGameOver;
     }
     private void OnDisable()
     {
@@ -117,6 +118,7 @@ public class UIManager : Singleton<UIManager>
         PlayerController.OnPlayerWin -= HandleWinScreen;
         PlayerController.OnPlayerPause -= DisplayPauseScreen;
         PlayerController.OnPlayerCanvas -= DisplayTimer;        
+        PlayerController.OnGameOver -= DisplayGameOver;
     }
 
     private void Start()
@@ -212,6 +214,7 @@ public class UIManager : Singleton<UIManager>
                 break;
             case CanvasState.GameOver:
                 TurnOnCanvasIndex(7);
+                Time.timeScale = 0f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
                 inputManager.playerControls.Disable();
@@ -267,6 +270,7 @@ public class UIManager : Singleton<UIManager>
     public void Continue()
     {
         state = CanvasState.Player;
+        ToggleLivesOnPause();
     }
     public void SaveGame()
     {
@@ -288,6 +292,10 @@ public class UIManager : Singleton<UIManager>
     }
     #endregion
 
+    private void DisplayGameOver(PlayerGameOverEventArgs e)
+    {
+        state = CanvasState.GameOver;
+    }
     public void HandleUILives()
     {
         UILife.GetComponentInChildren<Canvas>().gameObject.GetComponentInChildren<Text>().text = GameManager.Instance.playerController.curLives.ToString();
@@ -299,6 +307,12 @@ public class UIManager : Singleton<UIManager>
         else
             state = CanvasState.Player;
 
+    }
+
+    public void ToggleLivesOnPause()
+    {
+        UILife.GetComponentInChildren<Canvas>().gameObject.GetComponentInChildren<Text>().text = GameManager.Instance.playerController.curLives.ToString();
+        UILife.GetComponentInChildren<Animator>().SetTrigger("Paused");
     }
 
     private void DisplayCollectedItem(CollectableData collectableData)
@@ -357,6 +371,8 @@ public class UIManager : Singleton<UIManager>
         antCount.text = e.playerData.AntCount.ToString() + "/" + GameManager.Instance.antsInScene;
         grasshopperCount.text = e.playerData.GrasshopperCount.ToString() + "/" + GameManager.Instance.grasshoppersInScene;
         spiderCount.text = e.playerData.SpiderCount.ToString() + "/" + GameManager.Instance.spidersInScene;
+
+        ToggleLivesOnPause();
         //Images
         //flyImage.sprite = e.playerData.FlyImage;
         //antImage.sprite = e.playerData.AntImage;

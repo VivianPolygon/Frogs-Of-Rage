@@ -1,7 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+
+#if UNITY_EDITOR 
 
 //writes to the database
 public class HatDatabaseWriter
@@ -89,3 +90,5 @@ public class HatDatabaseWriter
         }
     }
 }
+
+#endif

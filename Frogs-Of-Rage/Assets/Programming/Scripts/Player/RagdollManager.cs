@@ -4,32 +4,47 @@ using UnityEngine;
 
 public class RagdollManager : MonoBehaviour
 {
-    public Rigidbody playerRB;
-    public CapsuleCollider playerCollider;
+    private Rigidbody playerRB;
+    private CapsuleCollider playerCollider;
+    private Animator playerAnimator;
 
-    public List<Component> ragdoll = new List<Component>();
+    public List<Collider> colliders = new List<Collider>();
+    public List<Rigidbody> rigidbodies = new List<Rigidbody>();
+
+    public bool isRagdoll = false;
 
 
 
-    private void Start()
+    private void OnEnable()
     {
-        
+        playerRB = GetComponent<Rigidbody>();
+        playerCollider = GetComponent<CapsuleCollider>();
+        playerAnimator = GetComponentInChildren<Animator>();
+        SetCollidersActive(isRagdoll);
+        SetRigidbodyIsKinematic(isRagdoll);
     }
 
-    public void SetCollidersActive(bool enabled)
+    public void ToggleRagdoll()
     {
-        foreach (Collider collider in ragdoll)
+        isRagdoll = !isRagdoll;
+        playerAnimator.enabled = !isRagdoll;
+        SetRigidbodyIsKinematic(isRagdoll);
+        SetCollidersActive(isRagdoll);
+    }
+
+    private void SetCollidersActive(bool enabled)
+    {
+        foreach (Collider collider in colliders)
         {
             collider.enabled = enabled;
-        }
+        }        
     }
 
-    public void SetRigidbodyIsKinematic(bool kinematic)
+    private void SetRigidbodyIsKinematic(bool kinematic)
     {
-        foreach (Rigidbody rigidbody in ragdoll)
+        foreach (Rigidbody rigidbody in rigidbodies)
         {
-            rigidbody.isKinematic = kinematic;
+            rigidbody.isKinematic = !kinematic;
         }
-
     }
 }

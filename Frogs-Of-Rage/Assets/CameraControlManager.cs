@@ -7,7 +7,7 @@ public class CameraControlManager : MonoBehaviour
 
     private void Update()
     {
-        if (uiManager.state == CanvasState.Player)
+        if (uiManager.state == CanvasState.Player || uiManager.state == CanvasState.Death)
         {
             EnableCameraControl(true);
         }

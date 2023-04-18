@@ -27,7 +27,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1431813879007421599}
-  m_LocalRotation: {x: -0, y: -0.70710677, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 109.73}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -79,7 +79,9 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  animator: {fileID: 0}
+  animator:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!82 &1431813879007421569
 AudioSource:
   m_ObjectHideFlags: 0

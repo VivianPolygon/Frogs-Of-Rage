@@ -6,7 +6,7 @@ public class ElectricityHazard : MonoBehaviour
     public List<AudioClip> hazardSounds;
     public SphereCollider otherObjectCollider;
     public List<Light> lights;
-    public Animator animator;
+    public List<Animator> animator;
 
     private AudioSource audioSource;
     private bool isHazardActive;
@@ -73,7 +73,7 @@ public class ElectricityHazard : MonoBehaviour
             light.enabled = active;
         }
 
-        if (animator != null)
+        foreach (Animator animator in animator)
         {
             animator.enabled = active;
         }

@@ -31,6 +31,7 @@ public class ItemPickup : MonoBehaviour
             transform.localPosition = temp;
 
             GameManager.Instance.playerController.secondaryObjectiveComplete = true;
+            transform.Find("Icon").gameObject.SetActive(false);
 
             // Disable HatSpin script if attached and not null
             if (hatSpinScript != null)

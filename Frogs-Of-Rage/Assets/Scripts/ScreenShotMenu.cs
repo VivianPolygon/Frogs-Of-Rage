@@ -14,7 +14,7 @@ public class ScreenShotMenu : MonoBehaviour
 
 
 
-    [MenuItem("Screenshot/Take Screenshot/Resolution x 1", false, 1)]
+    [MenuItem("Screenshot/Take Screenshot/Resolution x 1 %q", false, 1)]
     public static void Grabx1()
     {
         string filePath = System.IO.Directory.GetCurrentDirectory() + "/Screenshots/";

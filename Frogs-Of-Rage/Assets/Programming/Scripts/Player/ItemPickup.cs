@@ -21,7 +21,7 @@ public class ItemPickup : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            transform.parent = other.gameObject.transform.GetChild(1).GetChild(4).GetChild(0).Find("SpineIK_target");
+            transform.parent = other.gameObject.transform.GetChild(0).GetChild(4).GetChild(0).Find("SpineIK_target");
             transform.localRotation = Quaternion.Euler(Vector3.zero + rotationOffset);
             transform.localPosition = Vector3.zero;
             Vector3 temp = transform.localPosition;

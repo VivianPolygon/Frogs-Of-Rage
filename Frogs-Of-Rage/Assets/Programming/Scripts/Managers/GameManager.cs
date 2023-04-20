@@ -66,19 +66,22 @@ public class GameManager : Singleton<GameManager>
             return;
         else if (playerController.curHealth <= 0)
         {
+            playerController.GetComponentInChildren<PlayerSoundEffects>().PlayDeathAudio();
             playerController.GetComponent<RagdollManager>().ToggleRagdoll();
             playerController.curHealth = playerController.curHealthMax;
-            StartCoroutine(WaitForFadeScreen(lastCheckpointPos));
+            StartCoroutine(WaitForFadeScreen(lastCheckpointPos, true));
         }
     }
 
-    public IEnumerator WaitForFadeScreen(Vector3 spawnPos)
+    public IEnumerator WaitForFadeScreen(Vector3 spawnPos, bool isDead)
     {
         UIManager.Instance.ChangeState(CanvasState.Death);
         UIManager.Instance.GetComponent<Animator>().SetTrigger("FadeIn");
         yield return new WaitForSeconds(3.2f);
-        OnPlayerDeath?.Invoke(new PlayerDeathEventArgs(spawnPos));
-
+        if (isDead)
+        {
+            OnPlayerDeath?.Invoke(new PlayerDeathEventArgs(spawnPos));
+        }
     }
 
 

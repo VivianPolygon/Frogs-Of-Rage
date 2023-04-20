@@ -595,6 +595,9 @@ public class PlayerController : MonoBehaviour
     //This is set up for when we impliment playerfeedback when taking damage
     private void ReduceHealth()
     {
+        Debug.Log(curHealth);
+        if(curHealth > 11)
+            gameObject.GetComponentInChildren<PlayerSoundEffects>().PlayDamageAudio();
         
     }
 
@@ -657,6 +660,7 @@ public class PlayerController : MonoBehaviour
         }
         GetComponent<RagdollManager>().ToggleRagdoll();
         transform.position = e.respawnPos;
+
         curHealth = curHealthMax;
         curStamina = curStaminaMax;
         //UIManager.Instance.deathCanvas.gameObject.GetComponent<Animator>().SetTrigger("FadeIn");

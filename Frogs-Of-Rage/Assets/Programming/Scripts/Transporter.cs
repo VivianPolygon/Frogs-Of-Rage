@@ -31,7 +31,7 @@ public class Transporter : MonoBehaviour
             {
                 //other.gameObject.transform.position = destination.position;
 
-                StartCoroutine(GameManager.Instance.WaitForFadeScreen(destination.position));
+                StartCoroutine(GameManager.Instance.WaitForFadeScreen(destination.position, false));
 
 
 

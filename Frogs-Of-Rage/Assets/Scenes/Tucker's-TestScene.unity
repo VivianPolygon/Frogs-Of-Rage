@@ -275,27 +275,6 @@ Camera:
   m_CorrespondingSourceObject: {fileID: 1219093804237166707, guid: a53354e86d5792f4eab0bcea17ca01c9, type: 3}
   m_PrefabInstance: {fileID: 8648235602165303532}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &399751132 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5822955107395392168, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
-  m_PrefabInstance: {fileID: 724309763}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &399751137
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 399751132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49775d33bf7b04a71bcdee4df4dd9843, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerSoundEffects:
-  - {fileID: 8300000, guid: cf34cd1da2689c144b6347a5fe475080, type: 3}
-  - {fileID: 8300000, guid: 78711fcbff668bb42bf3da61f158bced, type: 3}
-  - {fileID: 8300000, guid: 393de65856f74784eb2f68d09c6f4662, type: 3}
 --- !u!1001 &500901716
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -474,14 +453,6 @@ PrefabInstance:
       propertyPath: staminaGauge
       value: 
       objectReference: {fileID: 877047032}
-    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
-      propertyPath: playerSoundEffects.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
-      propertyPath: playerSoundEffects.Array.data[0]
-      value: 
-      objectReference: {fileID: 8300000, guid: cf34cd1da2689c144b6347a5fe475080, type: 3}
     - target: {fileID: 7587290521112275068, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
       propertyPath: m_Name
       value: Player

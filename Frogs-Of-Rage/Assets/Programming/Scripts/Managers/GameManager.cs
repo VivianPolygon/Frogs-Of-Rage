@@ -67,6 +67,7 @@ public class GameManager : Singleton<GameManager>
         else if (playerController.curHealth <= 0)
         {
             playerController.GetComponentInChildren<PlayerSoundEffects>().PlayDeathAudio();
+            playerController.GetComponent<RagdollManager>().ToggleRagdoll();
             playerController.curHealth = playerController.curHealthMax;
             StartCoroutine(WaitForFadeScreen(lastCheckpointPos, true));
         }

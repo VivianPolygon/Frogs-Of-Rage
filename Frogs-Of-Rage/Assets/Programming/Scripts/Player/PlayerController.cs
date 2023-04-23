@@ -669,7 +669,7 @@ public class PlayerController : MonoBehaviour
         //UIManager.Instance.deathCanvas.gameObject.GetComponent<Animator>().SetTrigger("FadeIn");
     }
 
-    private void VacuumInstaKill()
+    public void VacuumInstaKill()
     {
         curHealth = 0f;
         Debug.Log("Set players health to " + curHealth);

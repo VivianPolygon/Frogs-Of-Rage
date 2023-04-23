@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 6869365433328030967}
   - component: {fileID: 3780755697897263707}
   - component: {fileID: 5404365756379070992}
+  - component: {fileID: 361618719616180958}
+  - component: {fileID: 2555941290320569738}
   m_Layer: 0
   m_Name: HotSauce_Spill
   m_TagString: Untagged
@@ -114,3 +116,30 @@ MonoBehaviour:
   waitTime: 1
   canDamage: 1
   damagePerSecond: 10
+--- !u!114 &361618719616180958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4923594409216505122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad2c016b26964aa4bb4ef9c8fef270c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firePrefab: {fileID: 7024773379777620893, guid: 36d560b7dc91a6349b745c1d307d79f5, type: 3}
+  fireDuration: 5
+--- !u!65 &2555941290320569738
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4923594409216505122}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 629.80194, y: 40.447083, z: 996.8125}
+  m_Center: {x: 0, y: 2.5991485, z: 0}

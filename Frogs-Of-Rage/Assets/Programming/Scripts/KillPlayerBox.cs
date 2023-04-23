@@ -14,6 +14,6 @@ public class KillPlayerBox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        gameManager.playerController.curHealth -= 1000;
+        gameManager.playerController.VacuumInstaKill();
     }
 }

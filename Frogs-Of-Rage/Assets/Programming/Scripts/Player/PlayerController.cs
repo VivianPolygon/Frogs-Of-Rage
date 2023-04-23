@@ -653,12 +653,15 @@ public class PlayerController : MonoBehaviour
 
     private void Respawn(PlayerDeathEventArgs e)
     {
-        if (!HandleLives(new PlayerGameOverEventArgs(playerData)))
+        if (e.loseLife)
         {
-            Debug.Log("Ran game over");
-            OnGameOver?.Invoke(new PlayerGameOverEventArgs(playerData));
+            if (!HandleLives(new PlayerGameOverEventArgs(playerData)))
+            {
+                Debug.Log("Ran game over");
+                OnGameOver?.Invoke(new PlayerGameOverEventArgs(playerData));
+            }
+            GetComponent<RagdollManager>().ToggleRagdoll();
         }
-        GetComponent<RagdollManager>().ToggleRagdoll();
         transform.position = e.respawnPos;
 
         curHealth = curHealthMax;
@@ -666,10 +669,11 @@ public class PlayerController : MonoBehaviour
         //UIManager.Instance.deathCanvas.gameObject.GetComponent<Animator>().SetTrigger("FadeIn");
     }
 
-    private void VacuumInstaKill()
+    public void VacuumInstaKill()
     {
         curHealth = 0f;
-        Respawn(new PlayerDeathEventArgs(gameManager.lastCheckpointPos));
+        Debug.Log("Set players health to " + curHealth);
+        //Respawn(new PlayerDeathEventArgs(gameManager.lastCheckpointPos));
     }
     #endregion
 

@@ -11,10 +11,12 @@ public class ItemPickup : MonoBehaviour
     public Vector3 rotationOffset = Vector3.zero;
 
     private HatSpin hatSpinScript;
+    private GameObject missionItem;
 
     private void Start()
     {
         hatSpinScript = GetComponent<HatSpin>();
+        missionItem = transform.Find("MissionItem")?.gameObject;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -37,6 +39,12 @@ public class ItemPickup : MonoBehaviour
             if (hatSpinScript != null)
             {
                 hatSpinScript.enabled = false;
+            }
+
+            // Disable MissionItem GameObject if it exists and is not null
+            if (missionItem != null)
+            {
+                missionItem.SetActive(false);
             }
 
             // GetComponent<Collider>().enabled = false;

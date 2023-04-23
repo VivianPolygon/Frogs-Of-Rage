@@ -67,21 +67,27 @@ public class GameManager : Singleton<GameManager>
         else if (playerController.curHealth <= 0)
         {
             playerController.GetComponentInChildren<PlayerSoundEffects>().PlayDeathAudio();
-            playerController.GetComponent<RagdollManager>().ToggleRagdoll();
             playerController.curHealth = playerController.curHealthMax;
             StartCoroutine(WaitForFadeScreen(lastCheckpointPos, true));
         }
     }
 
+    /// <summary>
+    /// Changes UI state to "Death" and runs the Frog Face UI animation. 
+    /// Then invokes the OnPlayerDeath event which moves the player to "spawnPos" and if "isDead" is true, 
+    /// removes a players life and turns on the ragdoll
+    /// </summary>
+    /// <param name="spawnPos"></param>
+    /// <param name="isDead"></param>
+    /// <returns></returns>
     public IEnumerator WaitForFadeScreen(Vector3 spawnPos, bool isDead)
     {
         UIManager.Instance.ChangeState(CanvasState.Death);
         UIManager.Instance.GetComponent<Animator>().SetTrigger("FadeIn");
         yield return new WaitForSeconds(3.2f);
-        if (isDead)
-        {
-            OnPlayerDeath?.Invoke(new PlayerDeathEventArgs(spawnPos));
-        }
+
+        OnPlayerDeath?.Invoke(new PlayerDeathEventArgs(spawnPos, isDead));
+        
     }
 
 
@@ -118,11 +124,12 @@ public class PlayerDeathEvent : UnityEvent<PlayerDeathEventArgs> { }
 public class PlayerDeathEventArgs
 {
     public Vector3 respawnPos;
+    public bool loseLife;
 
-
-    public PlayerDeathEventArgs(Vector3 respawnPos)
+    public PlayerDeathEventArgs(Vector3 respawnPos, bool loseLife)
     {
         this.respawnPos = respawnPos;
+        this.loseLife = loseLife;   
     }
 }
 #endregion

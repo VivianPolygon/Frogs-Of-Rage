@@ -5,6 +5,9 @@ public class BookDrop : MonoBehaviour
     // The animator component to play the animation
     public Animator animator;
 
+    // The MissionItem game object to be disabled
+    public GameObject missionItem;
+
     // Whether the animation has already been played
     private bool hasPlayedAnimation = false;
 
@@ -53,6 +56,9 @@ public class BookDrop : MonoBehaviour
 
                 // Set the hasPlayedAnimation flag to true
                 hasPlayedAnimation = true;
+
+                // Disable the MissionItem game object
+                missionItem.SetActive(false);
             }
         }
     }

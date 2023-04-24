@@ -59,9 +59,10 @@ public class ScoreboardDebugging : MonoBehaviour
         GUI.color = Color.blue;
         if (GUILayout.Button("Dev Scores Test"))
         {
-            Dictionary<PlayerPath, List<LeaderboardScoreData>> testDict;
+            Debug.Log("Button dosent work anymore, sorry");
+            //Dictionary<PlayerPath, List<LeaderboardScoreData>> testDict;
 
-            UtilityFunctions.CloneScoresDictionary(SaveManager.GetDefaultScoresFromJson(), out testDict);
+            //UtilityFunctions.CloneScoresDictionary(SaveManager.GetDefaultScoresFromJson(), out testDict);
 
 
         }

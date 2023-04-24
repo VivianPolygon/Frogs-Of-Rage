@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(HatDatabase))]
+//[CustomEditor(typeof(HatDatabase))] // custom hat editor abandoned
 public class DatabaseEditorViewer : Editor
 {
 

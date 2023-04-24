@@ -11,28 +11,55 @@ public class PlayerHatManager : MonoBehaviour
     private Vector3 _rotationOffset;
     private Vector3 _positionOffset;
 
-    public PlayerHatsInventory _inventory = new PlayerHatsInventory();
+    public PlayerHatsInventory Inventory
+    {
+        get;
+        private set;
+    }
 
+
+    [SerializeField] private HatDatabase _hatDatabase;
+    public List<HatData> HatDatabase
+    {
+        get
+        {
+            if(_hatDatabase != null)
+            {
+                return _hatDatabase.GetDatabaseCopy();
+            }
+            return null;
+        }
+    }
+
+    public int CurrentHatID
+    {
+        get;
+        private set;
+    }
 
     private void Awake()
     {
-        _inventory.LoadHatInventory();
+        Inventory = new PlayerHatsInventory(_hatDatabase);
+
+        Inventory.LoadHatInventory();
 
         _positionOffset = new Vector3(0.00017f, -0.00038f, -0.00028f);
         _rotationOffset = new Vector3(18.357f, -160.113f, -41.072f);
     }
 
+
+
     public void UnlockHat(int hatID)
     {
-        _inventory.UnlockHat(hatID);
-        _inventory.SaveHatInventory();
+        Inventory.UnlockHat(hatID);
+        Inventory.SaveHatInventory();
     }
 
     public void EmptyPlayerInventory()
     {
-        _inventory._playerHats = new Dictionary<int, bool>();
-        _inventory.SaveHatInventory();
-        _inventory.LoadHatInventory();
+        Inventory._playerHats = new Dictionary<int, bool>();
+        Inventory.SaveHatInventory();
+        Inventory.LoadHatInventory();
     }
 
     public void EquiptHat(int hatID)
@@ -44,15 +71,18 @@ public class PlayerHatManager : MonoBehaviour
             {
                 _hatObject.SetActive(false);
             }
+
+            CurrentHatID = hatID;
+            return;
         }
 
-        if(_inventory._playerHats.TryGetValue(hatID, out bool hasHat))
+        if(Inventory._playerHats.TryGetValue(hatID, out bool hasHat))
         {
             if(hasHat)
             {
                 if (headJoint)
                 {
-                    HatData data = _inventory.TryGetHat(hatID);
+                    HatData data = Inventory.TryGetHat(hatID);
                     if (data != null)
                     {
                         if (!_hatObject)
@@ -76,6 +106,9 @@ public class PlayerHatManager : MonoBehaviour
                         _hatObject.GetComponent<MeshFilter>().mesh = data.hatMesh;
                         _hatObject.GetComponent<MeshRenderer>().material = data.hatMaterial;
                         _hatObject.name += ": " + data.hatName;
+
+                        CurrentHatID = hatID;
+                        return;
                     }
                 }
                 else

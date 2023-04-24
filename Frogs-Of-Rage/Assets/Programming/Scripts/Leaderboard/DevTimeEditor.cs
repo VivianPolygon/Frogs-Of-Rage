@@ -10,7 +10,7 @@ using UnityEditor;
 
 public class DevTimeEditor : EditorWindow
 {
-    private static string filePath = "/Resources/DefaultScores.json";
+    private static string filePath = "/Databases/DefaultScores.json";
 
     private static EditorWindow _editorInstance;
     private Dictionary<PlayerPath, List<LeaderboardScoreData>> _defaultScores;

@@ -62,11 +62,14 @@ public class HatsEditor : EditorWindow
 
     string _vallidationMessage = "";
 
+    private HatDatabaseRetreiver databaseRetreiver;
+    private HatDatabaseWriter databaseWriter;
+
     //listcolors, for ease of differentiation
     Color listColor1 = new Color(0.2f, 0.2f, 0.2f);
     Color listColor2 = new Color(0.35f, 0.35f, 0.35f);
 
-    [MenuItem("Frog Editors/Edit Hat List", priority = 0)]
+    // [MenuItem("Frog Editors/Edit Hat List", priority = 0)] Editor Abandoned
     public static void ShowDefaultScoreEditor() //creates editor window when tab is clicked
     {
         _editorInstance = GetWindow<HatsEditor>("Edit Hat List");
@@ -79,6 +82,10 @@ public class HatsEditor : EditorWindow
         _windowOpen = true;
         InitilizeCurrentDisplay();
         LoadEditorFromDatabase();
+
+        //sets up events for and then loads the database
+        InitilizeDatabaseLoading();
+        databaseRetreiver.LoadDatabase();
     }
 
     private void OnGUI()
@@ -87,6 +94,15 @@ public class HatsEditor : EditorWindow
         DisplayCurrent();
     }
 
+    private void InitilizeDatabaseLoading()
+    {
+        databaseRetreiver = new HatDatabaseRetreiver();
+        databaseRetreiver.OnDatabaseLoad.AddListener(SetLoadedDatabase);
+    }
+    private void SetLoadedDatabase(HatDatabase loadedDatabase)
+    {
+        _loadedList = loadedDatabase.GetDatabaseCopy();
+    }
 
     private void DisplayCurrent()
     {
@@ -413,21 +429,31 @@ public class HatsEditor : EditorWindow
     //also overwrites 
     private void AddCurrentToDatabase()
     {
-        HatDatabaseWriter writer = new HatDatabaseWriter();
-        writer.AddToDataBase(CurrentToHatData());
+        if(databaseWriter == null)
+        {
+            databaseWriter = new HatDatabaseWriter();
+        }
+        databaseWriter.AddToDataBase(CurrentToHatData());
     }
 
     private void LoadEditorFromDatabase()
     {
-        HatDatabaseRetreiver retreiver = new HatDatabaseRetreiver();
-        _loadedList = retreiver.RetreiveDatabaseCopy();
+        if(databaseRetreiver == null)
+        {
+            InitilizeDatabaseLoading();
+        }
+        databaseRetreiver.LoadDatabase();
+        System.Threading.Thread.Sleep(1000);
     }
 
     //works on ID
     private void EraseHatData()
     {
-        HatDatabaseWriter writer = new HatDatabaseWriter();
-        writer.EraseHat(_currentID);
+        if (databaseWriter == null)
+        {
+            databaseWriter = new HatDatabaseWriter();
+        }
+        databaseWriter.EraseHat(_currentID);
     }
     
     #endregion

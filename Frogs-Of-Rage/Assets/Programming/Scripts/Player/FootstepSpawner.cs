@@ -9,28 +9,34 @@ public enum FootLocation
 }
 public class FootstepSpawner : MonoBehaviour
 {
-    [SerializeField] private float destroyTime = 10f;
-    [SerializeField] private GameObject rFootPrefab, lFootPrefab;
+    [SerializeField] private float destroyTime = 5f;
+    [SerializeField] private GameObject footPrefab;
     [SerializeField] private Transform rightFoot, leftFoot;
-
+    private FootLocation footLocation = FootLocation.Right;
     public void SpawnFootIcon(FootLocation location)
     {
         switch (location)
         {
             case FootLocation.Left:
-                SpawnFoot(leftFoot, lFootPrefab);
+                SpawnFoot(leftFoot, location);
                 break;
             case FootLocation.Right:
-                SpawnFoot(rightFoot, rFootPrefab);
+                SpawnFoot(rightFoot, location);
                 break;
         }
     }
 
-    private void SpawnFoot(Transform foot, GameObject prefab)
+    private void SpawnFoot(Transform foot, FootLocation location)
     {
-        if(Physics.Raycast(foot.position, -foot.transform.up ,out RaycastHit hit, 1, ~LayerMask.GetMask("Player")))
+        bool isRightFoot = location == FootLocation.Right;
+
+        if (Physics.Raycast(foot.position, isRightFoot ? foot.transform.up : -foot.transform.up, out RaycastHit hit, 1, ~LayerMask.GetMask("Player")))
         {
-            GameObject gO = Instantiate(prefab, hit.point + Vector3.up / 100, Quaternion.FromToRotation(foot.transform.up, hit.normal));
+            GameObject gO = Instantiate(footPrefab, hit.point + foot.transform.up / 70, Quaternion.FromToRotation(isRightFoot ? foot.transform.up : -foot.transform.up, hit.normal));
+        Debug.Log("Location is " + location + " and is this the right foot? " + isRightFoot, gO);
+            Quaternion rotation = Quaternion.LookRotation(isRightFoot ? -foot.transform.right : foot.transform.right, isRightFoot ? -foot.transform.up : foot.transform.up);
+            //rotation.x = hit.normal.x;
+            gO.transform.rotation = rotation;
             Destroy(gO, destroyTime);
         }
     }

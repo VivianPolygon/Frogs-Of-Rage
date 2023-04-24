@@ -83,6 +83,7 @@ public class GameManager : Singleton<GameManager>
     /// <returns></returns>
     public IEnumerator WaitForFadeScreen(Vector3 spawnPos, bool isDead)
     {
+        playerController.isDead = isDead;
         UIManager.Instance.ChangeState(CanvasState.Death);
         UIManager.Instance.GetComponent<Animator>().SetTrigger("FadeIn");
         yield return new WaitForSeconds(3.2f);

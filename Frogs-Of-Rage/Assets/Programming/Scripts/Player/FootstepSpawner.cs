@@ -33,7 +33,6 @@ public class FootstepSpawner : MonoBehaviour
         if (Physics.Raycast(foot.position, isRightFoot ? foot.transform.up : -foot.transform.up, out RaycastHit hit, 1, ~LayerMask.GetMask("Player")))
         {
             GameObject gO = Instantiate(footPrefab, hit.point + foot.transform.up / 70, Quaternion.FromToRotation(isRightFoot ? foot.transform.up : -foot.transform.up, hit.normal));
-        Debug.Log("Location is " + location + " and is this the right foot? " + isRightFoot, gO);
             Quaternion rotation = Quaternion.LookRotation(isRightFoot ? -foot.transform.right : foot.transform.right, isRightFoot ? -foot.transform.up : foot.transform.up);
             //rotation.x = hit.normal.x;
             gO.transform.rotation = rotation;

@@ -5,6 +5,7 @@ public class EnableOnTriggerEnterWithTag : MonoBehaviour
     public PosterController posterController;
     [SerializeField] private string targetTag = "YourTargetTag";
     [SerializeField] private GameObject objectToEnable;
+    [SerializeField] private float detectionRadius = 1f;
     public bool hasTriggered = false;
 
     private void Start()
@@ -16,24 +17,30 @@ public class EnableOnTriggerEnterWithTag : MonoBehaviour
         hasTriggered = false;
     }
 
-
-    private void OnTriggerEnter(Collider other)
+    private void Update()
     {
-        Debug.Log("Triggered by: " + other.gameObject.name);
-
-        if (other.CompareTag(targetTag) && !hasTriggered)
+        if (!hasTriggered)
         {
-            objectToEnable.SetActive(true);
-            hasTriggered = true;
-            if (posterController != null)
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, detectionRadius);
+
+            foreach (Collider hitCollider in hitColliders)
             {
-                posterController.HasTriggered = true;
-            }
-            else
-            {
-                Debug.LogError("PosterController is not assigned!");
+                Debug.Log("Detected: " + hitCollider.gameObject.name);
+
+                if (hitCollider.CompareTag(targetTag))
+                {
+                    objectToEnable.SetActive(true);
+                    hasTriggered = true;
+                    if (posterController != null)
+                    {
+                        posterController.HasTriggered = true;
+                    }
+                    else
+                    {
+                        Debug.LogError("PosterController is not assigned!");
+                    }
+                }
             }
         }
     }
-
 }

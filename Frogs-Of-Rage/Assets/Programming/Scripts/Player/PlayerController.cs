@@ -22,18 +22,18 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Variables")]
     [Space(10)]
     [Space(5)]
-    [SerializeField, Tooltip("The walk speed of the player.")]
-    private float walkSpeed = 5.0f;
-    [SerializeField, Tooltip("The walk speed of the player.")]
-    private float sprintSpeed = 7.0f;
+    [Tooltip("The walk speed of the player.")]
+    public float walkSpeed = 5.0f;
+    [Tooltip("The walk speed of the player.")]
+    public float sprintSpeed = 7.0f;
     [SerializeField, Tooltip("The deceleration on the player when grounded and no longer moving.")]
     private float groundDrag = 2.0f;
     [SerializeField, Tooltip("Multiplies speed when in air")]
     private float airMultiplier = 2.0f;
     [Header("Jump Variables")]
     [Space(10)]
-    [SerializeField, Tooltip("The jump force the player has.")]
-    private float jumpHeight = 10.0f;
+    [Tooltip("The jump force the player has.")]
+    public float jumpHeight = 10.0f;
     [SerializeField, Tooltip("The gravity scale on the player.")]
     private float gravityScale = 10.0f;
     [SerializeField, Tooltip("The falling gravity scale on the player.")]
@@ -111,6 +111,10 @@ public class PlayerController : MonoBehaviour
     public int curLives;
 
 
+
+    
+
+
     #endregion
 
     #region Private Variables
@@ -160,7 +164,8 @@ public class PlayerController : MonoBehaviour
     public float curHealth;
     [HideInInspector]
     public float curStamina;
-
+    [HideInInspector]
+    public bool isDead = false;
     private Coroutine healthPool;
     #endregion
    
@@ -591,10 +596,12 @@ public class PlayerController : MonoBehaviour
     //This is set up for when we impliment playerfeedback when taking damage
     private void ReduceHealth()
     {
-        //Debug.Log("Player lost health and is now at " + curHealth);
+        if(curHealth > 0 && !isDead)
+            gameObject.GetComponentInChildren<PlayerSoundEffects>().PlayDamageAudio();
+        
     }
 
-    
+
 
     //Changes speed for amount of spiders
     public void IncreaseMaxHealth()
@@ -638,30 +645,42 @@ public class PlayerController : MonoBehaviour
         else 
             return false;
     }
+
+    
     #endregion
 
     #region Respawn
 
     private void Respawn(PlayerDeathEventArgs e)
     {
-        if (!HandleLives(new PlayerGameOverEventArgs(playerData)))
+        if (e.loseLife)
         {
-            Debug.Log("Ran game over");
-            OnGameOver?.Invoke(new PlayerGameOverEventArgs(playerData));
-        }
+            
+            if (!HandleLives(new PlayerGameOverEventArgs(playerData)))
+            {
+                Debug.Log("Ran game over");
+                OnGameOver?.Invoke(new PlayerGameOverEventArgs(playerData));
+            }
+            GetComponent<RagdollManager>().ToggleRagdoll();
 
+        }
         transform.position = e.respawnPos;
+
         curHealth = curHealthMax;
         curStamina = curStaminaMax;
+        isDead= false;
         //UIManager.Instance.deathCanvas.gameObject.GetComponent<Animator>().SetTrigger("FadeIn");
     }
 
-    private void VacuumInstaKill()
+    public void VacuumInstaKill()
     {
         curHealth = 0f;
-        Respawn(new PlayerDeathEventArgs(gameManager.lastCheckpointPos));
+        Debug.Log("Set players health to " + curHealth);
+        //Respawn(new PlayerDeathEventArgs(gameManager.lastCheckpointPos));
     }
     #endregion
+
+    
 
     private void OnTriggerEnter(Collider other)
     {

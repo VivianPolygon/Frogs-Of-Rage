@@ -10,11 +10,20 @@ public class ItemPickup : MonoBehaviour
 
     public Vector3 rotationOffset = Vector3.zero;
 
+    private HatSpin hatSpinScript;
+    private GameObject missionItem;
+
+    private void Start()
+    {
+        hatSpinScript = GetComponent<HatSpin>();
+        missionItem = transform.Find("MissionItem")?.gameObject;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            transform.parent = other.gameObject.transform.GetChild(1).GetChild(4).GetChild(0).Find("SpineIK_target");
+            transform.parent = other.gameObject.transform.GetChild(0).GetChild(4).GetChild(0).Find("SpineIK_target");
             transform.localRotation = Quaternion.Euler(Vector3.zero + rotationOffset);
             transform.localPosition = Vector3.zero;
             Vector3 temp = transform.localPosition;
@@ -24,8 +33,21 @@ public class ItemPickup : MonoBehaviour
             transform.localPosition = temp;
 
             GameManager.Instance.playerController.secondaryObjectiveComplete = true;
+            transform.Find("Icon").gameObject.SetActive(false);
 
-            GetComponent<Collider>().enabled = false;
+            // Disable HatSpin script if attached and not null
+            if (hatSpinScript != null)
+            {
+                hatSpinScript.enabled = false;
+            }
+
+            // Disable MissionItem GameObject if it exists and is not null
+            if (missionItem != null)
+            {
+                missionItem.SetActive(false);
+            }
+
+            // GetComponent<Collider>().enabled = false;
         }
     }
 }

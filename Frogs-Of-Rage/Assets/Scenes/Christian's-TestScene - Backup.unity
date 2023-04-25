@@ -657,6 +657,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7314940685873895606, guid: a53354e86d5792f4eab0bcea17ca01c9, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7314940685873895606, guid: a53354e86d5792f4eab0bcea17ca01c9, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7314940686799594696, guid: a53354e86d5792f4eab0bcea17ca01c9, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7314940686799594696, guid: a53354e86d5792f4eab0bcea17ca01c9, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8648235601608648109, guid: a53354e86d5792f4eab0bcea17ca01c9, type: 3}
       propertyPath: m_Name
       value: UIManager (1)
@@ -28475,19 +28491,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.47058803
+      value: -0.85967654
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.26748937
+      value: -0.48865384
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.7309926
+      value: -0.12945661
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.41550726
+      value: 0.07358519
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296575147496, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_RootOrder
@@ -28718,7 +28734,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4523415602016757296, guid: 5eb789aca804f214bbd1f2d095115a9b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 253.1
+      value: 234
       objectReference: {fileID: 0}
     - target: {fileID: 4523415602016757296, guid: 5eb789aca804f214bbd1f2d095115a9b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -34651,6 +34667,7 @@ MonoBehaviour:
   useGravity: 1
   curHealth: 0
   curStamina: 0
+  isDead: 0
 --- !u!4 &7587290521302141248
 Transform:
   m_ObjectHideFlags: 0

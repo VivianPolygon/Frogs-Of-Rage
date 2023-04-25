@@ -8,7 +8,7 @@ public class HatsTester : MonoBehaviour
 
     private int _currentID;
     private string _idText;
-    
+
     private void OnGUI()
     {
         _idText = GUILayout.TextArea(_idText);
@@ -59,14 +59,14 @@ public class HatsTester : MonoBehaviour
     {
         if(trackedManager != null)
         {
-            if(trackedManager._inventory != null)
+            if(trackedManager.Inventory != null)
             {
                 HatDatabaseRetreiver retreiver = new HatDatabaseRetreiver();
-                List<HatData> databaseList = retreiver.RetreiveDatabaseCopy();
+                List<HatData> databaseList = trackedManager.Inventory._databaseCopy;
                 GUILayout.BeginVertical();
                 foreach (HatData data in databaseList)
                 {
-                    if(trackedManager._inventory._playerHats.TryGetValue(data.hatID, out bool state))
+                    if(trackedManager.Inventory._playerHats.TryGetValue(data.hatID, out bool state))
                     {
                         GUILayout.Label("ID: " + data.hatID + " Name: " + data.hatName + " Player Has: " + state.ToString());
                     }

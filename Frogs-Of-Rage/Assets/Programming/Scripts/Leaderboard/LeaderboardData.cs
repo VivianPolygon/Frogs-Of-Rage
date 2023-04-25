@@ -272,6 +272,16 @@ public static class LeaderboardData //used to manage and save out leaderboard ti
     {
         SaveManager.LoadLeaderboardSavedData();
         UtilityFunctions.CloneScoresDictionary(SaveManager.ScoreData, out _scores);
+
+        if(SaveManager.devScoresLoaded != null)
+        {
+            SaveManager.devScoresLoaded.AddListener(LoadFromDevTimes);
+        }
+    }
+
+    private static void LoadFromDevTimes(int a)
+    {
+        _scores = SaveManager.ScoreData;
     }
 
     #endregion

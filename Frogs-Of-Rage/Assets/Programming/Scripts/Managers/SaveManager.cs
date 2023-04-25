@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.IO;
-using System.Text;
+using UnityEngine.Events;
 using System.Runtime.Serialization.Formatters.Binary;
+
 
 public static class SaveManager
 {
@@ -29,10 +30,6 @@ public static class SaveManager
     {
         get
         {
-            if(!CheckForScoreSaves(_scoreData))
-            {
-                _scoreData = GetDefaultScoresFromJson();
-            }
             return _scoreData;
         }
         set
@@ -40,6 +37,9 @@ public static class SaveManager
             _scoreData = value;
         }
     }
+
+    private static DevTimesLoader devTimesLoader;
+    public static DevScoresLoaded devScoresLoaded;
     #endregion
 
     #region "Hat Inventory Saving Variables"
@@ -78,24 +78,38 @@ public static class SaveManager
     /// </summary>
     public static void LoadLeaderboardSavedData()
     {
-        if(File.Exists(_leaderboardFilePath))
+        LeaderboardSaveData loadData = null;
+        if (File.Exists(_leaderboardFilePath))
         {
+            Debug.Log("File found");
             BinaryFormatter formatter = new BinaryFormatter();
             FileStream fileStream = new FileStream(_leaderboardFilePath, FileMode.Open);
 
-            LeaderboardSaveData loadData = formatter.Deserialize(fileStream) as LeaderboardSaveData;
-            fileStream.Close();
+            if(fileStream.Length > 0)
+            {
+                //loads the data if the filestream has contents
+                loadData = formatter.Deserialize(fileStream) as LeaderboardSaveData;
 
-            _loadedScoresData = loadData;
-            _scoreData = loadData.ConvertSaveToLeaderboardData();
+            }
+
+            fileStream.Flush();
+            fileStream.Close();
 
         }
         else
         {
-            _loadedScoresData = new LeaderboardSaveData(new Dictionary<int, float[]>(), new Dictionary<int, string[]>());
-            _scoreData = _loadedScoresData.ConvertSaveToLeaderboardData();
-
+            File.Create(_leaderboardFilePath); //creates file
         }
+
+        if(loadData == null)
+        {
+            Debug.Log("NO Data found");
+            loadData = new LeaderboardSaveData(new Dictionary<int, float[]>(), new Dictionary<int, string[]>());
+            GetDefaultScoresFromJson();
+        }
+
+        _loadedScoresData = loadData;
+        _scoreData = _loadedScoresData.ConvertSaveToLeaderboardData();
     }
 
     public static void EraseLeaderboardSaveData() //erases save data 
@@ -137,57 +151,65 @@ public static class SaveManager
     }
 
 
-    public static Dictionary<PlayerPath, List<LeaderboardScoreData>> GetDefaultScoresFromJson()
+    public static void GetDefaultScoresFromJson()
     {
         Dictionary<PlayerPath, List<LeaderboardScoreData>> defaultScores = new Dictionary<PlayerPath, List<LeaderboardScoreData>>();
 
-        if (!File.Exists(Application.dataPath + "/Resources/DefaultScores.json"))
+        if(devTimesLoader == null)
         {
-            File.Create(Application.dataPath + "/Resources/DefaultScores.json");
-            Debug.LogWarning("Json file didn't exsist, it has been created, please try loading again");
-
-            return defaultScores;
+            devTimesLoader = new DevTimesLoader();
+        }
+        if (devScoresLoaded == null)
+        {
+            devScoresLoaded = new DevScoresLoaded();
         }
 
-        string readJsonString = "";
+        devTimesLoader.LoadDevTimes(); //loads the dev times. takes time due to being asyncronous.
+        devTimesLoader.loadEvent.AddListener(ProcessDevTimes);
+        Debug.Log("Getting Times");
+        
+    }
 
-        FileStream readingStream = new FileStream(Application.dataPath + "/Resources/DefaultScores.json", FileMode.Open, FileAccess.Read);
-
-        if (readingStream.CanRead)
+    private static void ProcessDevTimes(TextAsset jsonAsset)
+    {
+        if (jsonAsset != null)
         {
-            byte[] buffer = new byte[readingStream.Length];
-            int bytesRead = readingStream.Read(buffer, 0, buffer.Length);
+            string readJsonString = jsonAsset.text;
 
-            readJsonString = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-        }
-        else
-        {
-            Debug.LogError("Couldnt read from file. Default Leaderboards not Loaded");
-        }
-
-        readingStream.Flush();
-        readingStream.Close();
-
-        if (readJsonString.Length > 0)
-        {
-            DefaultScoresJsonFormatted loadedDefaultScores = JsonUtility.FromJson<DefaultScoresJsonFormatted>(readJsonString);
-
-            if (loadedDefaultScores != null)
+            if (readJsonString.Length > 0)
             {
-                Debug.Log("Default Scores Loaded Sucsessfully");
-                loadedDefaultScores.LoadDictionary(out defaultScores);
+                DefaultScoresJsonFormatted loadedDefaultScores = JsonUtility.FromJson<DefaultScoresJsonFormatted>(readJsonString);
+
+                if (loadedDefaultScores != null)
+                {
+                    Debug.Log("Default Scores Loaded Sucsessfully");
+                    loadedDefaultScores.LoadDictionary(out _scoreData);
+                }
+                else
+                {
+                    Debug.LogError("Failed To Load Scores");
+                    _scoreData = new Dictionary<PlayerPath, List<LeaderboardScoreData>>();
+                }
             }
             else
             {
-                Debug.LogError("Failed To Load Scores");
-                defaultScores = new Dictionary<PlayerPath, List<LeaderboardScoreData>>();
+                Debug.Log("Json was Empty");
+                _scoreData = new Dictionary<PlayerPath, List<LeaderboardScoreData>>();
             }
+
         }
-        return defaultScores;
+        else
+        {
+            Debug.Log("Failed to retreive json from asset bundle");
+            _scoreData = new Dictionary<PlayerPath, List<LeaderboardScoreData>>();
+        }
+
+        //number dosent matter. it just needs an argument to work, can't work argumentless.
+        devScoresLoaded.Invoke(0);
     }
 
     //used to chekc if scores exsist, for adding in default scores
-    private static bool CheckForScoreSaves(Dictionary<PlayerPath, List<LeaderboardScoreData>> dictionaryToCheck)
+    public static bool CheckForScoreSaves(Dictionary<PlayerPath, List<LeaderboardScoreData>> dictionaryToCheck)
     {
         //empty check, fills with defaults if empty
         int scoreQuantity = 0;
@@ -209,6 +231,7 @@ public static class SaveManager
 
         return true;
     }
+
     #endregion
 
     #region "Hat Saving Functions"
@@ -333,4 +356,6 @@ public class HatInventorySaveData
     }
 
 }
+
+public class DevScoresLoaded : UnityEvent<int> { }
 

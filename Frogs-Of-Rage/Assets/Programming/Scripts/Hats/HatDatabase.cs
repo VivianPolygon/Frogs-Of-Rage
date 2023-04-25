@@ -3,22 +3,6 @@ using UnityEngine;
 
 public class HatDatabase : ScriptableObject
 {
-    private static string _resourcesFilePath = "HatDatabase";
-    private static string _filePath = "Assets/Resources/" + _resourcesFilePath + ".asset"; //used to acsess the asset's file path
-    public static string FilePath
-    {
-        get
-        {
-            return _filePath;
-        }
-    } //filepath from the project folder.
-    public static string ResourcesFilePath
-    {
-        get
-        {
-            return _resourcesFilePath;
-        }
-    } //filepath from the resources folder (for Resources.Load)
 
     [SerializeField] private List<HatData> _hatDatalist;
     /// <summary>

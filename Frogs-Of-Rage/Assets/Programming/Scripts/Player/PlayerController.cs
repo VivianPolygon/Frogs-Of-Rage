@@ -92,9 +92,9 @@ public class PlayerController : MonoBehaviour
 
     [Space(5)]
     [SerializeField]
-    private ManageSlider staminaGauge;
+    private StaminaGauge staminaGauge;
     [SerializeField]
-    private ManageSlider healthGauge;
+    private HealthGauge healthGauge;
 
     [Space(5)]
     public PlayerData playerData;
@@ -562,12 +562,12 @@ public class PlayerController : MonoBehaviour
     private void SetStaminaMax()
     {
         if (staminaGauge != null)
-            staminaGauge.SetMaxValue(curStaminaMax);
+            staminaGauge.SetMaxValue(curStaminaMax * staminaGauge.sliderMaxPercent);
     }
     private void SetStaminaValue()
     {
         if (staminaGauge != null)
-            staminaGauge.SetValue(curStamina);
+            staminaGauge.SetValue(curStamina * staminaGauge.sliderMaxPercent);
     }
     private void SetHealthMax()
     {

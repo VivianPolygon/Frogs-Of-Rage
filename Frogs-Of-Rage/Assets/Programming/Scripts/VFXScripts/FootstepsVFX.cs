@@ -6,7 +6,8 @@ public class FootstepsVFX : MonoBehaviour
     [SerializeField] [Min(2)] private int _poolSize = 10;
     [SerializeField] [Min(0.25f)] private float _footstepFadeTime = 1.5f;
     [SerializeField] [Min(0.05f)] private float _footstepScale = 0.5f;
-
+    [SerializeField] private Transform rFoot, lFoot;
+    [Space(10)]
     [SerializeField] private Shader _footStepshader;
     [SerializeField] private Color _footstepColor;
 
@@ -18,11 +19,6 @@ public class FootstepsVFX : MonoBehaviour
         Right
     }
 
-
-    private void Start()
-    {
-        InvokeRepeating("TestSpawnFootprint", 1, 0.5f);
-    }
 
     private void OnEnable()
     {
@@ -193,6 +189,18 @@ public class FootstepsVFX : MonoBehaviour
             SpawnFootstep(transform.position + (Vector3.up * 0.05f), Vector3.up, transform.forward, FootstepFoot.Right);
         }
 
+    }
+
+    public void LeaveFootPrint(FootstepFoot foot)
+    {
+        bool isRightFoot = foot == FootstepFoot.Right;
+        Transform thisFoot = isRightFoot ? rFoot : lFoot;
+
+        Vector3 thisFootForward = isRightFoot ? thisFoot.right : -thisFoot.right;
+        Vector3 thisFootUp = isRightFoot ? -thisFoot.up : thisFoot.up;
+
+        if (Physics.Raycast(thisFoot.position + (thisFootUp * 1f), -thisFootUp, out RaycastHit hit, 3f, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore))
+            SpawnFootstep(thisFoot.position + (thisFootUp * 0.05f), thisFootUp, thisFootForward, foot);        
     }
 
 }

@@ -17,6 +17,11 @@ public class LeaderboardHatDebuggingSwitch : MonoBehaviour
             _hat.enabled = false;
             _score.enabled = true;
         }
+        if (GUILayout.Button("Disable Both"))
+        {
+            _hat.enabled = false;
+            _score.enabled = false;
+        }
         GUILayout.EndArea();
     }
 }

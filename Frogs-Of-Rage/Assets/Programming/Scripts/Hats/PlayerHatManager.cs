@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class PlayerHatManager : MonoBehaviour
 {
+    private static PlayerHatManager _instance;
+    public static PlayerHatManager Instance
+    {
+        get { return _instance; }
+    }
+
+
     public Transform headJoint;
     private GameObject _hatObject;
 
@@ -39,6 +46,15 @@ public class PlayerHatManager : MonoBehaviour
 
     private void Awake()
     {
+        if(_instance == null)
+        {
+            _instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+
         Inventory = new PlayerHatsInventory(_hatDatabase);
 
         Inventory.LoadHatInventory();

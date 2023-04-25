@@ -103,8 +103,9 @@ public class PlayerHatsInventory
             {
                 _playerHats.Remove(ID);
                 _playerHats.Add(ID, true);
-            }
 
+                SaveHatInventory();
+            }
         }
     }
 
@@ -125,8 +126,6 @@ public class PlayerHatsInventory
                 }
             }
         }
-
-
     }
 
     public void SaveHatInventory()

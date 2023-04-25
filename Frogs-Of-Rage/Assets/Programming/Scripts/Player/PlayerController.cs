@@ -108,7 +108,7 @@ public class PlayerController : MonoBehaviour
     [Space(5)]
     public int maxLives = 3;
     [HideInInspector]
-    public int curLives;
+    public int curLives = 3;
 
 
 

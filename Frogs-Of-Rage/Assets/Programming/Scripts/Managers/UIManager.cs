@@ -16,7 +16,8 @@ public enum CanvasState
     Credits,
     Options,
     Death,
-    GameOver
+    GameOver,
+    HatMenu
 }
 
 public class UIManager : Singleton<UIManager>
@@ -88,6 +89,10 @@ public class UIManager : Singleton<UIManager>
     [Space(10)]
     public Canvas gameOverCanvas;
 
+    [Header("Hat Menu Canvas")]
+    [Space(10)]
+    public Canvas hatMenuCanvas;
+
 
     private List<Canvas> canvasList = new List<Canvas>();
     private List<bool> boolCanvasList = new List<bool>();
@@ -102,6 +107,7 @@ public class UIManager : Singleton<UIManager>
     private bool isOptionsState = false;
     private bool isDeathState = false;
     private bool isGameOverState = false;
+    private bool isHatMenuCanvas = false;
 
 
     private void OnEnable()
@@ -135,6 +141,7 @@ public class UIManager : Singleton<UIManager>
         canvasList.Add(optionsCanvas);
         canvasList.Add(deathCanvas);
         canvasList.Add(gameOverCanvas);
+        canvasList.Add(hatMenuCanvas);
 
         boolCanvasList.Add(isStartState);
         boolCanvasList.Add(isPlayerState);
@@ -144,6 +151,7 @@ public class UIManager : Singleton<UIManager>
         boolCanvasList.Add(isOptionsState);
         boolCanvasList.Add(isDeathState);
         boolCanvasList.Add(isGameOverState);
+        boolCanvasList.Add(isHatMenuCanvas);
     }
 
     private void Update()
@@ -220,12 +228,17 @@ public class UIManager : Singleton<UIManager>
                 inputManager.playerControls.Disable();
 
                 break;
+            case CanvasState.HatMenu:
+                TurnOnCanvasIndex(8);
+                Time.timeScale = 0f;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                inputManager.playerControls.Disable();
+
+                break;
             default:
                 break;
-        }
-
-       
-            
+        }    
     }
 
     public void ChangeState(CanvasState _state)
@@ -289,6 +302,16 @@ public class UIManager : Singleton<UIManager>
     public void Menu()
     {
         state = CanvasState.Start;
+    }
+
+    public void Paused()
+    {
+        state = CanvasState.Paused;
+    }
+
+    public void HatMenu()
+    {
+        state = CanvasState.HatMenu;
     }
     #endregion
 

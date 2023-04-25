@@ -15,7 +15,11 @@ public class PlayAudioOnTrigger : MonoBehaviour
         audioSource = gameObject.GetComponent<AudioSource>();
         audioSource.clip = audioClip;
         audioSource.playOnAwake = false;
-        interactText.enabled = false;
+
+        if(interactText != null)
+        {
+            interactText.enabled = false;
+        }
     }
 
     void OnTriggerEnter(Collider other)

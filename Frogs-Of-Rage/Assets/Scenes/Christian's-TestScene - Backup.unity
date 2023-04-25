@@ -2698,6 +2698,27 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 22702789468514084, guid: 59624dd1365d1df45861fb239341d947, type: 3}
   m_PrefabInstance: {fileID: 192868787}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &196178306 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6582979606949294644, guid: 91f3755a0fe59604bb644932b252510d, type: 3}
+  m_PrefabInstance: {fileID: 6582979606965588505}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &196178312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196178306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7ec4b96121f04a7193c3a0590f8d1b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: 0
+  damage: 0
+  waitTime: 1
+  canDamage: 1
 --- !u!1 &197620602 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1151971006724173033, guid: 680bab4f8ad485642b7af28922981455, type: 3}
@@ -28491,19 +28512,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.85967654
+      value: 0.45166585
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.48865384
+      value: 0.25673413
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.12945661
+      value: -0.7428328
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.07358519
+      value: 0.4222381
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296575147496, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_RootOrder
@@ -34144,6 +34165,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.0015
       objectReference: {fileID: 0}
+    - target: {fileID: 4556961392685104730, guid: 91f3755a0fe59604bb644932b252510d, type: 3}
+      propertyPath: interactText
+      value: 
+      objectReference: {fileID: 323657324}
     - target: {fileID: 4921936653081384526, guid: 91f3755a0fe59604bb644932b252510d, type: 3}
       propertyPath: m_Name
       value: Tutorial Terrarium
@@ -34236,7 +34261,9 @@ PrefabInstance:
       propertyPath: interactText
       value: 
       objectReference: {fileID: 323657324}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5713508456382764526, guid: 91f3755a0fe59604bb644932b252510d, type: 3}
+    - {fileID: 5713508456382764512, guid: 91f3755a0fe59604bb644932b252510d, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 91f3755a0fe59604bb644932b252510d, type: 3}
 --- !u!4 &6939285899703358004
 Transform:

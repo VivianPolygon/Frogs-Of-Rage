@@ -173,10 +173,10 @@ public class PlayerController : MonoBehaviour
     private void OnEnable()
     {
         #region Gauges
-        ManageSlider.SetStaminaMax += SetStaminaMax;
-        ManageSlider.SetStaminaValue += SetStaminaValue;
-        ManageSlider.SetHealthMax += SetHealthMax;
-        ManageSlider.SetHealthValue += SetHealthValue;
+        StaminaGauge.SetStaminaMax += SetStaminaMax;
+        StaminaGauge.SetStaminaValue += SetStaminaValue;
+        HealthGauge.SetHealthMax += SetHealthMax;
+        HealthGauge.SetHealthValue += SetHealthValue;
         #endregion
         Hazard.OnDamage += ReduceHealth;
         GameManager.OnPlayerDeath += Respawn;
@@ -186,10 +186,10 @@ public class PlayerController : MonoBehaviour
     private void OnDisable()
     {
         #region Gauges
-        ManageSlider.SetStaminaMax -= SetStaminaMax;
-        ManageSlider.SetStaminaValue -= SetStaminaValue;
-        ManageSlider.SetHealthMax -= SetHealthMax;
-        ManageSlider.SetHealthValue -= SetHealthValue;
+        StaminaGauge.SetStaminaMax -= SetStaminaMax;
+        StaminaGauge.SetStaminaValue -= SetStaminaValue;
+        HealthGauge.SetHealthMax -= SetHealthMax;
+        HealthGauge.SetHealthValue -= SetHealthValue;
         #endregion
         Hazard.OnDamage -= ReduceHealth;
         GameManager.OnPlayerDeath -= Respawn;
@@ -562,7 +562,7 @@ public class PlayerController : MonoBehaviour
     private void SetStaminaMax()
     {
         if (staminaGauge != null)
-            staminaGauge.SetMaxValue(curStaminaMax * staminaGauge.sliderMaxPercent);
+            staminaGauge.SetMaxValue(curStaminaMax);
     }
     private void SetStaminaValue()
     {
@@ -621,8 +621,12 @@ public class PlayerController : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(healthPoolWaitTime / 2);
-            if ((curHealth + healthPoolIncrement) <= curHealthMax)
+            if (curHealth  < curHealthMax)
+            {
                 curHealth += healthPoolIncrement;
+                curHealth = Mathf.Clamp(curHealth, 0, curHealthMax);
+            }
+
             else
                 break;
             yield return new WaitForSeconds(healthPoolWaitTime / 2);

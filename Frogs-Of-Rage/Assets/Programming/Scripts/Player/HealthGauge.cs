@@ -18,10 +18,10 @@ public class HealthGauge : MonoBehaviour
 
     private void Awake()
     {
-        secList.Add(sec1, 0.25f);
-        secList.Add(sec2, 0.5f);
-        secList.Add(sec3, 0.75f);
-        secList.Add(sec4, 1f);
+        secList.Add(sec1, 0f);
+        secList.Add(sec2, 0.333f);
+        secList.Add(sec3, 0.666f);
+        secList.Add(sec4, .999f);
 
         foreach (KeyValuePair<GameObject, float> keyValuePair in secList)
         {
@@ -33,7 +33,6 @@ public class HealthGauge : MonoBehaviour
     {
         _maxValue = value;
         _value = value;
-
         foreach (KeyValuePair<GameObject, float> keyValuePair in secList)
         {
             keyValuePair.Key.SetActive(true);
@@ -42,18 +41,14 @@ public class HealthGauge : MonoBehaviour
     public void SetValue(float value)
     {
         _value = value;
-
-        //if(_value < _maxValue / 100)
-        //{
-
-        //}
-        //foreach (KeyValuePair<GameObject, float> keyValuePair in secList)
-        //{
-        //    if(keyValuePair.Value < (_value / 100))
-        //    {
-        //        keyValuePair.Key.SetActive(false);
-        //    }
-        //}
+        //Debug.Log(_value  / 100);
+        foreach (KeyValuePair<GameObject, float> keyValuePair in secList)
+        {
+            if (keyValuePair.Value > _value / 100)
+            {
+                keyValuePair.Key.SetActive(false);
+            }
+        }
     }
 
     private void Update()

@@ -92,9 +92,9 @@ public class PlayerController : MonoBehaviour
 
     [Space(5)]
     [SerializeField]
-    private ManageSlider staminaGauge;
+    private StaminaGauge staminaGauge;
     [SerializeField]
-    private ManageSlider healthGauge;
+    private HealthGauge healthGauge;
 
     [Space(5)]
     public PlayerData playerData;
@@ -173,10 +173,10 @@ public class PlayerController : MonoBehaviour
     private void OnEnable()
     {
         #region Gauges
-        ManageSlider.SetStaminaMax += SetStaminaMax;
-        ManageSlider.SetStaminaValue += SetStaminaValue;
-        ManageSlider.SetHealthMax += SetHealthMax;
-        ManageSlider.SetHealthValue += SetHealthValue;
+        StaminaGauge.SetStaminaMax += SetStaminaMax;
+        StaminaGauge.SetStaminaValue += SetStaminaValue;
+        HealthGauge.SetHealthMax += SetHealthMax;
+        HealthGauge.SetHealthValue += SetHealthValue;
         #endregion
         Hazard.OnDamage += ReduceHealth;
         GameManager.OnPlayerDeath += Respawn;
@@ -186,10 +186,10 @@ public class PlayerController : MonoBehaviour
     private void OnDisable()
     {
         #region Gauges
-        ManageSlider.SetStaminaMax -= SetStaminaMax;
-        ManageSlider.SetStaminaValue -= SetStaminaValue;
-        ManageSlider.SetHealthMax -= SetHealthMax;
-        ManageSlider.SetHealthValue -= SetHealthValue;
+        StaminaGauge.SetStaminaMax -= SetStaminaMax;
+        StaminaGauge.SetStaminaValue -= SetStaminaValue;
+        HealthGauge.SetHealthMax -= SetHealthMax;
+        HealthGauge.SetHealthValue -= SetHealthValue;
         #endregion
         Hazard.OnDamage -= ReduceHealth;
         GameManager.OnPlayerDeath -= Respawn;
@@ -567,7 +567,7 @@ public class PlayerController : MonoBehaviour
     private void SetStaminaValue()
     {
         if (staminaGauge != null)
-            staminaGauge.SetValue(curStamina);
+            staminaGauge.SetValue(curStamina * staminaGauge.sliderMaxPercent);
     }
     private void SetHealthMax()
     {
@@ -621,8 +621,12 @@ public class PlayerController : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(healthPoolWaitTime / 2);
-            if ((curHealth + healthPoolIncrement) <= curHealthMax)
+            if (curHealth  < curHealthMax)
+            {
                 curHealth += healthPoolIncrement;
+                curHealth = Mathf.Clamp(curHealth, 0, curHealthMax);
+            }
+
             else
                 break;
             yield return new WaitForSeconds(healthPoolWaitTime / 2);

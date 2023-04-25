@@ -43,7 +43,10 @@ public class HealthGauge : MonoBehaviour
     {
         _value = value;
 
-        if(_value < _maxValue)
+        //if(_value < _maxValue / 100)
+        //{
+
+        //}
         //foreach (KeyValuePair<GameObject, float> keyValuePair in secList)
         //{
         //    if(keyValuePair.Value < (_value / 100))

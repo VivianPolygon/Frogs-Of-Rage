@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 709924266718694104}
   - component: {fileID: 8062326750847170966}
   - component: {fileID: 7430806163934454951}
-  - component: {fileID: 5955968973395412281}
+  - component: {fileID: 8803523710515933509}
   m_Layer: 0
   m_Name: Icon
   m_TagString: Untagged
@@ -268,25 +268,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scaleModifier: 0.075
---- !u!95 &5955968973395412281
-Animator:
-  serializedVersion: 3
+--- !u!114 &8803523710515933509
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6825431970839106359}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8153abe7d1aed7546b778003a398ec33, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 467c5c04a77f1714180024623036f2a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bounceHeight: 6
+  bounceSpeed: 1.5
 --- !u!1001 &1081116909145883227
 PrefabInstance:
   m_ObjectHideFlags: 0

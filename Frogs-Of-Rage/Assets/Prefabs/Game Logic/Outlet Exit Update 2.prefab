@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 5745207939126139133}
   - component: {fileID: 5745207939126139131}
   - component: {fileID: 5745207939126139132}
+  - component: {fileID: 8048452042970685257}
   m_Layer: 0
   m_Name: Icon
   m_TagString: Untagged
@@ -137,6 +138,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scaleModifier: 0.075
+--- !u!114 &8048452042970685257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5745207939126139134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 467c5c04a77f1714180024623036f2a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bounceHeight: 6
+  bounceSpeed: 1.5
 --- !u!1 &8532982393731609637
 GameObject:
   m_ObjectHideFlags: 0

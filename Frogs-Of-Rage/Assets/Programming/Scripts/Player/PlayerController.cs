@@ -46,6 +46,7 @@ public class PlayerController : MonoBehaviour
     private float slopeDetectionDistance = 0.2f;
     [SerializeField, Tooltip("Minimum slope angle (any slope with less of an angle than this will be treated as flat ground)")]
     private float minSlopeAngle = 20f;
+    [SerializeField, Range(0,1)] private float sidewaysSlopeReducer = 0.05f;
 
     [SerializeField]
     private float groundCheckDistance = 0.05f;
@@ -373,8 +374,15 @@ public class PlayerController : MonoBehaviour
         else if (GroundedPlayer() && OnSlope())
         {
             Debug.Log("Using slope move");
+            if (slopeMoveDirection.normalized.x != 0)
+            {
+                Debug.Log("Reducing sideways move");
+                slopeMoveDirection.x *= sidewaysSlopeReducer;
+            }
             rb.AddForce(slopeMoveDirection.normalized * curSpeed * 10, ForceMode.Force);
+
             
+            Debug.DrawRay(transform.position, slopeMoveDirection,Color.yellow);
         }
         else if (!GroundedPlayer() && !OnSlope())
         {

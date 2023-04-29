@@ -30,7 +30,7 @@ public class BottleRocketExplosion : MonoBehaviour
 
     private void Despawn()
     {
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
 
     private void ChangeColor()

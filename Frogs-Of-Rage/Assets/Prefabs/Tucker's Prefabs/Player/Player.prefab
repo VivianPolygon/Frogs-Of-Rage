@@ -812,6 +812,7 @@ MonoBehaviour:
   coyoteTime: 0.2
   slopeDetectionDistance: 0.15
   minSlopeAngle: 20
+  sidewaysSlopeReducer: 0.05
   groundCheckDistance: 0.2
   jumpCooldown: 1
   speedModifier: 1
@@ -876,7 +877,7 @@ MonoBehaviour:
   minJumpHieght: 1
   wallJumpForce: 17
   wallJumpSideForce: 8
-  wallGravityCounterForce: 2.5
+  wallGravityCounterForce: 2.75
   wallRunLayers:
     serializedVersion: 2
     m_Bits: 1

@@ -12,11 +12,16 @@ public class ItemPickup : MonoBehaviour
 
     private HatSpin hatSpinScript;
     private GameObject missionItem;
+    private GameObject Light1;
+    private GameObject Light2;
+
 
     private void Start()
     {
         hatSpinScript = GetComponent<HatSpin>();
         missionItem = transform.Find("MissionItem")?.gameObject;
+        Light1 = transform.Find("Point Light")?.gameObject;
+        Light2 = transform.Find("Spot Light")?.gameObject;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -46,7 +51,14 @@ public class ItemPickup : MonoBehaviour
             {
                 missionItem.SetActive(false);
             }
-
+            if (Light1 != null)
+            {
+                Light1.SetActive(false);
+            }
+            if (Light2 != null)
+            {
+                Light2.SetActive(false);
+            }
             // GetComponent<Collider>().enabled = false;
         }
     }

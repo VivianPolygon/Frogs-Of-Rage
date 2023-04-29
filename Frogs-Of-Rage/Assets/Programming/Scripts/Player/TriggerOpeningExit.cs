@@ -7,6 +7,8 @@ public class TriggerOpeningExit : MonoBehaviour
     public float waitTimeBeforeAnimation = 3f;
     public GameObject BottleRocketSparks;
     public GameObject BottleRocketExplosion;
+    public SwitchObjects switchObjects;
+
 
     private void Start()
     {
@@ -30,5 +32,7 @@ public class TriggerOpeningExit : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
         BottleRocketExplosion.SetActive(true);
+        switchObjects.Switch();
+        RenderSettings.fog = true;
     }
 }

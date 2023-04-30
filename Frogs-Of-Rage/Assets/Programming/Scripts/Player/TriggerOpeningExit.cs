@@ -10,6 +10,7 @@ public class TriggerOpeningExit : MonoBehaviour
     public SwitchObjects switchObjects;
     public AudioSource audioSource1; // Add the first audio source
     public AudioSource audioSource2; // Add the second audio source
+    public GameObject LighterPickup;
 
     private void Start()
     {
@@ -20,7 +21,10 @@ public class TriggerOpeningExit : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player") && GameManager.Instance.playerController.secondaryObjectiveComplete)
+        {
             StartCoroutine(TriggerObjectiveAnimation(other));
+            LighterPickup.SetActive(false);
+        }
     }
 
     private IEnumerator TriggerObjectiveAnimation(Collider other)

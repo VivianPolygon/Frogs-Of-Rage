@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 745777713225905484}
   - component: {fileID: 1709329182305783042}
   - component: {fileID: 6959761587298017282}
+  - component: {fileID: 9201743641796329756}
   m_Layer: 0
   m_Name: OldManHat Pickup
   m_TagString: Untagged
@@ -62,6 +63,19 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 96.61
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &9201743641796329756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 77221228746371062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 756d2466df8e7384e9b02ad50ac8dfb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hatPickupID: 6
 --- !u!1 &7689170035641535157
 GameObject:
   m_ObjectHideFlags: 0

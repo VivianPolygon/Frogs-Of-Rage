@@ -51,10 +51,10 @@ public class MusicPlayer : MonoBehaviour
                         PlayRandomClip();
                     }
                     break;
-                //case CanvasState.HatMenu:
-                //    currentMusicList = hatMenuMusic;
-                //    PlayRandomClip();
-                //    break;
+                case CanvasState.HatMenu:
+                    currentMusicList = hatMenuMusic;
+                    PlayRandomClip();
+                    break;
                 case CanvasState.Win:
                     currentMusicList = winGameMusic;
                     PlayRandomClip();

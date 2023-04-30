@@ -282,8 +282,9 @@ public class UIManager : Singleton<UIManager>
     }
     public void Continue()
     {
+        if(state == CanvasState.Paused)
+            ToggleLivesOnPause();
         state = CanvasState.Player;
-        ToggleLivesOnPause();
     }
     public void SaveGame()
     {
@@ -312,6 +313,8 @@ public class UIManager : Singleton<UIManager>
     public void HatMenu()
     {
         state = CanvasState.HatMenu;
+        ToggleLivesOnPause();
+
     }
     #endregion
 

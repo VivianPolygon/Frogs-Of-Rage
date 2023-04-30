@@ -16,7 +16,8 @@ public class VacuumKillBox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if ((_playerLayer.value & (1 << other.transform.gameObject.layer)) > 0)
+        //if ((_playerLayer.value & (1 << other.transform.gameObject.layer)) > 0)
+        if(other.tag == "Player")
         {
             VacuumNavigation.InvokeOnPlayerHit();
         }

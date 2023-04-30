@@ -143,7 +143,7 @@ public class WallRunning : MonoBehaviour
             rb.AddForce(-wallNormal * 200 * Time.deltaTime);
 
         //Weaken gravity on wall
-        if (useGravity && playerController.wallRunning)
+        if (useGravity && playerController.wallRunning && UIManager.Instance.state == CanvasState.Player)
             rb.AddForce(transform.up * wallGravityCounterForce, ForceMode.Force);
         
     }

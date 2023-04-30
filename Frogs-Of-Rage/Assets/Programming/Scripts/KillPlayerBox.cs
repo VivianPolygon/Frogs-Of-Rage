@@ -14,6 +14,8 @@ public class KillPlayerBox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        gameManager.playerController.VacuumInstaKill();
+        if (other.tag == "Player")
+            gameManager.playerController.VacuumInstaKill();
+
     }
 }

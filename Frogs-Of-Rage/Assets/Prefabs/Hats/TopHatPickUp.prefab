@@ -118,7 +118,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5140599555626388206}
   m_LocalRotation: {x: -0.22964372, y: -0, z: -0, w: 0.97327477}
-  m_LocalPosition: {x: 0, y: 0.022547245, z: 0.049595118}
+  m_LocalPosition: {x: 0, y: -0.002, z: 0.049595118}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5140599556113801543}
@@ -136,8 +136,8 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 0.8584906, g: 0.6924961, b: 0.34420612, a: 1}
-  m_Intensity: 0.28
-  m_Range: 0.64
+  m_Intensity: 17.68
+  m_Range: 8.82
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -212,7 +212,7 @@ Transform:
   m_GameObject: {fileID: 5140599556113801541}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.953, y: 4.571, z: 3.436}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 4.2963, y: 4.2963, z: 4.2963}
   m_Children:
   - {fileID: 5140599555626388201}
   - {fileID: 5140599554904475830}
@@ -289,10 +289,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1945027359111973124, guid: d86961385caa7cc4a86352fa7002e444, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: d86961385caa7cc4a86352fa7002e444, type: 3}
+--- !u!1 &6554222776856325837 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2794401819281530072, guid: d86961385caa7cc4a86352fa7002e444, type: 3}
+  m_PrefabInstance: {fileID: 8949482891456328213}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5890310630102791287 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3282109325011273314, guid: d86961385caa7cc4a86352fa7002e444, type: 3}
   m_PrefabInstance: {fileID: 8949482891456328213}
   m_PrefabAsset: {fileID: 0}
+--- !u!135 &407374943691816270
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554222776856325837}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.06
+  m_Center: {x: -0.00002175011, y: 0.0105138635, z: -0.00000019557774}

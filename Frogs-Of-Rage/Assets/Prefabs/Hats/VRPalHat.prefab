@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 8663611928047036268}
   - component: {fileID: 5734365115690232009}
   - component: {fileID: 7525649088747625475}
-  - component: {fileID: 81411404706660860}
+  - component: {fileID: 6592680157891533236}
+  - component: {fileID: 1931299267740492847}
   m_Layer: 0
   m_Name: VRPalHat
   m_TagString: Untagged
@@ -82,16 +83,29 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &81411404706660860
-BoxCollider:
+--- !u!114 &6592680157891533236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8318295335372127702}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 756d2466df8e7384e9b02ad50ac8dfb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hatPickupID: 4
+--- !u!135 &1931299267740492847
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8318295335372127702}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.014280621, y: 0.005420895, z: 0.012864696}
-  m_Center: {x: 0, y: -0.0009277964, z: 0.0028261126}
+  m_Radius: 0.06
+  m_Center: {x: -0.00002175011, y: 0.0105138635, z: -0.00000019557774}

@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 8322162679610472846}
   - component: {fileID: 4958913199484106283}
   - component: {fileID: 7148740937939550945}
-  - component: {fileID: 1075519207069123579}
+  - component: {fileID: 8391960005557889707}
+  - component: {fileID: 7716933160573995389}
   m_Layer: 0
   m_Name: CombatHelmet_Hat
   m_TagString: Untagged
@@ -82,16 +83,29 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1075519207069123579
-BoxCollider:
+--- !u!135 &8391960005557889707
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8661990475894465332}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.022072898, y: 0.01618269, z: 0.024043445}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 0.06
+  m_Center: {x: -0.00002175011, y: 0.0105138635, z: -0.00000019557774}
+--- !u!114 &7716933160573995389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8661990475894465332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 756d2466df8e7384e9b02ad50ac8dfb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hatPickupID: 2

@@ -11,6 +11,7 @@ public class RagdollManager : MonoBehaviour
     public List<Collider> colliders = new List<Collider>();
     public List<Rigidbody> rigidbodies = new List<Rigidbody>();
 
+
     public bool isRagdoll = false;
 
 

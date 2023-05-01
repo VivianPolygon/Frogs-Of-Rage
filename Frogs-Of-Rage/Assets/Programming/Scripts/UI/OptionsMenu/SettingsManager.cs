@@ -42,7 +42,10 @@ public class SettingsManager : MonoBehaviour
     private void Awake()
     {
         //gets the POV component on the camera
-        _cameraPOV = _playerCamera.GetCinemachineComponent<CinemachinePOV>();
+        if(_playerCamera != null)
+            _cameraPOV = _playerCamera.GetCinemachineComponent<CinemachinePOV>();
+        else
+            Debug.LogWarning("Please Make sure you assign the 3rd person camera from the player to the settings manager for it to work properly!");
 
         //Loads prefs
         LoadSettings();

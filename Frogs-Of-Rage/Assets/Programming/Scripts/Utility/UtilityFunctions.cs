@@ -23,6 +23,11 @@ public class UtilityFunctions
         }
     }
 
+    /// <summary>
+    /// Sorts score board putting the fastest times first
+    /// </summary>
+    /// <param name="scoreDataListToSort"></param>
+    /// <returns></returns>
     public static List<LeaderboardScoreData> SortScoreDataByLowestScore(List<LeaderboardScoreData> scoreDataListToSort)
     {
         if (scoreDataListToSort != null)
@@ -140,6 +145,11 @@ public class UtilityFunctions
         return null;
     }
 
+    /// <summary>
+    /// Formats a string with it's first letter capitilized and every subsequent letter lowercase
+    /// </summary>
+    /// <param name="inputString"></param>
+    /// <returns></returns>
     public static string FormatStringFirstLetterCapitalized(string inputString)
     {
         char[] characters = new char[inputString.Length];
@@ -166,12 +176,48 @@ public class UtilityFunctions
         return returnString;
     }
 
+    /// <summary>
+    /// Sorts hats in order of lowest to highest ID
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
     public static List<HatData> SortByHatID(List<HatData> input)
     {
         input.Sort(SortFunctions.SortByLowestHatID);
         return input;
     }
 
+
+    /// <summary>
+    /// Remaps a value into a new range proportionaly
+    /// </summary>
+    /// <param name="oldRangeMin"> The lower bound of the origonal range </param>
+    /// <param name="oldRangeMax"> The upper bound of the initial range </param>
+    /// <param name="newRangeMin"> The lower bound of the new target range </param>
+    /// <param name="newRangeMax"> The upper bound of the new target range </param>
+    /// <param name="oldRangeValue"> The old value from the old range </param>
+    /// <param name="newRangeValue"> The outputted value from between the new range </param>
+    public static void RemapValue(float oldRangeMin, float oldRangeMax, float newRangeMin, float newRangeMax, float oldRangeValue, out float newRangeValue)
+    {
+        //flips values if the min is greater than the max
+        if (oldRangeMin > oldRangeMax)
+        {
+            float holder = oldRangeMax;
+            oldRangeMax = oldRangeMin;
+            oldRangeMin = holder;
+        }
+        if (newRangeMin > newRangeMax)
+        {
+            float holder = newRangeMax;
+            newRangeMax = newRangeMin;
+            newRangeMin = holder;
+        }
+
+        //gets the proportional distance from the min from the initial range
+        float iValue = (oldRangeValue - oldRangeMin) / ((oldRangeValue - oldRangeMin) + (oldRangeMax - oldRangeValue));
+        //translates that proportional distance into the new range and gets the value
+        newRangeValue = (newRangeMax - newRangeMin) * iValue + newRangeMin;
+    }
 
 
 

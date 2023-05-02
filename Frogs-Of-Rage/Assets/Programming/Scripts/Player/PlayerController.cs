@@ -12,7 +12,7 @@ public enum MovementState
     Jumping
 };
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : Singleton<PlayerController>
 {
     #region Variables in Inspector
     #region Movement
@@ -221,7 +221,7 @@ public class PlayerController : MonoBehaviour
         baseJumpHeight = jumpHeight;
 
         gameManager.lastCheckpointPos = transform.position;
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
     }
 
     private void Update()

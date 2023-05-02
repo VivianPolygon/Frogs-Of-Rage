@@ -113,11 +113,11 @@ public class GameManager : Singleton<GameManager>
 
     public void ResetGame()
     {
-        SceneManager.LoadScene(0);
-        //ResetCollectables();
-        //OnPlayerDeath?.Invoke(new PlayerDeathEventArgs(startPos));
-        playerController.curLives = playerController.maxLives;
-        playerController.curHealth = playerController.curHealthMax;
+        //SceneManager.LoadScene(0);
+        ////ResetCollectables();
+        ////OnPlayerDeath?.Invoke(new PlayerDeathEventArgs(startPos));
+        //playerController.curLives = playerController.maxLives;
+        //playerController.curHealth = playerController.curHealthMax;
     }
 }
 #region Player Death Event

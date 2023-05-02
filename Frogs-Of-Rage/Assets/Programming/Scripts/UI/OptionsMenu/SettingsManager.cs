@@ -41,13 +41,8 @@ public class SettingsManager : MonoBehaviour
     //initilizes the menu
     private void Awake()
     {
-        _playerCamera = GameManager.Instance.playerCam;
-        //gets the POV component on the camera
-        if(_playerCamera != null)
-            _cameraPOV = _playerCamera.GetCinemachineComponent<CinemachinePOV>();
-        else
-            Debug.LogWarning("Please Make sure you assign the 3rd person camera from the player to the settings manager for it to work properly!");
-
+        
+        
         //Loads prefs
         LoadSettings();
 
@@ -65,6 +60,13 @@ public class SettingsManager : MonoBehaviour
 
     private void Start()
     {
+        _playerCamera = GameManager.Instance.playerCam;
+        //gets the POV component on the camera
+        if (_playerCamera != null)
+            _cameraPOV = _playerCamera.GetCinemachineComponent<CinemachinePOV>();
+        else
+            Debug.LogWarning("Please Make sure you assign the 3rd person camera from the player to the settings manager for it to work properly!");
+
         //initial refresh of applied settings after load
         ManualRefresh();
     }

@@ -6,7 +6,7 @@ using UnityEngine.Audio;
 public class SettingsManager : MonoBehaviour
 {
     #region "Inspector Variables and Related Properties
-    [SerializeField] [Tooltip("The 3rd person player camera")] private CinemachineVirtualCamera _playerCamera;
+    [Tooltip("The 3rd person player camera")] private CinemachineVirtualCamera _playerCamera;
     [SerializeField] [Tooltip("The settings for the slider ranges")] private OptionsMenuSettings _settings;
     [SerializeField] [Tooltip("The Main Mixer")] private AudioMixer _mainMixer;
 
@@ -41,6 +41,7 @@ public class SettingsManager : MonoBehaviour
     //initilizes the menu
     private void Awake()
     {
+        _playerCamera = GameManager.Instance.playerCam;
         //gets the POV component on the camera
         if(_playerCamera != null)
             _cameraPOV = _playerCamera.GetCinemachineComponent<CinemachinePOV>();

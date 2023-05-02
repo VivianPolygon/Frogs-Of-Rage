@@ -221,7 +221,7 @@ public class PlayerController : MonoBehaviour
         baseJumpHeight = jumpHeight;
 
         gameManager.lastCheckpointPos = transform.position;
-
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Update()

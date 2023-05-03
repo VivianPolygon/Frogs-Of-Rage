@@ -30,6 +30,12 @@ public class PlayerController : Singleton<PlayerController>
     private float groundDrag = 2.0f;
     [SerializeField, Tooltip("Multiplies speed when in air")]
     private float airMultiplier = 2.0f;
+    [SerializeField, Tooltip("Modifier for how much stamina you lose while sprinting")]
+    private float sprintStaminaModifier = 5f;
+    [SerializeField, Tooltip("Modifier for how much stamina you lose while wall running")]
+    private float wallRunStaminaModifier = 5f;
+
+
     [Header("Jump Variables")]
     [Space(10)]
     [Tooltip("The jump force the player has.")]
@@ -320,8 +326,10 @@ public class PlayerController : Singleton<PlayerController>
     //value is true if increasing stamina and false if decreasing
     public void ChangeStamina(bool value)
     {
-        if (!value && (isMoving || wallRunning))
-            curStamina -= Time.deltaTime * 5;
+        if (!value && (isMoving && !wallRunning))
+            curStamina -= Time.deltaTime * sprintStaminaModifier;
+        else if (!value && wallRunning)
+            curStamina -= Time.deltaTime * wallRunStaminaModifier;
         else
             curStamina += Time.deltaTime * 5;
 

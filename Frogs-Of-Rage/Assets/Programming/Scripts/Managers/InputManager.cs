@@ -50,7 +50,7 @@ public class InputManager : Singleton<InputManager>
     //Gets pause input
     public bool GetPause()
     {
-        return playerControls.Player.Pause.triggered;
+        return playerControls.UI.Pause.triggered;
     }
 
     public bool GetSprint()

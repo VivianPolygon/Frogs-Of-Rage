@@ -170,7 +170,7 @@ public class UIManager : Singleton<UIManager>
                 Time.timeScale = 0f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                inputManager.playerControls.Disable();
+                inputManager.playerControls.Player.Disable();
 
                 break;
             case CanvasState.Player:
@@ -178,7 +178,7 @@ public class UIManager : Singleton<UIManager>
                 Time.timeScale = 1f;
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
-                inputManager.playerControls.Enable();
+                inputManager.playerControls.Player.Enable();
 
                 break;
             case CanvasState.Paused:
@@ -186,7 +186,7 @@ public class UIManager : Singleton<UIManager>
                 Time.timeScale = 0f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                inputManager.playerControls.Disable();
+                inputManager.playerControls.Player.Disable();
 
                 break;
             case CanvasState.Win:
@@ -194,7 +194,7 @@ public class UIManager : Singleton<UIManager>
                 Time.timeScale = 0f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                inputManager.playerControls.Disable();
+                inputManager.playerControls.Player.Disable();
 
                 break;
             case CanvasState.Credits:
@@ -202,7 +202,7 @@ public class UIManager : Singleton<UIManager>
                 Time.timeScale = 0f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                inputManager.playerControls.Disable();
+                inputManager.playerControls.Player.Disable();
 
                 break;
             case CanvasState.Options:
@@ -210,14 +210,14 @@ public class UIManager : Singleton<UIManager>
                 Time.timeScale = 0f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                inputManager.playerControls.Disable();
+                inputManager.playerControls.Player.Disable();
 
                 break;
             case CanvasState.Death:
                 TurnOnCanvasIndex(6);
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
-                inputManager.playerControls.Disable();
+                inputManager.playerControls.Player.Disable();
 
                 break;
             case CanvasState.GameOver:
@@ -225,7 +225,7 @@ public class UIManager : Singleton<UIManager>
                 Time.timeScale = 0f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                inputManager.playerControls.Disable();
+                inputManager.playerControls.Player.Disable();
 
                 break;
             case CanvasState.HatMenu:
@@ -233,7 +233,7 @@ public class UIManager : Singleton<UIManager>
                 Time.timeScale = 0f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                inputManager.playerControls.Disable();
+                inputManager.playerControls.Player.Disable();
 
                 break;
             default:
@@ -392,7 +392,9 @@ public class UIManager : Singleton<UIManager>
 
     private void DisplayPauseScreen(PlayerPauseEventArgs e)
     {
-        if (isPaused)
+        //isPaused = !isPaused;
+        Debug.Log(isPaused);
+        if (isPaused && state != CanvasState.Start && state != CanvasState.GameOver)
         {
             //Change canvas state
             state = CanvasState.Paused;

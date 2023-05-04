@@ -98,7 +98,7 @@ public class UIManager : Singleton<UIManager>
     private List<bool> boolCanvasList = new List<bool>();
 
     private float finalGameTime;
-
+    public bool isPaused = false;
     private bool isStartState = false;
     private bool isPlayerState = false;
     private bool isPausedState = false;
@@ -285,6 +285,8 @@ public class UIManager : Singleton<UIManager>
         if(state == CanvasState.Paused)
             ToggleLivesOnPause();
         state = CanvasState.Player;
+        if (isPaused)
+            isPaused = !isPaused;
     }
     public void SaveGame()
     {
@@ -309,6 +311,7 @@ public class UIManager : Singleton<UIManager>
     public void Paused()
     {
         state = CanvasState.Paused;
+
     }
 
     public void HatMenu()
@@ -389,22 +392,29 @@ public class UIManager : Singleton<UIManager>
 
     private void DisplayPauseScreen(PlayerPauseEventArgs e)
     {
-        //Change canvas state
-        state = CanvasState.Paused;
+        if (isPaused)
+        {
+            //Change canvas state
+            state = CanvasState.Paused;
 
-        //Display UI info
-        //Count
-        flyCount.text = e.playerData.FlyCount.ToString() + "/" + GameManager.Instance.fliesInScene;
-        antCount.text = e.playerData.AntCount.ToString() + "/" + GameManager.Instance.antsInScene;
-        grasshopperCount.text = e.playerData.GrasshopperCount.ToString() + "/" + GameManager.Instance.grasshoppersInScene;
-        spiderCount.text = e.playerData.SpiderCount.ToString() + "/" + GameManager.Instance.spidersInScene;
+            //Display UI info
+            //Count
+            flyCount.text = e.playerData.FlyCount.ToString() + "/" + GameManager.Instance.fliesInScene;
+            antCount.text = e.playerData.AntCount.ToString() + "/" + GameManager.Instance.antsInScene;
+            grasshopperCount.text = e.playerData.GrasshopperCount.ToString() + "/" + GameManager.Instance.grasshoppersInScene;
+            spiderCount.text = e.playerData.SpiderCount.ToString() + "/" + GameManager.Instance.spidersInScene;
 
-        ToggleLivesOnPause();
-        //Images
-        //flyImage.sprite = e.playerData.FlyImage;
-        //antImage.sprite = e.playerData.AntImage;
-        //grasshopperImage.sprite = e.playerData.GrasshopperImage;
-        //spiderImage.sprite = e.playerData.SpiderImage;
+            ToggleLivesOnPause();
+            //Images
+            //flyImage.sprite = e.playerData.FlyImage;
+            //antImage.sprite = e.playerData.AntImage;
+            //grasshopperImage.sprite = e.playerData.GrasshopperImage;
+            //spiderImage.sprite = e.playerData.SpiderImage;
+        }
+        else
+        {
+            state = CanvasState.Player;
+        }
     }
 
     private void HandleWinScreen(PlayerWinEventArgs e)

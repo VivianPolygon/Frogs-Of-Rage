@@ -26,7 +26,7 @@ public class MusicPlayer : MonoBehaviour
     {
         UpdateMusicList();
 
-        if (!audioSource.isPlaying && (previousState != CanvasState.Paused || uiManager.state != CanvasState.Player))
+        if (!audioSource.isPlaying && (previousState != CanvasState.Paused || uiManager.state != CanvasState.Player || uiManager.state != CanvasState.Options))
         {
             PlayRandomClip();
         }

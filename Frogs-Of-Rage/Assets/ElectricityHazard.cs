@@ -7,6 +7,7 @@ public class ElectricityHazard : MonoBehaviour
     public SphereCollider otherObjectCollider;
     public List<Light> lights;
     public List<Animator> animator;
+    public List<GameObject> gameObjects;
 
     private AudioSource audioSource;
     private bool isHazardActive;
@@ -76,6 +77,11 @@ public class ElectricityHazard : MonoBehaviour
         foreach (Animator animator in animator)
         {
             animator.enabled = active;
+        }
+
+        foreach (GameObject go in gameObjects)
+        {
+            go.SetActive(active);
         }
     }
 }

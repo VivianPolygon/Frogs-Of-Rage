@@ -98,7 +98,7 @@ public class UIManager : Singleton<UIManager>
     private List<bool> boolCanvasList = new List<bool>();
 
     private float finalGameTime;
-
+    public bool isPaused = false;
     private bool isStartState = false;
     private bool isPlayerState = false;
     private bool isPausedState = false;
@@ -170,7 +170,7 @@ public class UIManager : Singleton<UIManager>
                 Time.timeScale = 0f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                inputManager.playerControls.Disable();
+                inputManager.playerControls.Player.Disable();
 
                 break;
             case CanvasState.Player:
@@ -178,7 +178,7 @@ public class UIManager : Singleton<UIManager>
                 Time.timeScale = 1f;
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
-                inputManager.playerControls.Enable();
+                inputManager.playerControls.Player.Enable();
 
                 break;
             case CanvasState.Paused:
@@ -186,7 +186,7 @@ public class UIManager : Singleton<UIManager>
                 Time.timeScale = 0f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                inputManager.playerControls.Disable();
+                inputManager.playerControls.Player.Disable();
 
                 break;
             case CanvasState.Win:
@@ -194,7 +194,7 @@ public class UIManager : Singleton<UIManager>
                 Time.timeScale = 0f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                inputManager.playerControls.Disable();
+                inputManager.playerControls.Player.Disable();
 
                 break;
             case CanvasState.Credits:
@@ -202,7 +202,7 @@ public class UIManager : Singleton<UIManager>
                 Time.timeScale = 0f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                inputManager.playerControls.Disable();
+                inputManager.playerControls.Player.Disable();
 
                 break;
             case CanvasState.Options:
@@ -210,14 +210,14 @@ public class UIManager : Singleton<UIManager>
                 Time.timeScale = 0f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                inputManager.playerControls.Disable();
+                inputManager.playerControls.Player.Disable();
 
                 break;
             case CanvasState.Death:
                 TurnOnCanvasIndex(6);
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
-                inputManager.playerControls.Disable();
+                inputManager.playerControls.Player.Disable();
 
                 break;
             case CanvasState.GameOver:
@@ -225,7 +225,7 @@ public class UIManager : Singleton<UIManager>
                 Time.timeScale = 0f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                inputManager.playerControls.Disable();
+                inputManager.playerControls.Player.Disable();
 
                 break;
             case CanvasState.HatMenu:
@@ -233,7 +233,7 @@ public class UIManager : Singleton<UIManager>
                 Time.timeScale = 0f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                inputManager.playerControls.Disable();
+                inputManager.playerControls.Player.Disable();
 
                 break;
             default:
@@ -285,6 +285,8 @@ public class UIManager : Singleton<UIManager>
         if(state == CanvasState.Paused)
             ToggleLivesOnPause();
         state = CanvasState.Player;
+        if (isPaused)
+            isPaused = !isPaused;
     }
     public void SaveGame()
     {
@@ -309,6 +311,7 @@ public class UIManager : Singleton<UIManager>
     public void Paused()
     {
         state = CanvasState.Paused;
+
     }
 
     public void HatMenu()
@@ -389,22 +392,31 @@ public class UIManager : Singleton<UIManager>
 
     private void DisplayPauseScreen(PlayerPauseEventArgs e)
     {
-        //Change canvas state
-        state = CanvasState.Paused;
+        //isPaused = !isPaused;
+        Debug.Log(isPaused);
+        if (isPaused && state != CanvasState.Start && state != CanvasState.GameOver)
+        {
+            //Change canvas state
+            state = CanvasState.Paused;
 
-        //Display UI info
-        //Count
-        flyCount.text = e.playerData.FlyCount.ToString() + "/" + GameManager.Instance.fliesInScene;
-        antCount.text = e.playerData.AntCount.ToString() + "/" + GameManager.Instance.antsInScene;
-        grasshopperCount.text = e.playerData.GrasshopperCount.ToString() + "/" + GameManager.Instance.grasshoppersInScene;
-        spiderCount.text = e.playerData.SpiderCount.ToString() + "/" + GameManager.Instance.spidersInScene;
+            //Display UI info
+            //Count
+            flyCount.text = e.playerData.FlyCount.ToString() + "/" + GameManager.Instance.fliesInScene;
+            antCount.text = e.playerData.AntCount.ToString() + "/" + GameManager.Instance.antsInScene;
+            grasshopperCount.text = e.playerData.GrasshopperCount.ToString() + "/" + GameManager.Instance.grasshoppersInScene;
+            spiderCount.text = e.playerData.SpiderCount.ToString() + "/" + GameManager.Instance.spidersInScene;
 
-        ToggleLivesOnPause();
-        //Images
-        //flyImage.sprite = e.playerData.FlyImage;
-        //antImage.sprite = e.playerData.AntImage;
-        //grasshopperImage.sprite = e.playerData.GrasshopperImage;
-        //spiderImage.sprite = e.playerData.SpiderImage;
+            ToggleLivesOnPause();
+            //Images
+            //flyImage.sprite = e.playerData.FlyImage;
+            //antImage.sprite = e.playerData.AntImage;
+            //grasshopperImage.sprite = e.playerData.GrasshopperImage;
+            //spiderImage.sprite = e.playerData.SpiderImage;
+        }
+        else
+        {
+            state = CanvasState.Player;
+        }
     }
 
     private void HandleWinScreen(PlayerWinEventArgs e)

@@ -601,6 +601,8 @@ public class PlayerController : Singleton<PlayerController>
         //Toggle paused bool
         if (InputManager.Instance.GetPause())
         {
+            UIManager.Instance.isPaused = !UIManager.Instance.isPaused;
+            Debug.Log(UIManager.Instance.isPaused);
             OnPlayerPause?.Invoke(new PlayerPauseEventArgs(playerData));
         }
     }

@@ -15,14 +15,17 @@ public class ScoreboardDebugging : MonoBehaviour
             GUILayout.BeginHorizontal();
             if(GUILayout.Button("Player Win From Vent"))
             {
+                Leaderboard.CurrentLeaderboardPath = PlayerPath.VENT;
                 PlayerController.OnPlayerWin(new PlayerWinEventArgs(GameManager.Instance.gameTimer, _playerController.playerData, PlayerPath.VENT));
             }
             if (GUILayout.Button("Player Win From Outlet"))
             {
+                Leaderboard.CurrentLeaderboardPath = PlayerPath.OUTLET;
                 PlayerController.OnPlayerWin(new PlayerWinEventArgs(GameManager.Instance.gameTimer, _playerController.playerData, PlayerPath.OUTLET));
             }
             if (GUILayout.Button("Player Win From Wall"))
             {
+                Leaderboard.CurrentLeaderboardPath = PlayerPath.WALL;
                 PlayerController.OnPlayerWin(new PlayerWinEventArgs(GameManager.Instance.gameTimer, _playerController.playerData, PlayerPath.WALL));
             }
             GUILayout.EndHorizontal();

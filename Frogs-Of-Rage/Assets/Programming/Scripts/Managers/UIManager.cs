@@ -71,6 +71,7 @@ public class UIManager : Singleton<UIManager>
     public Text grasshopperCountYouWin;
     public Image spiderImageYouWin;
     public Text spiderCountYouWin;
+    public Leaderboard leaderboard;
 
     [Header("Credits Canvas")]
     [Space(10)]
@@ -152,6 +153,11 @@ public class UIManager : Singleton<UIManager>
         boolCanvasList.Add(isDeathState);
         boolCanvasList.Add(isGameOverState);
         boolCanvasList.Add(isHatMenuCanvas);
+
+        if(leaderboard)
+        {
+            leaderboard.InitilizeLeaderboard();
+        }
     }
 
     private void Update()

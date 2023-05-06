@@ -34,10 +34,11 @@ public class Leaderboard : MonoBehaviour
     //If it does not: 
     //2. DisplauSavedScoreData X
 
-    private void Awake()
+    public void InitilizeLeaderboard()
     {
         PlayerController.OnPlayerWin += UpdatePath;
     }
+
     private void OnDestroy()
     {
         PlayerController.OnPlayerWin -= UpdatePath;

@@ -708,8 +708,18 @@ public class PlayerController : Singleton<PlayerController>
     {
         if (other.tag == "Exit")
         {
+
+            //trys to get the exit type script from the exit object, this just holds a path enum.
+            if(other.gameObject.TryGetComponent(out ExitType type))
+            {
+                currentPath = type.path;
+            }
+
+            PlayerWinEventArgs winArgs = new PlayerWinEventArgs(gameManager.gameTimer, playerData, currentPath);
+            Leaderboard.CurrentLeaderboardPath = type.path;
+
             //Invoke on player win event
-            OnPlayerWin?.Invoke(new PlayerWinEventArgs(gameManager.gameTimer, playerData, currentPath));
+            OnPlayerWin?.Invoke(winArgs);
             Debug.Log("You exited");
         }
         if(other.tag == "HealthPool")

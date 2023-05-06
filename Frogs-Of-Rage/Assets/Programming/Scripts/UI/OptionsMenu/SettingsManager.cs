@@ -105,9 +105,10 @@ public class SettingsManager : MonoBehaviour
     private void SaveSettings()
     {
         //saves settings as input ranges
-        PlayerPrefs.SetFloat("SFX", _inputtedSFXValue);
-        PlayerPrefs.SetFloat("Music", _inputtedMusicValue);
-        PlayerPrefs.SetFloat("MouseSensitvity", _inputtedMouseSensitvityValue);
+        PlayerPrefs.SetFloat("SFX", _sfxSlider.value);
+        PlayerPrefs.SetFloat("Music", _musicSlider.value);
+        PlayerPrefs.SetFloat("MouseSensitvity", _mouseSensitivitySlider.value);
+        PlayerPrefs.Save();
     }
     private void LoadSettings()
     {
@@ -115,6 +116,12 @@ public class SettingsManager : MonoBehaviour
         _inputtedSFXValue = PlayerPrefs.GetFloat("SFX", _settings.sfxSliderRange.InterpolateValues(0.5f));
         _inputtedMusicValue = PlayerPrefs.GetFloat("Music", _settings.musicSliderRange.InterpolateValues(0.5f));
         _inputtedMouseSensitvityValue = PlayerPrefs.GetFloat("MouseSensitvity", _settings.mouseSensitivitySliderRange.InterpolateValues(0.25f));
+    }
+
+    public void IntilizeSettings()
+    {
+        Awake();
+        Start();
     }
     #endregion
 

@@ -77,10 +77,10 @@ public class UIManager : Singleton<UIManager>
     [Space(10)]
     public Canvas creditsCanvas;
 
-
     [Header("Options Canvas")]
     [Space(10)]
     public Canvas optionsCanvas;
+    public SettingsManager settingsManager;
 
     [Header("Death Canvas")]
     [Space(10)]
@@ -93,6 +93,7 @@ public class UIManager : Singleton<UIManager>
     [Header("Hat Menu Canvas")]
     [Space(10)]
     public Canvas hatMenuCanvas;
+
 
 
     private List<Canvas> canvasList = new List<Canvas>();
@@ -157,6 +158,10 @@ public class UIManager : Singleton<UIManager>
         if(leaderboard)
         {
             leaderboard.InitilizeLeaderboard();
+        }
+        if(settingsManager)
+        {
+            settingsManager.IntilizeSettings(); //loads settings initialy
         }
     }
 

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -9,6 +8,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 public static class SaveManager
 {
+    //quick way to do score version control. make setable in inspector somewhere and/or automate if goes gold or development otherwise continues long term
+    public static ScoreVersionControl versionControl = new ScoreVersionControl(1);
+
     #region "Leaderboard Saving Variables"
     private static readonly string _leaderboardFilePath = Application.persistentDataPath + "/Frogs.rage";
 
@@ -67,6 +69,7 @@ public static class SaveManager
         FileStream fileStream = new FileStream(_leaderboardFilePath, FileMode.Create);
 
         LeaderboardSaveData saveData = LeaderboardConvertToSaveFormat();
+        saveData.version.versionNumber = versionControl.versionNumber;
 
         formatter.Serialize(fileStream, LeaderboardConvertToSaveFormat());
 
@@ -101,15 +104,23 @@ public static class SaveManager
             File.Create(_leaderboardFilePath); //creates file
         }
 
-        if(loadData == null)
+        _loadedScoresData = loadData;
+
+        if (_loadedScoresData == null || !EvaluateVersion())
         {
-            Debug.Log("NO Data found");
-            loadData = new LeaderboardSaveData(new Dictionary<int, float[]>(), new Dictionary<int, string[]>());
+            if(_loadedScoresData == null)
+                Debug.Log("No Data Found");
+            if(!EvaluateVersion())
+                Debug.Log("Game Version Mismatch");
+
+
+            _loadedScoresData = new LeaderboardSaveData(new Dictionary<int, float[]>(), new Dictionary<int, string[]>());
             GetDefaultScoresFromJson();
         }
 
-        _loadedScoresData = loadData;
+
         _scoreData = _loadedScoresData.ConvertSaveToLeaderboardData();
+
     }
 
     public static void EraseLeaderboardSaveData() //erases save data 
@@ -147,6 +158,7 @@ public static class SaveManager
         }
 
         LeaderboardSaveData saveResults = new LeaderboardSaveData(scores, times);
+        saveResults.version = new ScoreVersionControl(versionControl.versionNumber); //saves version information
         return saveResults;
     }
 
@@ -232,6 +244,38 @@ public static class SaveManager
         return true;
     }
 
+    /// <summary>
+    /// Returns true if the versions are the same, false if they are not
+    /// </summary>
+    /// <returns></returns>
+    private static bool EvaluateVersion()
+    {
+        if(_loadedScoresData != null)
+        {
+
+            if(_loadedScoresData.version != null)
+            {
+                if(_loadedScoresData.version.versionNumber == versionControl.versionNumber)
+                {
+                    return true;
+                }
+                else
+                {
+                    Debug.LogWarning("VERSION NUMBER MISMATCH");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("NO VERSION ON LOADED SCORES DATA");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("NO LOADED SCORES DATA");
+        }
+        return false;
+    }
+
     #endregion
 
     #region "Hat Saving Functions"
@@ -291,18 +335,18 @@ public static class SaveManager
 }
 
 [System.Serializable]
-public class LeaderboardSaveData
+public class LeaderboardSaveData 
 {
     private readonly int[] paths;
     private readonly Dictionary<int, float[]> scores;
     private readonly Dictionary<int, string[]> names;
 
-    public LeaderboardSaveData(Dictionary<int, float[]> newScores, Dictionary<int, string[]> newtimes)//conttructor 
+    public ScoreVersionControl version;
+
+    public LeaderboardSaveData(Dictionary<int, float[]> newScores, Dictionary<int, string[]> newtimes) //constructor 
     {
         scores = newScores;
         names = newtimes;
-
-
     }
    
     public Dictionary<PlayerPath, List<LeaderboardScoreData>> ConvertSaveToLeaderboardData()
@@ -334,8 +378,17 @@ public class LeaderboardSaveData
 
         return savedLeaderboardData;
     }
+}
 
+[System.Serializable]
+public class ScoreVersionControl
+{
+    public int versionNumber;
 
+    public ScoreVersionControl(int currentVersion)
+    {
+        versionNumber = currentVersion;
+    }
 }
 
 [System.Serializable]

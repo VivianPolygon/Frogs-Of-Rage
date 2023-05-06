@@ -8032,6 +8032,10 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
+      propertyPath: maxLives
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7587290521112274944, guid: 2cd6609d724284e4fb00dd855d002bed, type: 3}
       propertyPath: healthGauge
       value: 
       objectReference: {fileID: 202279749}
@@ -29187,6 +29191,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 42c1b24456a4fa040aadc06f1f6cef2b, type: 3}
+--- !u!1 &1430363346 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5745207938056937822, guid: f383e2dac70031346b1651801a22c063, type: 3}
+  m_PrefabInstance: {fileID: 5700557205750696617}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1432406922
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40751,19 +40760,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.81752086
+      value: -0.80999464
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.46469137
+      value: -0.46041343
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.2957411
+      value: -0.31577167
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296441982728, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.16810377
+      value: 0.17948946
       objectReference: {fileID: 0}
     - target: {fileID: 3283404296575147496, guid: a9c28be1cbb605848a1e7a189e00776f, type: 3}
       propertyPath: m_RootOrder
@@ -47950,12 +47959,16 @@ PrefabInstance:
       objectReference: {fileID: 757593367}
     - target: {fileID: 1431813879007421598, guid: 5f02a85d629252c43a14ebb97c885dc0, type: 3}
       propertyPath: gameObjects.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1431813879007421598, guid: 5f02a85d629252c43a14ebb97c885dc0, type: 3}
       propertyPath: gameObjects.Array.data[0]
       value: 
       objectReference: {fileID: 1620881408}
+    - target: {fileID: 1431813879007421598, guid: 5f02a85d629252c43a14ebb97c885dc0, type: 3}
+      propertyPath: gameObjects.Array.data[1]
+      value: 
+      objectReference: {fileID: 1430363346}
     - target: {fileID: 1431813879007421599, guid: 5f02a85d629252c43a14ebb97c885dc0, type: 3}
       propertyPath: m_Name
       value: Electricity Hazard

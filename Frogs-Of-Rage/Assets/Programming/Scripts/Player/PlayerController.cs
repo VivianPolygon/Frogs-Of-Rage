@@ -659,7 +659,7 @@ public class PlayerController : Singleton<PlayerController>
 
     private bool HandleLives(PlayerGameOverEventArgs e)
     {
-        curLives--;
+        //curLives--;
         Debug.Log("Reduced lives");
         if (curLives > 0)
             return true;

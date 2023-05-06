@@ -117,7 +117,7 @@ public class UIManager : Singleton<UIManager>
         PlayerController.OnPlayerWin += HandleWinScreen;
         PlayerController.OnPlayerPause += DisplayPauseScreen;
         PlayerController.OnPlayerCanvas += DisplayTimer;
-        PlayerController.OnGameOver += DisplayGameOver;
+        //PlayerController.OnGameOver += DisplayGameOver;
     }
     private void OnDisable()
     {
@@ -125,7 +125,7 @@ public class UIManager : Singleton<UIManager>
         PlayerController.OnPlayerWin -= HandleWinScreen;
         PlayerController.OnPlayerPause -= DisplayPauseScreen;
         PlayerController.OnPlayerCanvas -= DisplayTimer;        
-        PlayerController.OnGameOver -= DisplayGameOver;
+        //PlayerController.OnGameOver -= DisplayGameOver;
     }
 
     private void Start()
@@ -328,19 +328,19 @@ public class UIManager : Singleton<UIManager>
     }
     #endregion
 
-    private void DisplayGameOver(PlayerGameOverEventArgs e)
-    {
-        state = CanvasState.GameOver;
-    }
+    //private void DisplayGameOver(PlayerGameOverEventArgs e)
+    //{
+    //    state = CanvasState.GameOver;
+    //}
     public void HandleUILives()
     {
         UILife.GetComponentInChildren<Canvas>().gameObject.GetComponentInChildren<Text>().text = GameManager.Instance.playerController.curLives.ToString();
 
         UILife.GetComponentInChildren<Animator>().SetTrigger("ShowLives");
 
-        if (GameManager.Instance.playerController.curLives == 0)
-            state = CanvasState.GameOver;
-        else
+        //if (GameManager.Instance.playerController.curLives == 0)
+        //    state = CanvasState.GameOver;
+        //else
             state = CanvasState.Player;
 
     }
